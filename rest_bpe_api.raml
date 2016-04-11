@@ -1,0 +1,475 @@
+#%RAML 1.0
+title: New API
+version: v1
+baseUri: http://api.bp.samplehost.com
+
+################################
+####    RESOURCE TYPES    ######
+################################
+resourceTypes:
+  Collection:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: << itemshort >> []
+        500:
+          body:
+            application/json:
+              type: Error
+    post:
+      body:
+        application/json:
+          type: << item >>
+      responses:
+        200:
+          body:
+            application/json:
+              type: << itemshort >>
+        500:
+          body:
+            application/json:
+              type: Error
+  Member:
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              type: EmptyJson
+        500:
+          body:
+            application/json:
+              type: Error
+    get:
+      responses:
+        200:
+          description: If resource was found
+          body:
+            application/json:
+              type: << item >>
+        404:
+          description: If requested resource was not found
+          body:
+            application/json:
+              type: Error
+        500:
+          description: In case of any other error
+          body:
+            application/json:
+              type: Error
+    put:
+      body:
+        application/json:
+          type: << item >>
+      responses:
+        200:
+          body:
+            application/json:
+              type: << itemshort >>
+        500:
+          body:
+            application/json:
+              type: Error
+
+
+#######################################
+#### JSON STRUCTURES DEFINITION  ######
+#######################################
+types:
+
+  EmptyJson:
+    properties:
+
+  Error:
+    properties:
+      code: integer
+      message: string
+
+  URI:
+    properties:
+      uri: string
+
+  WS:
+    type: URI
+    properties:
+      method:
+        enum:
+          - POST
+          - GET
+          - PUT
+          - DELETE
+
+  Action:
+    type: WS
+    properties:
+      name: string
+
+  Hole:
+    properties:
+      name: string
+      data_in: object
+      data_out: object
+      event_start: object
+      event_end: object
+
+  TemplateShort:
+    description:
+      TODO + links
+    properties:
+      id: string
+      name: string
+      details: WS
+      links:
+        type: Action[]
+        maxItems: 2
+        minItems: 2
+        uniqueItems: true
+      ws: WS
+
+  Template:
+    description:
+      TODO + links
+    properties:
+      id: string
+      name: string
+      data_in: object
+      data_out: object
+      event_start: object
+      event_end: object
+      holes: Hole[]
+      links:
+        type: Action[]
+        maxItems: 2
+        minItems: 2
+        uniqueItems: true
+      ws: WS
+
+  PatternShort:
+    properties:
+      name: string
+      state:
+        enum:
+          - WIP
+          - READY
+      id: string
+      details: URI
+      links: Action[]
+
+  Pattern:
+    properties:
+      name: string
+      state:
+        enum:
+          - WIP
+          - READY
+      id: string
+      template: URI
+      holes: URI
+      links: Action[]
+
+  PatternHole:
+    type: Hole
+    properties:
+      pattern: URI
+      pattern_assigned: URI
+      links: Action[]
+
+  PatternAssign:
+    properties:
+      pattern_assigned: URI
+
+  Activity:
+    properties:
+      state:
+        enum:
+          - RUNNING
+          - PAUSE
+          - ABORT
+          - TERMINATED
+          - WAITING
+      type:
+        enum:
+          - INTERNAL
+          - HOLE
+      waiting_for: string[]
+      identifier: union
+
+  InstanceHole:
+    type: Hole
+    properties:
+      instance: URI
+      pattern_assigned: URI
+      links: Action[]
+
+  InstanceShort:
+    properties:
+      state:
+        enum:
+          - RUNNING
+          - PAUSE
+          - ABORT
+          - TERMINATED
+          - WAITING
+      id: string
+      details: URI
+      links: Action[]
+
+  Instance:
+    properties:
+      state:
+        enum:
+          - RUNNING
+          - PAUSE
+          - ABORT
+          - TERMINATED
+          - WAITING
+      id: string
+      links: Action[]
+      pattern: URI
+      time_start: integer
+      time: integer
+      holes: URI
+      currect_activities: Activity[]
+
+################################
+####    URI NAMESPACE     ######
+################################
+/templates:
+  type:  { Collection: {itemshort : TemplateShort, item: Template} }
+  /{templateId}:
+    uriParameters:
+      templateId:
+        type: string
+    type:  { Member: {itemshort: TemplateShort, item : Template } }
+
+/patterns:
+  get:
+    queryParameters:
+      template:
+        type: string
+        required: false
+      state:
+        enum: [WIP, READY]
+        required: false
+        repeat: true
+    responses:
+      200:
+        body:
+          application/json:
+            type: PatternShort[]
+      500:
+        body:
+          application/json:
+            type: Error
+  post:
+    queryParameters:
+      template:
+        type: string
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+            type: PatternShort
+      500:
+        body:
+          application/json:
+            type: Error
+# sub
+  /{patternId}:
+    uriParameters:
+      patternId:
+        type: string
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              type: EmptyJson
+        500:
+          body:
+            application/json:
+              type: Error
+    get:
+      responses:
+        200:
+          description: If resource was found
+          body:
+            application/json:
+              type: Pattern
+        404:
+          description: If requested resource was not found
+          body:
+            application/json:
+              type: Error
+        500:
+          description: In case of any other error
+          body:
+            application/json:
+              type: Error
+# sub-sub
+    /holes:
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                type: PatternHole []
+          500:
+            body:
+              application/json:
+                type: Error
+# sub-sub-sub
+      /{holeName}:
+        uriParameters:
+          holeName:
+            type: string
+        get:
+          responses:
+            200:
+              description: If resource was found
+              body:
+                application/json:
+                  type: PatternHole
+            404:
+              description: If requested resource was not found
+              body:
+                application/json:
+                  type: Error
+            500:
+              description: In case of any other error
+              body:
+                application/json:
+                  type: Error
+        put:
+          body:
+            application/json:
+              type: PatternAssign
+          responses:
+            200:
+              body:
+                application/json:
+                  type: PatternHole
+            500:
+              body:
+                application/json:
+                  type: Error
+
+
+/instances:
+  get:
+    queryParameters:
+      pattern:
+        type: string
+        required: false
+      state:
+        enum: [RUNNING, TERMINATED, PAUSED, WAITING, ABORTED]
+        required: false
+        repeat: true
+    responses:
+      200:
+        body:
+          application/json:
+            type: InstanceShort[]
+      500:
+        body:
+          application/json:
+            type: Error
+  post:
+    queryParameters:
+      pattern:
+        type: string
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+            type: InstanceShort
+      500:
+        body:
+          application/json:
+            type: Error
+  /{instanceId}:
+    uriParameters:
+      instanceId:
+        type: string
+    get:
+      responses:
+        200:
+          description: If resource was found
+          body:
+            application/json:
+              type: Instance
+        404:
+          description: If requested resource was not found
+          body:
+            application/json:
+              type: Error
+        500:
+          description: In case of any other error
+          body:
+            application/json:
+              type: Error
+    put:
+      queryParameters:
+        state:
+          enum: [RUNNING, TERMINATED, PAUSED, WAITING, ABORTED]
+          required: true
+          repeat: true
+      responses:
+        200:
+          body:
+            application/json:
+              type: InstanceShort
+        500:
+          body:
+            application/json:
+              type: Error
+    /holes:
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                type: InstanceHole []
+          500:
+            body:
+              application/json:
+                type: Error
+
+      /{holeName}:
+        uriParameters:
+          holeName:
+            type: string
+        get:
+          responses:
+            200:
+              description: If resource was found
+              body:
+                application/json:
+                  type: InstanceHole
+            404:
+              description: If requested resource was not found
+              body:
+                application/json:
+                  type: Error
+            500:
+              description: In case of any other error
+              body:
+                application/json:
+                  type: Error
+        put:
+          body:
+            application/json:
+              type: PatternAssign
+          responses:
+            200:
+              body:
+                application/json:
+                  type: InstanceHole
+            500:
+              body:
+                application/json:
+                  type: Error
