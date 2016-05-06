@@ -9,12 +9,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 @XmlRootElement(name = "pattern")
 public class Pattern implements Serializable {
 
 	enum Status { WIP, READY };
-	// TODO move it somewhere
-	private static final String base = "http://BP_REST_API/rest";
 	private static final long serialVersionUID = 1L;
 	private String id;
 	private String name;
@@ -28,7 +30,8 @@ public class Pattern implements Serializable {
 	public Pattern(){
 		super();
 	}
-
+	//	@JsonGetter("holes")
+	@JsonIgnore
 	public List<PatternHole> getHoles() {
 		return holes;
 	}
@@ -45,8 +48,10 @@ public class Pattern implements Serializable {
 		return Status.READY;
 	}
 
-	@XmlElementWrapper(name="holes")
-	@XmlElement(name="hole")
+	//	@XmlElementWrapper(name="holes")
+	//	@XmlElement(name="hole")
+	//	@JsonSetter("holes")
+	@JsonIgnore
 	public void setHoles(List<PatternHole> holes) {
 		this.holes = holes;
 	}
@@ -67,7 +72,7 @@ public class Pattern implements Serializable {
 			this.holes.add (new PatternHole(aHole, this.id));
 		}
 	}
-
+	@JsonGetter("links")
 	public List<ActionLink> getLinks() {
 		return links;
 	}
@@ -142,9 +147,11 @@ public class Pattern implements Serializable {
 	}
 
 	public void generateLinks() {
-		ActionLink getTemplate = new ActionLink("getTemplate",TemplateService.getTemplateURL(template), "GET");
+		ActionLink getTemplate = new ActionLink("getTemplate",TemplateService.getTemplateURI(this.template), "GET");
+		ActionLink getHoles = new ActionLink("getHoles",PatternService.getPatternHolesURI(this.id), "GET");
 		this.links = new ArrayList<ActionLink>();
 		this.links.add(getTemplate);
+		this.links.add(getHoles);
 	}
 
 }

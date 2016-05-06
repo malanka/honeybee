@@ -7,12 +7,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "hole")
 public class Hole implements Serializable{
 	private static final long serialVersionUID = 1L;
-    private String name;
-    private String data_in;
-    private String data_out;
-    private String event_start;
-    private String event_end;
-       
+	private String name;
+	private String data_in;
+	private String data_out;
+	private String event_start;
+	private String event_end;
+
 	public Hole() {
 		super();
 	}
@@ -25,7 +25,7 @@ public class Hole implements Serializable{
 		this.event_start = event_start;
 		this.event_end = event_end;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -92,6 +92,6 @@ public class Hole implements Serializable{
 		return "Hole [name=" + name + ", data_in=" + data_in + ", data_out=" + data_out + ", event_start=" + event_start
 				+ ", event_end=" + event_end + "]";
 	}
-	
-    
+
+
 }

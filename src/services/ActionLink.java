@@ -7,12 +7,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "action")
 public class ActionLink implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4204705641262839989L;
+
 	private String name;
-	
+
 	private String URI;
-	
+
 	private String method;
 
 	public String getName() {
@@ -87,5 +91,5 @@ public class ActionLink implements Serializable {
 	public String toString() {
 		return "ActionLink [name=" + name + ", URI=" + URI + ", method=" + method + "]";
 	}
-	
+
 }

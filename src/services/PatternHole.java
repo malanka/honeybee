@@ -9,12 +9,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "hole")
 public class PatternHole extends Hole implements Serializable {
 	private static final long serialVersionUID = 1L;
-    
-	
-    private String patternParent = null;
-	
-    private String patternAssigned = null;
-	
+
+
+	private String patternParent = null;
+
+	private String patternAssigned = null;
+
 	private List<ActionLink>links = null;
 
 	public PatternHole(String name, String data_in, String data_out, String event_start, String event_end,

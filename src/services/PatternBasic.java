@@ -7,8 +7,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "pattern")
 public class PatternBasic implements Serializable{
 
-	private static final long serialVersionUID = 1L;
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8857987920936193916L;
+
 	private String name = null;
 
 	public String getName() {
@@ -57,5 +60,5 @@ public class PatternBasic implements Serializable{
 			return false;
 		return true;
 	}
-	
+
 }

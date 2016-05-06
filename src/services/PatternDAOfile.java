@@ -115,19 +115,19 @@ public class PatternDAOfile implements patternDAO{
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			patternList = (List<Pattern>) ois.readObject();
 			ois.close();
-			// check, that name is not used
-			for ( Pattern aPattern : patternList ) {
-				if ( aPattern.getTemplate().equals(templateId) && aPattern.getName().equals(patternBasic.getName()) ) {
-					// TODO change exception
-					throw new InternalErrorException("Such pattern name is already used");
-				}
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new InternalErrorException(e.getMessage());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new InternalErrorException(e.getMessage());
+		}
+		// check, that name is not used
+		for ( Pattern aPattern : patternList ) {
+			if ( aPattern.getTemplate().equals(templateId) && aPattern.getName().equals(patternBasic.getName()) ) {
+				// TODO change exception
+				throw new InternalErrorException("Such pattern name is already used");
+			}
 		}
 		// find a template
 		TemplateDAOfile templateDao = new DAOFactory().getTemplateDAO();

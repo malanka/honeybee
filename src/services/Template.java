@@ -9,6 +9,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 @XmlRootElement(name = "template")
 public class Template implements Serializable {
 	// TODO move it somewhere
@@ -63,22 +66,24 @@ public class Template implements Serializable {
 	public void setEvent_end(String event_end) {
 		this.event_end = event_end;
 	}
-
+    @JsonGetter("holes")
 	public List<Hole> getHoles() {
 		return holes;
 	}
 	
     @XmlElementWrapper(name="holes")
     @XmlElement(name="hole")
+    @JsonSetter("holes")
 	public void setHoles(List<Hole> holes) {
 		this.holes = holes;
 	}
-
+    @JsonGetter("links")
 	public List<ActionLink> getLinks() {
 		return links;
 	}
     @XmlElementWrapper(name="links")
     @XmlElement(name="link")
+    @JsonSetter("links")
 	public void setLinks(List<ActionLink> links) {
 		this.links = links;
 	}

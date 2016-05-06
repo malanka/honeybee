@@ -1,6 +1,8 @@
 package services;
 
 
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.PathParam;
@@ -22,15 +24,17 @@ public class TemplateService {
 	
 	private TemplateDAOfile templateDao = new DAOFactory().getTemplateDAO();
 
-	public static String getTemplateURL(String templateId){
+	public static String getTemplateURI(String templateId){
 		return base + "/templates/" + templateId;
 	};
 
 	@GET
-	@Produces(MediaType.APPLICATION_XML)
-	public List<Template> getTemplates(){
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTemplates(){
 		System.out.println("getTemplates");
-		return templateDao.getAllTemplates();
+		List<Template> tmp = templateDao.getAllTemplates();
+		GenericEntity<List<Template>> entity = new GenericEntity<List<Template>>(tmp) {};
+		return Response.ok().entity(entity).build();
 	}
 
 	@POST
@@ -46,7 +50,7 @@ public class TemplateService {
 
 	@GET
 	@Path("{id}")
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTemplate(@PathParam("id") String id) {
 		System.out.println("getTemplate");
 		Template template = templateDao.getTemplateById(id);
@@ -55,38 +59,36 @@ public class TemplateService {
 			return Response.ok(entity).build();
 		}
 		else
-			return Response.status(404).entity("<error> Element not found </error>").build();
+			return Response.status(404).entity(new WebServiseError("Element not found")).build();
 	}
 	
 	@DELETE
 	@Path("{id}")
-	//@Produces(MediaType.APPLICATION_XML)
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_XML)
 	public Response deleteTemplate(@PathParam("id") String id){
 		System.out.println("deleteTemplate");
-		if ( templateDao.deleteTemplate(id) == 0 )
+		if ( templateDao.deleteTemplate(id) == 0 ) {
 			return Response.noContent().build();
+		}
 		else
-			return Response.status(404).entity("Element not found").build();
+			return Response.status(404).entity(new WebServiseError("Element not found")).build();
 		// TODO fix error reporting
 	}
 	
 	@PUT
-	@Path("{id}")
+	@Path("{templateId}")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response updateTemplate(@PathParam("id") String id, Template template) {
+	public Response updateTemplate(@PathParam("templateId") String templateId, Template template) {
 		System.out.println("putTemplate");
-		int rv = templateDao.updateTemplateById(id, template);
-		switch (rv) {
-			case 0:
-				GenericEntity<Template> entity = new GenericEntity<Template>(template) {};
-				return Response.ok(entity).build();
-			case 1:
-				return Response.status(404).entity("<error>Element not found<error/>").build();
-			case -1:
-				return Response.status(500).entity("<error> internal </error>").build();
+		try {
+			Template templateNew = templateDao.updateTemplateById(templateId,template);
+			GenericEntity<Template> entity = new GenericEntity<Template>(templateNew) {};
+			System.out.println("Seems fine");
+			return Response.ok(entity).build();
+		} catch (InternalErrorException e) {
+			System.out.println(e.getMessage());
+			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
 		}
-		return Response.status(500).entity("<error> internal </error>").build();
 	}
 }

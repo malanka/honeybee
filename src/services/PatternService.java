@@ -19,7 +19,13 @@ import javax.ws.rs.core.Response;
 @Path("/patterns")
 public class PatternService {
 
+	private static final String base = "http://BP_REST_API/rest";
+
 	private PatternDAOfile patternDao = new DAOFactory().getPatternDAO();
+
+	public static String getPatternHolesURI(String patternId) {
+		return base + "/patterns/" + patternId + "/holes";
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -32,7 +38,7 @@ public class PatternService {
 
 	@GET
 	@Path("{id}")
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getPattern(@PathParam("id") String id) {
 		System.out.println("getPattern");
 		Pattern pattern = patternDao.getPatternById(id);
@@ -41,16 +47,16 @@ public class PatternService {
 			return Response.ok(entity).build();
 		}
 		else
-			return Response.status(404).entity("<error> Element not found </error>").build();
+			return Response.status(404).entity(new WebServiseError("Element not found")).build();
 	}
 
 	@POST
-	@Consumes(MediaType.APPLICATION_XML)
-	@Produces(MediaType.APPLICATION_XML)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response createPattern(@QueryParam("templateId") String templateId, PatternBasic patternBasic){
 		System.out.println("createPattern");
 		if ( templateId == null ) {
-			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity("<error>parameter templateId is required/error>").build();
+			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Parameter templateId is required")).build();
 		}
 		try {
 			Pattern pattern = patternDao.createPattern(templateId, patternBasic);
@@ -59,7 +65,7 @@ public class PatternService {
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
 			System.out.println(e.getMessage());
-			return Response.status(500).entity("<error>" + e.getMessage() + "</error>").build();
+			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
 	/*
@@ -75,4 +81,6 @@ public class PatternService {
 			return Response.status(404).entity("Element not found").build();
 		// TODO fix error reporting
 	}*/
+
+
 }

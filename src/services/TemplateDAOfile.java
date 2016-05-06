@@ -59,10 +59,7 @@ public class TemplateDAOfile implements templateDAO{
 	private void saveTemplateList(List<Template> templateList){
 		try {
 			File file = new File(fileName);
-			FileOutputStream fos;
-
-			fos = new FileOutputStream(file);
-
+			FileOutputStream fos = new FileOutputStream(file);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(templateList);
 			oos.close();
@@ -111,8 +108,10 @@ public class TemplateDAOfile implements templateDAO{
 				ois.close();
 			}
 			// TODO check, the name of the template to be unique
+			System.out.println("OldListsize="+templateList.size());
 			templateList.add(template);
 			saveTemplateList(templateList);
+			System.out.println("NewListsize="+templateList.size());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -148,34 +147,37 @@ public class TemplateDAOfile implements templateDAO{
 		}	
 	}
 
-	public int updateTemplateById(String id, Template newRepresentation) {
+	public Template updateTemplateById(String id, Template newRepresentation) throws InternalErrorException {
+		File file = new File(fileName);
+		if ( !file.exists() )
+			throw new InternalErrorException("File '" + fileName + "' doesn't exists");
+
 		List<Template> templateList = null;
-		Template template = null;
 		try {
-			File file = new File(fileName);
-			if (file.exists()) {
-				FileInputStream fis = new FileInputStream(file);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				templateList = (List<Template>) ois.readObject();
-				ois.close();
-			}
-			// TODO check, the name of the template to be unique
-			Template tmp = new Template();
-			tmp.setId(id);
-			int index = templateList.indexOf(tmp);
-			if ( index != -1 ) {
-				templateList.set(index, newRepresentation);
-				saveTemplateList(templateList);
-				return 0;
-			}
-			else
-				return 1;
+			FileInputStream fis = new FileInputStream(file);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			templateList = (List<Template>) ois.readObject();
+			ois.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			return -1;
+			throw new InternalErrorException(e.getMessage());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			return -1;
-		}		
+			throw new InternalErrorException(e.getMessage());
+		}
+		for ( Template aTemplate : templateList ) {
+			if ( !aTemplate.getId().equals(id) && aTemplate.getName().equals(newRepresentation.getName()) ) {
+				throw new InternalErrorException("Such template name is already used");
+			}
+		}
+		Template tmp = new Template();
+		tmp.setId(id);
+		int index = templateList.indexOf(tmp);
+		if ( index == -1 ) {
+			throw new InternalErrorException("Such template doesn't exists");
+		}
+		templateList.set(index, newRepresentation);
+		saveTemplateList(templateList);
+		return newRepresentation;
 	}
 }
