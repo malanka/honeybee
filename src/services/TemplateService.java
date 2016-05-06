@@ -18,7 +18,13 @@ import javax.ws.rs.core.Response;
 @Path("/templates")
 public class TemplateService {
 
-	TemplateDAO templateDao = new TemplateDAO();
+	private static final String base = "http://BP_REST_API/rest";
+	
+	private TemplateDAOfile templateDao = new DAOFactory().getTemplateDAO();
+
+	public static String getTemplateURL(String templateId){
+		return base + "/templates/" + templateId;
+	};
 
 	@GET
 	@Produces(MediaType.APPLICATION_XML)

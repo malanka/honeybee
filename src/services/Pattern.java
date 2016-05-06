@@ -11,15 +11,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "pattern")
 public class Pattern implements Serializable {
-	
+
 	enum Status { WIP, READY };
 	// TODO move it somewhere
 	private static final String base = "http://BP_REST_API/rest";
 	private static final long serialVersionUID = 1L;
 	private String id;
 	private String name;
-	
-	private String templateURI;
+
+	private String template;
 
 	private List<PatternHole> holes;
 
@@ -35,40 +35,57 @@ public class Pattern implements Serializable {
 
 	@XmlElement(name="status")
 	public Status getStatus(){
+		if ( holes == null ) {
+			return Status.READY;
+		}
 		for (PatternHole aHole: holes) {
 			if (( aHole.getPatternAssigned() == null ) || ( aHole.getPatternAssigned().isEmpty() ) )
 				return Status.WIP;
 		}
 		return Status.READY;
 	}
-	
-    @XmlElementWrapper(name="holes")
-    @XmlElement(name="hole")
+
+	@XmlElementWrapper(name="holes")
+	@XmlElement(name="hole")
 	public void setHoles(List<PatternHole> holes) {
 		this.holes = holes;
+	}
+
+	public void setHolesFromTemplate(List<Hole> holes) {
+		if ( holes == null ) {
+			this.holes = null;
+			return;
+		}
+		if ( this.id == null) {
+			System.out.println("WOW NULL!!!");
+		}
+		this.holes = new ArrayList<PatternHole>();
+		for ( Hole aHole : holes ) {
+			if ( aHole == null) {
+				System.out.println("WOW1 NULL!!!");
+			}
+			this.holes.add (new PatternHole(aHole, this.id));
+		}
 	}
 
 	public List<ActionLink> getLinks() {
 		return links;
 	}
-    @XmlElementWrapper(name="links")
-    @XmlElement(name="link")
+	@XmlElementWrapper(name="links")
+	@XmlElement(name="link")
 	public void setLinks(List<ActionLink> links) {
 		this.links = links;
 	}
 
-	public Pattern(String id, String name, String templateURI, List<PatternHole> holes) {
+	public Pattern(String id, String name, String template, List<PatternHole> holes) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.holes = holes;
-		// TODO
-		ActionLink createPattern = new ActionLink("SOMECOMMONLINK","SOMEURI", "POST");
-		this.links = new ArrayList<ActionLink>();
-		this.links.add(createPattern);
-		this.templateURI = templateURI;
+		this.template = template;
+		generateLinks();
 	}
-	 
+
 	public String getId() {
 		return id;
 	}
@@ -110,20 +127,24 @@ public class Pattern implements Serializable {
 		return true;
 	}
 
-	public String getTemplateURI() {
-		return templateURI;
+	public String getTemplate() {
+		return template;
 	}
-	@XmlElement(name="templateuri")
-	public void setTemplateURI(String templateURI) {
-		this.templateURI = templateURI;
+	@XmlElement(name="template")
+	public void setTemplate(String template) {
+		this.template = template;
 	}
 
 	@Override
 	public String toString() {
-		return "Pattern [id=" + id + ", name=" + name + ", templateURI=" + templateURI + ", holes=" + holes + "]";
+		return "Pattern [id=" + id + ", name=" + name + ", template=" + template + ", holes=" + holes + ", links="
+				+ links + "]";
 	}
 
-
-	
+	public void generateLinks() {
+		ActionLink getTemplate = new ActionLink("getTemplate",TemplateService.getTemplateURL(template), "GET");
+		this.links = new ArrayList<ActionLink>();
+		this.links.add(getTemplate);
+	}
 
 }

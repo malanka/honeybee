@@ -11,10 +11,17 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
+public class TemplateDAOfile implements templateDAO{
+	private String fileName = null;
 
-public class TemplateDAO {
-	private static final String fileName = "Templates8.dat";
+	public TemplateDAOfile(String fileName) {
+		super();
+		this.fileName = fileName;
+		File file = new File(fileName);
+		if ( !file.exists() ) {
+			saveTemplateList(new ArrayList<Template>());
+		}
+	}
 
 	public List<Template> getAllTemplates(){
 		List<Template> templateList = null;

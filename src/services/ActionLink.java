@@ -83,5 +83,9 @@ public class ActionLink implements Serializable {
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		return "ActionLink [name=" + name + ", URI=" + URI + ", method=" + method + "]";
+	}
 	
 }

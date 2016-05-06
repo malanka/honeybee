@@ -11,10 +11,25 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
+public class PatternDAOfile implements patternDAO{
+	private static int patternId = 1;
 
-public class PatternDAO {
-	private static final String fileName = "Pattern4.dat";
+	private String fileName = null;
+
+	public PatternDAOfile(String fileName) {
+		super();
+		this.fileName = fileName;
+		File file = new File(fileName);
+		if ( !file.exists() ) {
+			savePatternList(new ArrayList<Pattern>());
+		}
+	}
+
+	private static String getNewId() {
+		String id = "" + patternId;
+		patternId++;
+		return id;
+	}
 
 	public List<Pattern> getAllPatterns(){
 		List<Pattern> patternList = null;
@@ -47,15 +62,12 @@ public class PatternDAO {
 		return patternList;
 	}
 
-	private void savePatternList(List<Pattern> templateList){
+	private void savePatternList(List<Pattern> patternList){
 		try {
 			File file = new File(fileName);
-			FileOutputStream fos;
-
-			fos = new FileOutputStream(file);
-
+			FileOutputStream fos = new FileOutputStream(file);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(templateList);
+			oos.writeObject(patternList);
 			oos.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -90,28 +102,56 @@ public class PatternDAO {
 		}		
 		return pattern;
 	}
-/*
-	public Template createTemplate(Template template) {
-		List<Template> templateList = null;
-		try {
-			File file = new File(fileName);
-			if (file.exists()) {
-				FileInputStream fis = new FileInputStream(file);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				templateList = (List<Template>) ois.readObject();
-				ois.close();
+
+	public Pattern createPattern(String templateId, PatternBasic patternBasic) throws InternalErrorException  {
+		File file = new File(fileName);
+		if ( !file.exists() )
+			throw new InternalErrorException("File '" + fileName + "' doesn't exists");
+
+		List<Pattern> patternList = null;
+		try{
+			// read all patterns
+			FileInputStream fis = new FileInputStream(file);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			patternList = (List<Pattern>) ois.readObject();
+			ois.close();
+			// check, that name is not used
+			for ( Pattern aPattern : patternList ) {
+				if ( aPattern.getTemplate().equals(templateId) && aPattern.getName().equals(patternBasic.getName()) ) {
+					// TODO change exception
+					throw new InternalErrorException("Such pattern name is already used");
+				}
 			}
-			// TODO check, the name of the template to be unique
-			templateList.add(template);
-			saveTemplateList(templateList);
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new InternalErrorException(e.getMessage());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		}		
-		return template;
+			throw new InternalErrorException(e.getMessage());
+		}
+		// find a template
+		TemplateDAOfile templateDao = new DAOFactory().getTemplateDAO();
+		List<Template> templates = templateDao.getAllTemplates();
+		Template template = new Template();
+		template.setId(templateId);
+		int x = templates.indexOf(template);
+		if ( x == -1) {
+			// TODO change exception
+			throw new InternalErrorException("Such template doesn't exists");
+		}
+		template = templates.get(x);
+		// TODO create a constructor
+		Pattern pattern = new Pattern();
+		pattern.setName(patternBasic.getName());
+		pattern.setTemplate(templateId);
+		pattern.setId(getNewId());
+		pattern.setHolesFromTemplate(template.getHoles());
+		pattern.generateLinks();
+		patternList.add(pattern);
+		savePatternList(patternList);
+		return pattern;
 	}
-
+	/*
 	public int deleteTemplate(String id) {
 		List<Template> templateList = null;
 		try {
