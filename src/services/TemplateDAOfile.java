@@ -150,7 +150,7 @@ public class TemplateDAOfile implements templateDAO{
 	public Template updateTemplateById(String id, Template newRepresentation) throws InternalErrorException {
 		File file = new File(fileName);
 		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exists");
+			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
 
 		List<Template> templateList = null;
 		try {
@@ -174,7 +174,7 @@ public class TemplateDAOfile implements templateDAO{
 		tmp.setId(id);
 		int index = templateList.indexOf(tmp);
 		if ( index == -1 ) {
-			throw new InternalErrorException("Such template doesn't exists");
+			throw new InternalErrorException("Such template doesn't exist");
 		}
 		templateList.set(index, newRepresentation);
 		saveTemplateList(templateList);

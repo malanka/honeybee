@@ -106,7 +106,7 @@ public class PatternDAOfile implements patternDAO{
 	public Pattern createPattern(String templateId, PatternBasic patternBasic) throws InternalErrorException  {
 		File file = new File(fileName);
 		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exists");
+			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
 
 		List<Pattern> patternList = null;
 		try{
@@ -137,7 +137,7 @@ public class PatternDAOfile implements patternDAO{
 		int x = templates.indexOf(template);
 		if ( x == -1) {
 			// TODO change exception
-			throw new InternalErrorException("Such template doesn't exists");
+			throw new InternalErrorException("Such template doesn't exist");
 		}
 		template = templates.get(x);
 		// TODO create a constructor
