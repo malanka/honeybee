@@ -51,8 +51,8 @@ public class PatternService {
 	}
 
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_XML)
 	public Response createPattern(@QueryParam("templateId") String templateId, PatternBasic patternBasic){
 		System.out.println("createPattern");
 		if ( templateId == null ) {
@@ -61,7 +61,7 @@ public class PatternService {
 		try {
 			Pattern pattern = patternDao.createPattern(templateId, patternBasic);
 			GenericEntity<Pattern> entity = new GenericEntity<Pattern>(pattern) {};
-			System.out.println("Seems fine");
+			System.out.println("Seems fine"+pattern);
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
 			System.out.println(e.getMessage());
