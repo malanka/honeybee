@@ -12,6 +12,9 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import services.Hole;
 import services.Template;
 import services.WS;
@@ -36,6 +39,16 @@ public class ResttestTemplate {
 		Template template1 = new Template(dateFormat.format(date)+"1", "FirstTemplate"+dateFormat.format(date), "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", null, ws1);
 		Template template2 = new Template(dateFormat.format(date)+"2", "SecondTemplate"+dateFormat.format(date), "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", holes, ws2);
 
+		ObjectMapper mapper = new ObjectMapper();
+		//Object to JSON in String
+		try {
+			String jsonInString = mapper.writeValueAsString(template1);
+			System.out.println(jsonInString);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		testCreateTemplateOK(client,template1);
 		testCreateTemplateOK(client,template2);
 	
@@ -43,7 +56,6 @@ public class ResttestTemplate {
 		testUpdateTemplateOK(client, template1.getId(), template1);
 		testDeleteTemplateOK(client, template1.getId());
 		testDeleteTemplateNotOK(client, "4564");
-		
 	}
 	
 	private static void testCreateTemplateOK(Client client, Template template) {

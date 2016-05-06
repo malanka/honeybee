@@ -9,7 +9,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 @XmlRootElement(name = "template")
@@ -73,7 +75,7 @@ public class Template implements Serializable {
 	
     @XmlElementWrapper(name="holes")
     @XmlElement(name="hole")
-    @JsonSetter("holes")
+//    @JsonSetter("holes")
 	public void setHoles(List<Hole> holes) {
 		this.holes = holes;
 	}
@@ -83,7 +85,7 @@ public class Template implements Serializable {
 	}
     @XmlElementWrapper(name="links")
     @XmlElement(name="link")
-    @JsonSetter("links")
+//    @JsonSetter("links")
 	public void setLinks(List<ActionLink> links) {
 		this.links = links;
 	}
@@ -95,9 +97,16 @@ public class Template implements Serializable {
 	public void setWs(WS ws) {
 		this.ws = ws;
 	}
-
-	public Template(String id, String name, String data_in, String data_out, String event_start, String event_end,
-			List<Hole> holes, WS ws) {
+	@JsonCreator
+	public Template(
+			@JsonProperty("id") String id,
+			@JsonProperty("name") String name,
+			@JsonProperty("data_in") String data_in,
+			@JsonProperty("data_out") String data_out,
+			@JsonProperty("event_start") String event_start,
+			@JsonProperty("event_end") String event_end,
+			@JsonProperty("holes") List<Hole> holes,
+			@JsonProperty("ws") WS ws) {
 		super();
 		this.id = id;
 		this.name = name;
