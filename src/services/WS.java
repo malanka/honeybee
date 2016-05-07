@@ -7,8 +7,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ws")
 public class WS implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1086234448083750719L;
+
 	private String URI = null;
 	
 	private String method = null;

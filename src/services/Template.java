@@ -137,7 +137,7 @@ public class Template implements Serializable {
 		this.event_start = event_start;
 		this.event_end = event_end;
 		this.holes = holes; // TODO holes names should be uniwue
-		ActionLink createPattern = new ActionLink("generatepattern", base + "/patterns?template=" + id, "POST");
+		ActionLink createPattern = new ActionLink("generatepattern", base + "/patterns?template=" + id, "POST", null);
 		this.links = new ArrayList<ActionLink>();
 		this.links.add(createPattern);
 		this.setEngine(engine);

@@ -147,10 +147,10 @@ public class Pattern implements Serializable {
 	}
 
 	public void generateLinks() {
-		ActionLink getTemplate = new ActionLink("getTemplate",TemplateService.getTemplateURI(this.template), "GET");
-		ActionLink getHoles = new ActionLink("getHoles",PatternService.getPatternHolesURI(this.id), "GET");
+		ActionLink getTemplate = new ActionLink("getTemplate",TemplateService.getTemplateURI(this.template), "GET", null);
+		ActionLink getHoles = new ActionLink("getHoles",PatternService.getPatternHolesURI(this.id), "GET", null);
 		// TODO fix URI
-		ActionLink generateInstance = new ActionLink("generateInstance","SOMEURI", "GET");
+		ActionLink generateInstance = new ActionLink("generateInstance","SOMEURI", "GET", null);
 		this.links = new ArrayList<ActionLink>();
 		this.links.add(getTemplate);
 		this.links.add(getHoles);
