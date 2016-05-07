@@ -32,18 +32,28 @@ public class TemplateService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTemplates(){
 		System.out.println("getTemplates");
-		List<Template> tmp = templateDao.getAllTemplates();
-		GenericEntity<List<Template>> entity = new GenericEntity<List<Template>>(tmp) {};
-		return Response.ok().entity(entity).build();
+		try {
+			List<Template> tmp = templateDao.getAllTemplates();
+			GenericEntity<List<Template>> entity = new GenericEntity<List<Template>>(tmp) {};
+			return Response.ok().entity(entity).build();
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_XML)
 	public Response createTemplate(Template template){
+		System.out.println("postTemplates");
+		System.out.println(template);
+		if ( template.getEngine() == null || !template.getEngine().isSet() ) {
+			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Property \"engine\" is required to be totally filled")).build();
+		}
 		// TODO links check, may be remove them
 		// TODO check holes, unique names
-		System.out.println("postTemplates");
+
 		GenericEntity<Template> entity = new GenericEntity<Template>(templateDao.createTemplate(template)) {};
 		return Response.ok(entity).build();
 	}

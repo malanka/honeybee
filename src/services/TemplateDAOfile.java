@@ -23,37 +23,25 @@ public class TemplateDAOfile implements templateDAO{
 		}
 	}
 
-	public List<Template> getAllTemplates(){
+	public List<Template> getAllTemplates() throws InternalErrorException {		
+		File file = new File(fileName);
+		if ( !file.exists() )
+			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
+		
 		List<Template> templateList = null;
 		try {
-			File file = new File(fileName);
-			if (!file.exists()) {
-				WS ws1 = new WS("SOME_URI1","POST");
-				WS ws2 = new WS("SOME_URI2","POST");
-				ArrayList <Hole> holes= new ArrayList<Hole>();
-				Hole hole1 = new Hole("holename1","as","asd","ad","aasd");
-				Hole hole2 = new Hole("holename1","as","asd","ad","aasd");
-				holes.add(hole1);
-				holes.add(hole2);
-				Template template1 = new Template("1", "FirstTemplate", "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", null, ws1);
-				Template template2 = new Template("2", "SecondTemplate", "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", holes, ws2);
-				templateList = new ArrayList<Template>();
-				templateList.add(template1);
-				templateList.add(template2);
-				saveTemplateList(templateList);		
-			}
-			else{
-				FileInputStream fis = new FileInputStream(file);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				templateList = (List<Template>) ois.readObject();
-				ois.close();
-			}
+			FileInputStream fis = new FileInputStream(file);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			templateList = (List<Template>) ois.readObject();
+			ois.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new InternalErrorException(e.getMessage());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		}		
-		return templateList;
+			throw new InternalErrorException(e.getMessage());
+		}
+		return templateList;		
 	}
 
 	private void saveTemplateList(List<Template> templateList){

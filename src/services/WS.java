@@ -4,14 +4,24 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
 @XmlRootElement(name = "ws")
 public class WS implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private String URI;
+	private String URI = null;
 	
-	private String method;
+	private String method = null;
+	
+	private String requestDocument = null;
 
+	public String getRequestDocument() {
+		return requestDocument;
+	}
+	@XmlElement
+	public void setRequestDocument(String requestDocument) {
+		this.requestDocument = requestDocument;
+	}
 	public String getURI() {
 		return URI;
 	}
@@ -28,10 +38,11 @@ public class WS implements Serializable {
 		this.method = method;
 	}
 
-	public WS(String uRI, String method) {
+	public WS(String uri, String method, String requestDocument) {
 		super();
-		URI = uRI;
+		this.URI = uri;
 		this.method = method;
+		this.requestDocument = requestDocument;
 	}
 
 	public WS() {
@@ -68,7 +79,7 @@ public class WS implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "WS [URI=" + URI + ", method=" + method + "]";
+		return "WS [URI=" + URI + ", method=" + method + ", requestDocument=" + requestDocument + "]";
 	}
 	
 }

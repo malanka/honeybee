@@ -8,17 +8,34 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 @XmlRootElement(name = "template")
 public class Template implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4473400384169784246L;
+	@JsonIgnore
+	@XmlTransient
+	private BonitaConnector7_2 connector;
+
 	// TODO move it somewhere
 	private static final String base = "http://BP_REST_API/rest";
-	private static final long serialVersionUID = 1L;
+
+	@JsonIgnore
+	@XmlTransient
+	public BonitaConnector7_2 getConnector() {
+		return connector;
+	}
+
 	private String id;
 	private String name;
 
@@ -30,8 +47,6 @@ public class Template implements Serializable {
 	private List<Hole> holes;
 
 	private List<ActionLink>links;
-
-	private WS ws;
 
 	public Template(){
 		super();
@@ -68,35 +83,42 @@ public class Template implements Serializable {
 	public void setEvent_end(String event_end) {
 		this.event_end = event_end;
 	}
-    @JsonGetter("holes")
+	@JsonGetter("holes")
 	public List<Hole> getHoles() {
 		return holes;
 	}
+
+	@JsonGetter("engine")
+	public Engine getEngine() {
+		return connector;
+	}
+
+	@XmlElement
+	@JsonSetter("engine")
+	public void setEngine(Engine engine) {
+		if ( engine.getName() == EngineBP.BOONITA7_2) {
+			this.connector = new BonitaConnector7_2(engine);
+		}
+	}
 	
-    @XmlElementWrapper(name="holes")
-    @XmlElement(name="hole")
-//    @JsonSetter("holes")
+	@XmlElementWrapper(name="holes")
+	@XmlElement(name="hole")
+	//    @JsonSetter("holes")
 	public void setHoles(List<Hole> holes) {
 		this.holes = holes;
 	}
-    @JsonGetter("links")
+	@JsonGetter("links")
 	public List<ActionLink> getLinks() {
 		return links;
 	}
-    @XmlElementWrapper(name="links")
-    @XmlElement(name="link")
-//    @JsonSetter("links")
+	@XmlElementWrapper(name="links")
+	@XmlElement(name="link")
+	//    @JsonSetter("links")
 	public void setLinks(List<ActionLink> links) {
 		this.links = links;
 	}
 
-	public WS getWs() {
-		return ws;
-	}
-	@XmlElement
-	public void setWs(WS ws) {
-		this.ws = ws;
-	}
+	// From JSON to Object
 	@JsonCreator
 	public Template(
 			@JsonProperty("id") String id,
@@ -106,7 +128,7 @@ public class Template implements Serializable {
 			@JsonProperty("event_start") String event_start,
 			@JsonProperty("event_end") String event_end,
 			@JsonProperty("holes") List<Hole> holes,
-			@JsonProperty("ws") WS ws) {
+			@JsonProperty("engine") Engine engine) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -118,9 +140,9 @@ public class Template implements Serializable {
 		ActionLink createPattern = new ActionLink("generatepattern", base + "/patterns?template=" + id, "POST");
 		this.links = new ArrayList<ActionLink>();
 		this.links.add(createPattern);
-		this.ws = ws;
+		this.setEngine(engine);
 	}
-	 
+
 	public String getId() {
 		return id;
 	}
@@ -139,9 +161,9 @@ public class Template implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Template [id=" + id + ", name=" + name + ", data_in=" + data_in + ", data_out=" + data_out
-				+ ", event_start=" + event_start + ", event_end=" + event_end + ", holes=" + holes + ", links=" + links
-				+ ", ws=" + ws + "]";
+		return "Template [connector=" + connector + ", id=" + id + ", name=" + name + ", data_in=" + data_in
+				+ ", data_out=" + data_out + ", event_start=" + event_start + ", event_end=" + event_end + ", holes="
+				+ holes + ", links=" + links + "]";
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface templateDAO {
 	
-	public List<Template> getAllTemplates();
+	public List<Template> getAllTemplates() throws InternalErrorException;
 
 	public Template getTemplateById(String id);
 

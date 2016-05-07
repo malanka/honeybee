@@ -31,7 +31,7 @@ public class InstanceService {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getPatterns(@QueryParam("state") String stateStr, @QueryParam("patternId") String patternId){
+	public Response getInstances(@QueryParam("state") String stateStr, @QueryParam("patternId") String patternId){
 		System.out.println("getInstances");
 		InstanceState state = null;
 		if ( stateStr != null ) {

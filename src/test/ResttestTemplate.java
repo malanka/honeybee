@@ -15,6 +15,8 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import services.Engine;
+import services.EngineBP;
 import services.Hole;
 import services.Template;
 import services.WS;
@@ -29,15 +31,15 @@ public class ResttestTemplate {
 		Date date = new Date();
 		System.out.println(dateFormat.format(date));
 		
-		WS ws1 = new WS("SOME_URI1","POST");
-		WS ws2 = new WS("SOME_URI2","POST");
 		ArrayList <Hole> holes= new ArrayList<Hole>();
 		Hole hole1 = new Hole("holename1","as","asd","ad","aasd");
 		Hole hole2 = new Hole("holename2","as","asd","ad","aasd");
 		holes.add(hole1);
 		holes.add(hole2);
-		Template template1 = new Template(dateFormat.format(date)+"1", "FirstTemplate"+dateFormat.format(date), "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", null, ws1);
-		Template template2 = new Template(dateFormat.format(date)+"2", "SecondTemplate"+dateFormat.format(date), "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", holes, ws2);
+		Engine engine1 = new Engine(EngineBP.BOONITA7_2,"1234561", "somebaseuri");
+		Engine engine2 = new Engine(EngineBP.BOONITA7_2,"1234562", "somebaseuri");
+		Template template1 = new Template(dateFormat.format(date)+"1", "FirstTemplate"+dateFormat.format(date), "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", null, engine1);
+		Template template2 = new Template(dateFormat.format(date)+"2", "SecondTemplate"+dateFormat.format(date), "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", holes, engine2);
 
 		ObjectMapper mapper = new ObjectMapper();
 		//Object to JSON in String
