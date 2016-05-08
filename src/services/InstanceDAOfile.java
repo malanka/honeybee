@@ -7,9 +7,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,7 +87,7 @@ public class InstanceDAOfile implements InstanceDAO{
 	public InstanceBP createInstance(String patternId) throws InternalErrorException {
 		File file = new File(fileName);
 		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exists");
+			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
 
 		List<InstanceBP> instanceList = null;
 		try{
@@ -117,7 +122,22 @@ public class InstanceDAOfile implements InstanceDAO{
 		//Object to JSON in String
 		try {
 			String jsonInString = mapper.writeValueAsString(instance);
-			System.out.println(jsonInString);
+			System.out.println("Created instanceJSON=" + jsonInString);
+			System.out.println("Created instanceString=" + instance);
+			String xmlString = "";
+		    try {
+		        JAXBContext context = JAXBContext.newInstance(InstanceBP.class);
+		        Marshaller m = context.createMarshaller();
+
+		        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); // To format XML
+
+		        StringWriter sw = new StringWriter();
+		        m.marshal(instance, sw);
+		        xmlString = sw.toString();
+		        System.out.println("Created instanceXML=" + xmlString);
+		    } catch (JAXBException e) {
+		        e.printStackTrace();
+		    }
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

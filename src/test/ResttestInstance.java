@@ -52,13 +52,13 @@ public class ResttestInstance {
 		Template template1 = new Template(dateFormat.format(date)+"1", "FirstTemplate"+dateFormat.format(date), "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", null, engine1);
 		Template template2 = new Template(dateFormat.format(date)+"2", "SecondTemplate"+dateFormat.format(date), "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", holes, engine2);
 
-		WebTarget webTarget1 = client.target("http://localhost:8080/BP_REST_API/rest").path("templates");
+		WebTarget webTarget1 = client.target("http://localhost:9000/BP_REST_API/rest").path("templates");
 		Invocation.Builder invocationBuilder1 =  webTarget1.request(MediaType.APPLICATION_XML);
 		Response response1 = invocationBuilder1.post(Entity.entity(template1, MediaType.APPLICATION_XML));
 		
 		System.out.println(response1.getStatus() == 200);
 		
-		WebTarget webTarget2 = client.target("http://localhost:8080/BP_REST_API/rest").path("templates");
+		WebTarget webTarget2 = client.target("http://localhost:9000/BP_REST_API/rest").path("templates");
 		Invocation.Builder invocationBuilder2 =  webTarget2.request(MediaType.APPLICATION_XML);
 		Response response2 = invocationBuilder2.post(Entity.entity(template2, MediaType.APPLICATION_XML));
 		
@@ -68,7 +68,7 @@ public class ResttestInstance {
 		list.add(template2);
 		
 		PatternBasic patternBasic = new PatternBasic("patternName"+dateFormat.format(date));
-		WebTarget webTarget3 = client.target("http://localhost:8080/BP_REST_API/rest").path("patterns").queryParam("templateId", template1.getId());
+		WebTarget webTarget3 = client.target("http://localhost:9000/BP_REST_API/rest").path("patterns").queryParam("templateId", template1.getId());
 		Invocation.Builder invocationBuilder3 =  webTarget3.request(MediaType.APPLICATION_XML);
 		Response response3 = invocationBuilder3.post(Entity.entity(patternBasic, MediaType.APPLICATION_XML));
 		     	     
@@ -81,8 +81,9 @@ public class ResttestInstance {
 		return listPatterns;
 	}
 	
-	private static void testCreateInstanceWithExistingPattern(Client client, String patternId) {			
-		WebTarget webTarget = client.target("http://localhost:8080/BP_REST_API/rest").path("instances").queryParam("patternId", patternId);
+	private static void testCreateInstanceWithExistingPattern(Client client, String patternId) {
+		System.out.println("I am here: patternId" + patternId);
+		WebTarget webTarget = client.target("http://localhost:9000/BP_REST_API/rest").path("instances").queryParam("patternId", patternId);
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_XML);
 		Entity<Object> entity = Entity.entity(null, "application/x-ample");
 		Response response3 = invocationBuilder.post(entity);

@@ -41,7 +41,6 @@ public class InstanceBP implements Serializable{
 	@XmlTransient
 	private String templateId = null;
 	@JsonIgnore
-	@XmlTransient
 	public String getTemplateId() {
 		return templateId;
 	}
@@ -96,11 +95,13 @@ public class InstanceBP implements Serializable{
 	public void setHoles(List<PatternHole> holes) {
 		this.holes = holes;
 	}
+
+	
 	@Override
 	public String toString() {
 		return "InstanceBP [instanceId=" + instanceId + ", startDate=" + startDate + ", lastChangeDate="
-				+ lastChangeDate + ", PatternId=" + patternId + ", currentActivities=" + currentActivities + ", links="
-				+ links + ", holes=" + holes + "]";
+				+ lastChangeDate + ", patternId=" + patternId + ", currentActivities=" + currentActivities + ", links="
+				+ links + ", holes=" + holes + ", templateId=" + templateId + "]";
 	}
 	@Override
 	public int hashCode() {

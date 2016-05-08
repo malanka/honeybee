@@ -78,12 +78,11 @@ public class InstanceService {
 		try {
 			// 1.   Create an instance object
 			InstanceBP instance = instanceDao.createInstance(patternId);
-			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
 
 			// 2.   Get information about the engine for the instance
 			// ASSUMPTION: "engine" part in template is immutable
 			Template template = templateDao.getTemplateById(instance.getTemplateId());
-			
+
 			// 3.   Start the process instance on the real engine
 			// 3.1  Create a webClient
 			Client client = ClientBuilder.newClient( new ClientConfig().register( LoggingFilter.class ) );
@@ -92,7 +91,8 @@ public class InstanceService {
 			Entity<Object> entity = Entity.entity(null, "application/x-ample");
 			Response response3 = invocationBuilder.post(entity);
 			  */   
-			// TODO need an information about the engine in the instance
+			
+			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
 			System.out.println(e.getMessage());
