@@ -12,9 +12,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 
 import services.InstanceBP.InstanceState;
 
@@ -24,6 +32,10 @@ public class InstanceService {
 	private static final String base = "http://BP_REST_API/rest";
 
 	private InstanceDAOfile instanceDao = new DAOFactory().getInstanceDAO();
+
+	private PatternDAOfile patternDao = new DAOFactory().getPatternDAO();
+
+	private TemplateDAOfile templateDao = new DAOFactory().getTemplateDAO();
 
 	public static String getInstanceURI(String instanceId) {
 		return base + "/instances/" + instanceId;
@@ -58,16 +70,29 @@ public class InstanceService {
 	@POST
 	@Produces(MediaType.APPLICATION_XML)
 	public Response createInstance(@QueryParam("patternId") String patternId){
-		System.out.println("createInstance");
-		System.out.println("patternId="+patternId);
+		System.out.println("createInstance from patternId="+patternId);
 		if ( patternId == null ) {
 			System.out.println("patternId is null");
 			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Parameter patternId is required")).build();
 		}
 		try {
+			// 1.   Create an instance object
 			InstanceBP instance = instanceDao.createInstance(patternId);
 			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
-			System.out.println("Seems fine"+instance);
+
+			// 2.   Get information about the engine for the instance
+			// ASSUMPTION: "engine" part in template is immutable
+			Template template = templateDao.getTemplateById(instance.getTemplateId());
+			
+			// 3.   Start the process instance on the real engine
+			// 3.1  Create a webClient
+			Client client = ClientBuilder.newClient( new ClientConfig().register( LoggingFilter.class ) );
+/*			WebTarget webTarget = client.target(template.getEngine()."http://localhost:8080/BP_REST_API/rest").path("instances").queryParam("patternId", patternId);
+			Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_XML);
+			Entity<Object> entity = Entity.entity(null, "application/x-ample");
+			Response response3 = invocationBuilder.post(entity);
+			  */   
+			// TODO need an information about the engine in the instance
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
 			System.out.println(e.getMessage());

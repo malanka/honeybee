@@ -109,7 +109,7 @@ public class InstanceDAOfile implements InstanceDAO{
 			throw new InternalErrorException("Such pattern doesn't exist");
 		}
 		pattern = patterns.get(x);
-		InstanceBP instance = new InstanceBP(getNewId(), null, null, patternId, pattern.getHoles());
+		InstanceBP instance = new InstanceBP(getNewId(), null, null, patternId, pattern.getHoles(), pattern.getTemplate());
 		instanceList.add(instance);
 		saveInstanceList(instanceList);
 		

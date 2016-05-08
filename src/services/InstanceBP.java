@@ -8,8 +8,10 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @XmlRootElement(name = "instance")
@@ -35,8 +37,19 @@ public class InstanceBP implements Serializable{
 	private List<ActionLink>links = null;
 	// TODO change type
 	private List<PatternHole> holes = null;
-
-
+	@JsonIgnore
+	@XmlTransient
+	private String templateId = null;
+	@JsonIgnore
+	@XmlTransient
+	public String getTemplateId() {
+		return templateId;
+	}
+	@JsonIgnore
+	@XmlTransient
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
+	}
 	public String getInstanceId() {
 		return instanceId;
 	}
@@ -163,7 +176,8 @@ public class InstanceBP implements Serializable{
 			Date startDate,
 			Date lastChangeDate,
 			String patternId,
-			List<PatternHole> holes)
+			List<PatternHole> holes,
+			String templateId)
 	{
 		super();
 		this.instanceId = instanceId;
@@ -172,6 +186,7 @@ public class InstanceBP implements Serializable{
 		this.patternId = patternId;
 		setHolesFromPattern(holes);
 		this.links = generateLinks();
+		this.templateId = templateId;
 	}
 	
 	public InstanceBP() {
