@@ -25,7 +25,7 @@ public class BonitaConnector7_2 extends Engine implements Serializable{
 	WS startProcess() {
 		if ( getProcessId() == null || getBaseURI() == null )
 			return null;
-		String requestDocument = "{ \"processDefinitionId\"" + getProcessId() + "}";
+		String requestDocument = "{ \"processDefinitionId\":" + getProcessId() + "}";
 		return new WS(getBaseURI() + relativeInstanceURI, "POST", requestDocument);
 	}
 
