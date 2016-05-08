@@ -104,7 +104,7 @@ public class InstanceDAOfile implements InstanceDAO{
 			throw new InternalErrorException(e.getMessage());
 		}
 		// find a pattern
-		PatternDAOfile patternDao = new DAOFactory().getPatternDAO();
+		PatternDAO patternDao = new DAOFactory().getPatternDAO();
 		List<Pattern> patterns = patternDao.getAllPatterns();
 		Pattern pattern = new Pattern();
 		pattern.setId(patternId);

@@ -21,7 +21,7 @@ public class PatternService {
 
 	private static final String base = "http://BP_REST_API/rest";
 
-	private PatternDAOfile patternDao = new DAOFactory().getPatternDAO();
+	private PatternDAO patternDao = new DAOFactory().getPatternDAO();
 
 	public static String getPatternHolesURI(String patternId) {
 		return base + "/patterns/" + patternId + "/holes";

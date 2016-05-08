@@ -10,12 +10,12 @@ final public class DAOFactory {
 		return new TemplateDAOfile(fileName);
 	}
 
-	PatternDAOfile getPatternDAO(){
+	PatternDAO getPatternDAO(){
 		String fileName = "Patterns16.dat";
 		return new PatternDAOfile(fileName);
 	}
 
-	InstanceDAOfile getInstanceDAO(){
+	InstanceDAO getInstanceDAO(){
 		String fileName = "Instance16.dat";
 		return new InstanceDAOfile(fileName);
 	}

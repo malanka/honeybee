@@ -31,11 +31,11 @@ public class InstanceService {
 
 	private static final String base = "http://BP_REST_API/rest";
 
-	private InstanceDAOfile instanceDao = new DAOFactory().getInstanceDAO();
+	private InstanceDAO instanceDao = new DAOFactory().getInstanceDAO();
 
-	private PatternDAOfile patternDao = new DAOFactory().getPatternDAO();
+	private PatternDAO patternDao = new DAOFactory().getPatternDAO();
 
-	private TemplateDAOfile templateDao = new DAOFactory().getTemplateDAO();
+	private templateDAO templateDao = new DAOFactory().getTemplateDAO();
 
 	public static String getInstanceURI(String instanceId) {
 		return base + "/instances/" + instanceId;

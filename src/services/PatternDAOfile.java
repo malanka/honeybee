@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatternDAOfile implements patternDAO{
+public class PatternDAOfile implements PatternDAO {
 	private static int patternId = 1;
 
 	private String fileName = null;

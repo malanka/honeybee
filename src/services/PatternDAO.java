@@ -2,8 +2,8 @@ package services;
 
 import java.util.List;
 
-public interface patternDAO {
-
+public interface PatternDAO {
+	
 	public List<Pattern> getAllPatterns();
 
 	public Pattern getPatternById(String id);
