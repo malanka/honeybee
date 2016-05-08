@@ -23,9 +23,8 @@ public class Template implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -4473400384169784246L;
-	@JsonIgnore
-	@XmlTransient
-	private Engine connector;
+
+	private Engine engine;
 
 	// TODO move it somewhere
 	private static final String base = "http://BP_REST_API/rest";
@@ -84,14 +83,14 @@ public class Template implements Serializable {
 
 	@JsonGetter("engine")
 	public Engine getEngine() {
-		return connector;
+		return engine;
 	}
 
 	@XmlElement
 	@JsonSetter("engine")
 	public void setEngine(Engine engine) {
 		if ( engine.getName() == EngineBP.BOONITA7_2) {
-			this.connector = new BonitaConnector7_2(engine);
+			this.engine = new BonitaConnector7_2(engine);
 		}
 	}
 	
@@ -155,11 +154,17 @@ public class Template implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Template [connector=" + connector + ", id=" + id + ", name=" + name + ", data_in=" + data_in
+		return "Template [engine=" + engine + ", id=" + id + ", name=" + name + ", data_in=" + data_in
 				+ ", data_out=" + data_out + ", event_start=" + event_start + ", event_end=" + event_end + ", holes="
 				+ holes + ", links=" + links + "]";
 	}
 
+	boolean isEngineOk() {
+		if ( this.engine == null )
+			return false;
+		return this.engine.isSet();
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

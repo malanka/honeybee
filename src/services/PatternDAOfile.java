@@ -23,6 +23,7 @@ public class PatternDAOfile implements PatternDAO {
 		if ( !file.exists() ) {
 			savePatternList(new ArrayList<Pattern>());
 		}
+		// TODO need a start id point!
 	}
 
 	private static String getNewId() {
@@ -144,7 +145,7 @@ public class PatternDAOfile implements PatternDAO {
 		Pattern pattern = new Pattern();
 		pattern.setName(patternBasic.getName());
 		pattern.setTemplate(templateId);
-		pattern.setId(getNewId());
+		pattern.setId(PatternDAOfile.getNewId());
 		pattern.setHolesFromTemplate(template.getHoles());
 		pattern.generateLinks();
 		patternList.add(pattern);

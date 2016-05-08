@@ -6,8 +6,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import sun.security.x509.IssuerAlternativeNameExtension;
-
 @XmlRootElement(name = "engine")
 public class Engine implements Serializable{
 
@@ -66,6 +64,12 @@ public class Engine implements Serializable{
 	public String toString() {
 		return "Engine [name=" + name + ", processId=" + processId + ", baseURI=" + baseURI + "]";
 	}
-	
-	
+
+	WS getProcessResource() {
+		return null;
+	}
+
+	WS startProcess() {
+		return null;
+	}
 }

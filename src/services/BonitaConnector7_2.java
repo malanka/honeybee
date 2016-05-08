@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "engine")
 public class BonitaConnector7_2 extends Engine implements Serializable{
 
 	/**
@@ -33,6 +34,10 @@ public class BonitaConnector7_2 extends Engine implements Serializable{
 		return "BonitaConnector7_2 [processId=" + getProcessId() + ", baseURI=" + getBaseURI() + "]";
 	}
 
+	public BonitaConnector7_2() {
+		super();
+	}
+	
 	public BonitaConnector7_2(String processId, String baseURI) {
 		super(EngineBP.BOONITA7_2, processId, baseURI);
 	}

@@ -82,16 +82,23 @@ public class InstanceService {
 			// 2.   Get information about the engine for the instance
 			// ASSUMPTION: "engine" part in template is immutable
 			Template template = templateDao.getTemplateById(instance.getTemplateId());
+			System.out.println("template=" + template);
+			if ( !template.isEngineOk() ) {
+				throw new InternalErrorException("Engine is not set on the temlate!=" + template);
+			}
 
 			// 3.   Start the process instance on the real engine
 			// 3.1  Create a webClient
 			Client client = ClientBuilder.newClient( new ClientConfig().register( LoggingFilter.class ) );
-/*			WebTarget webTarget = client.target(template.getEngine()."http://localhost:8080/BP_REST_API/rest").path("instances").queryParam("patternId", patternId);
-			Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_XML);
-			Entity<Object> entity = Entity.entity(null, "application/x-ample");
-			Response response3 = invocationBuilder.post(entity);
-			  */   
-			
+			WS startInstance = template.getEngine().startProcess();
+			System.out.println("request=" + startInstance);
+			WebTarget webTarget = client.target(startInstance.getUri());
+			Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON); // TODO this also should be part of "engine"
+			Response response3 = invocationBuilder.post(Entity.json(startInstance.getRequestDocument()));   //this also somehow and method also!!
+			// How to print response
+			String output = response3.readEntity(String.class);
+
+			System.out.println("responce from BONITA=" + output);
 			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
