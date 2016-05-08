@@ -29,7 +29,7 @@ public class TemplateService {
 	};
 
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getTemplates(){
 		System.out.println("getTemplates");
 		try {
@@ -60,7 +60,7 @@ public class TemplateService {
 
 	@GET
 	@Path("{id}")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getTemplate(@PathParam("id") String id) {
 		System.out.println("getTemplate");
 		Template template = templateDao.getTemplateById(id);

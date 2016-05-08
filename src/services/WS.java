@@ -13,7 +13,7 @@ public class WS implements Serializable {
 	 */
 	private static final long serialVersionUID = -1086234448083750719L;
 
-	private String URI = null;
+	private String uri = null;
 	
 	private String method = null;
 	
@@ -26,12 +26,12 @@ public class WS implements Serializable {
 	public void setRequestDocument(String requestDocument) {
 		this.requestDocument = requestDocument;
 	}
-	public String getURI() {
-		return URI;
+	public String getUri() {
+		return this.uri;
 	}
 	@XmlElement
-	public void setURI(String uRI) {
-		URI = uRI;
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 
 	public String getMethod() {
@@ -44,7 +44,7 @@ public class WS implements Serializable {
 
 	public WS(String uri, String method, String requestDocument) {
 		super();
-		this.URI = uri;
+		this.uri = uri;
 		this.method = method;
 		this.requestDocument = requestDocument;
 	}
@@ -56,7 +56,7 @@ public class WS implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((URI == null) ? 0 : URI.hashCode());
+		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
 		result = prime * result + ((method == null) ? 0 : method.hashCode());
 		return result;
 	}
@@ -69,10 +69,10 @@ public class WS implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		WS other = (WS) obj;
-		if (URI == null) {
-			if (other.URI != null)
+		if (uri == null) {
+			if (other.uri != null)
 				return false;
-		} else if (!URI.equals(other.URI))
+		} else if (!uri.equals(other.uri))
 			return false;
 		if (method == null) {
 			if (other.method != null)
@@ -83,7 +83,7 @@ public class WS implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "WS [URI=" + URI + ", method=" + method + ", requestDocument=" + requestDocument + "]";
+		return "WS [uri=" + this.uri + ", method=" + this.method + ", requestDocument=" + this.requestDocument + "]";
 	}
 	
 }

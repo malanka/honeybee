@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import sun.security.x509.IssuerAlternativeNameExtension;
 
@@ -55,7 +56,7 @@ public class Engine implements Serializable{
 		this.processId = processId;
 		this.baseURI = baseURI;
 	}
-
+	@XmlTransient
 	public Boolean isSet() {
 		if ( this.name == null || this.processId == null || baseURI == null )
 			return false;

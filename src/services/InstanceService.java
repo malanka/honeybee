@@ -28,7 +28,10 @@ public class InstanceService {
 	public static String getInstanceURI(String instanceId) {
 		return base + "/instances/" + instanceId;
 	}
-
+	public static String getInstanceCreationURI(String patternId) {
+		return base + "/instances?patternId=" + patternId;
+	}
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getInstances(@QueryParam("state") String stateStr, @QueryParam("patternId") String patternId){

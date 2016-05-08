@@ -61,29 +61,40 @@ public class ResttestTemplate {
 	}
 	
 	private static void testCreateTemplateOK(Client client, Template template) {
-		WebTarget webTarget1 = client.target("http://localhost:8080/BP_REST_API/rest").path("templates");
+		WebTarget webTarget1 = client.target("http://localhost:9000/BP_REST_API/rest").path("templates");
 		Invocation.Builder invocationBuilder1 =  webTarget1.request(MediaType.APPLICATION_XML);
 		Response response1 = invocationBuilder1.post(Entity.entity(template, MediaType.APPLICATION_XML));
 		
 		System.out.println(( response1.getStatus() == 200) + " " + "real:" + response1.getStatus() +" expected:" + 200);
 		Template newTemplate = response1.readEntity(Template.class);
-		System.out.println("newId="+newTemplate.getId());
-		
-		WebTarget webTarget2 = client.target("http://localhost:8080/BP_REST_API/rest").path("templates").path(newTemplate.getId());
+		System.out.println("true" + newTemplate);
+
+		// check response with JSON and XML outputs
+		WebTarget webTarget2 = client.target("http://localhost:9000/BP_REST_API/rest").path("templates").path(newTemplate.getId());
 		Invocation.Builder invocationBuilder2 =  webTarget2.request(MediaType.APPLICATION_JSON);
 		Response response2 = invocationBuilder2.get();
 
 		System.out.println(( response2.getStatus() == 200) + " " + "real:" + response2.getStatus() +" expected:" + 200);
+		Template newTemplate1 = response2.readEntity(Template.class);
+		System.out.println("true" + newTemplate1);
+		
+		WebTarget webTarget3 = client.target("http://localhost:9000/BP_REST_API/rest").path("templates").path(newTemplate.getId());
+		Invocation.Builder invocationBuilder3 =  webTarget3.request(MediaType.APPLICATION_JSON);
+		Response response3 = invocationBuilder3.get();
+
+		System.out.println(( response3.getStatus() == 200) + " " + "real:" + response3.getStatus() +" expected:" + 200);
+		Template newTemplate3 = response3.readEntity(Template.class);
+		System.out.println("true" + newTemplate3);
 	}
 	
 	private static void testDeleteTemplateOK(Client client, String id) {
-		WebTarget webTarget = client.target("http://localhost:8080/BP_REST_API/rest").path("templates").path(id);
+		WebTarget webTarget = client.target("http://localhost:9000/BP_REST_API/rest").path("templates").path(id);
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_XML);
 		Response response = invocationBuilder.delete();
 		     
 		System.out.println(( response.getStatus() == 204) + " " + "real:" + response.getStatus() +" expected:" + 204);
 		
-		WebTarget webTarget2 = client.target("http://localhost:8080/BP_REST_API/rest").path("templates").path(id);
+		WebTarget webTarget2 = client.target("http://localhost:9000/BP_REST_API/rest").path("templates").path(id);
 		Invocation.Builder invocationBuilder2 =  webTarget2.request(MediaType.APPLICATION_JSON);
 		Response response2 = invocationBuilder2.get();
 
@@ -91,7 +102,7 @@ public class ResttestTemplate {
 	}
 	
 	private static void testDeleteTemplateNotOK(Client client, String id) {
-		WebTarget webTarget = client.target("http://localhost:8080/BP_REST_API/rest").path("templates").path(id);
+		WebTarget webTarget = client.target("http://localhost:9000/BP_REST_API/rest").path("templates").path(id);
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_XML);
 		Response response = invocationBuilder.delete();
 		     
@@ -100,7 +111,7 @@ public class ResttestTemplate {
 	
 	private static void testUpdateTemplateOK(Client client, String id, Template template) {
 		int expectedStatus = 200;
-		WebTarget webTarget = client.target("http://localhost:8080/BP_REST_API/rest").path("templates").path(id);
+		WebTarget webTarget = client.target("http://localhost:9000/BP_REST_API/rest").path("templates").path(id);
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_XML);
 		Response response = invocationBuilder.put(Entity.entity(template, MediaType.APPLICATION_XML));
 
@@ -109,7 +120,7 @@ public class ResttestTemplate {
 		Template realTemplate = response.readEntity(Template.class);
 		System.out.println(realTemplate.equals(template) + " " + "real:'" + realTemplate + "' expected:'" + template + "'");
 		
-		WebTarget webTarget2 = client.target("http://localhost:8080/BP_REST_API/rest").path("templates").path(id);
+		WebTarget webTarget2 = client.target("http://localhost:9000/BP_REST_API/rest").path("templates").path(id);
 		Invocation.Builder invocationBuilder2 =  webTarget2.request(MediaType.APPLICATION_JSON);
 		Response response2 = invocationBuilder2.get();
 

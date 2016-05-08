@@ -25,16 +25,10 @@ public class Template implements Serializable {
 	private static final long serialVersionUID = -4473400384169784246L;
 	@JsonIgnore
 	@XmlTransient
-	private BonitaConnector7_2 connector;
+	private Engine connector;
 
 	// TODO move it somewhere
 	private static final String base = "http://BP_REST_API/rest";
-
-	@JsonIgnore
-	@XmlTransient
-	public BonitaConnector7_2 getConnector() {
-		return connector;
-	}
 
 	private String id;
 	private String name;
