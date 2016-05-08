@@ -47,8 +47,8 @@ public class ResttestInstance {
 		Hole hole2 = new Hole("holename2","as","asd","ad","aasd");
 		holes.add(hole1);
 		holes.add(hole2);
-		Engine engine1 = new Engine(EngineBP.BOONITA7_2, "1234561", "somebaseuri");
-		Engine engine2 = new Engine(EngineBP.BOONITA7_2, "1234562", "somebaseuri");
+		Engine engine1 = new Engine(EngineBP.BOONITA7_2, "6824386541075002611", "http://localhost:8080/bonita/");
+		Engine engine2 = new Engine(EngineBP.BOONITA7_2, "6824386541075002611", "http://localhost:8080/bonita/");
 		Template template1 = new Template(dateFormat.format(date)+"1", "FirstTemplate"+dateFormat.format(date), "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", null, engine1);
 		Template template2 = new Template(dateFormat.format(date)+"2", "SecondTemplate"+dateFormat.format(date), "data_inQQ", "data_outQQ", "event_inQQ", "even_outOO", holes, engine2);
 

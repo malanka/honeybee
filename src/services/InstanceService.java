@@ -84,12 +84,21 @@ public class InstanceService {
 			Template template = templateDao.getTemplateById(instance.getTemplateId());
 			System.out.println("template=" + template);
 			if ( !template.isEngineOk() ) {
-				throw new InternalErrorException("Engine is not set on the temlate!=" + template);
+				throw new InternalErrorException("Engine is not set on the template!=" + template);
 			}
 
 			// 3.   Start the process instance on the real engine
 			// 3.1  Create a webClient
 			Client client = ClientBuilder.newClient( new ClientConfig().register( LoggingFilter.class ) );
+			
+			// need to authorize first of all
+/*			WebTarget webTarget = client.target("");
+			Invocation.Builder invocationBuilderAuth =  webTarget.request(MediaType.APPLICATION_JSON); // TODO this also should be part of "engine"
+			Response response3 = invocationBuilder.post(Entity.json(startInstance.getRequestDocument()));   //this also somehow and method also!!
+			// How to print response
+			String output = response3.readEntity(String.class);
+*/			
+			// calls are different for leaf and for process with holes!
 			WS startInstance = template.getEngine().startProcess();
 			System.out.println("request=" + startInstance);
 			WebTarget webTarget = client.target(startInstance.getUri());
