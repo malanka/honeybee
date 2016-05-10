@@ -3,7 +3,6 @@ package services;
 
 import java.net.HttpURLConnection;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Consumes;
@@ -13,22 +12,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.filter.LoggingFilter;
-import org.glassfish.jersey.media.multipart.MultiPart;
+import engines.GeneralCase;
+
+import serviceerrors.InternalErrorException;
 
 import services.InstanceBP.InstanceState;
 
@@ -88,42 +78,13 @@ public class InstanceService {
 			// 2.   Get information about the engine for the instance
 			// ASSUMPTION: "engine" part in template is immutable
 			Template template = templateDao.getTemplateById(instance.getTemplateId());
-			System.out.println("template=" + template);
-			if ( !template.isEngineOk() ) {
-				throw new InternalErrorException("Engine is not set on the template!=" + template);
+			if ( template == null || !template.isEngineOk() ) {
+				throw new InternalErrorException("Engine is not set on the template=" + template);
 			}
 
-			// 3.   Start the process instance on the real engine
-			// 3.1  Create a webClient
-			Client client = ClientBuilder.newClient( new ClientConfig().register( LoggingFilter.class ) );
-			
-			// need to authorize first of all
-			WebTarget webTargetAuth = client.target("http://localhost:8080/bonita/loginservice");
-			Invocation.Builder invocationBuilderAuth =  webTargetAuth.request(); // TODO this also should be part of "engine"
-			MultivaluedMap<String, String> authMap = new MultivaluedHashMap<>();
-			authMap.add("username", "alena");
-			authMap.add("password", "11111");
-			authMap.add("redirect", "false");
-			
-			Response responseAuth = invocationBuilderAuth.post(Entity.entity(authMap, MediaType.APPLICATION_FORM_URLENCODED));   //this also somehow and method also!!
-			System.out.println("cookies=" + responseAuth.getCookies().size());
-			// How to print response
-			//String output1 = responseAuth.readEntity(String.class);
-			//System.out.println("Authentication=" + output1);
-			// calls are different for leaf and for process with holes!
-			WS startInstance = template.getEngine().startProcess();
-			System.out.println("request=" + startInstance);
-			WebTarget webTarget = client.target(startInstance.getUri());
-			Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON); // TODO this also should be part of "engine"
-			for (Map.Entry<String, NewCookie> entry : responseAuth.getCookies().entrySet() ) {
-				invocationBuilder = invocationBuilder.cookie(entry.getValue());
-				System.out.println("Set cookie = " + entry.getValue());
-			}
-			Response response3 = invocationBuilder.post(Entity.json(startInstance.getRequestDocument()));   //this also somehow and method also!!
-			// How to print response
-			String output = response3.readEntity(String.class);
-
-			System.out.println("responce from BONITA=" + output);
+			GeneralCase generalCase = template.getEngine().generateInstance(instance.getInstanceId());
+			instance.setBpeId(generalCase.getId());
+			instance.setStartDate(generalCase.getStartDate());
 			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
@@ -131,7 +92,7 @@ public class InstanceService {
 			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
-/* JSESSIONID=86D31D2C4E8ECAE96715FE438D5196D1; X-Bonita-API-Token=80379964-771a-44e8-ba1f-825003a4f4ca; BOS_Locale=en
+/* 
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)

@@ -16,6 +16,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+import engines.BonitaConnector7_2;
+import engines.Engine;
+import engines.EngineBP;
+
 @XmlRootElement(name = "template")
 public class Template implements Serializable {
 

@@ -15,8 +15,8 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import services.Engine;
-import services.EngineBP;
+import engines.Engine;
+import engines.EngineBP;
 import services.Hole;
 import services.Template;
 import services.WS;

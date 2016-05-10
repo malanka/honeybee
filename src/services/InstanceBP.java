@@ -26,10 +26,14 @@ public class InstanceBP implements Serializable{
 
 	private String instanceId = null;
 
+	// Id of the real instance on the real bpe
+	private String bpeId = null;
+
 	private Date startDate = null;
 	
 	private Date lastChangeDate = null;
-	
+	@JsonIgnore
+	@XmlTransient
 	private String patternId = null;
 	//TODO ActivityBP
 	private List<Integer> currentActivities = null;
@@ -37,6 +41,16 @@ public class InstanceBP implements Serializable{
 	private List<ActionLink>links = null;
 	// TODO change type
 	private List<PatternHole> holes = null;
+	@JsonIgnore
+	// users of api are not supposed to know it or use it
+	public String getBpeId() {
+		return bpeId;
+	}
+	@JsonIgnore
+	public void setBpeId(String bpeId) {
+		this.bpeId = bpeId;
+	}
+
 	@JsonIgnore
 	@XmlTransient
 	private String templateId = null;

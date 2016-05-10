@@ -2,6 +2,8 @@ package services;
 
 import java.util.List;
 
+import serviceerrors.InternalErrorException;
+
 public interface templateDAO {
 	
 	public List<Template> getAllTemplates() throws InternalErrorException;

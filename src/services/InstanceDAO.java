@@ -2,6 +2,7 @@ package services;
 
 import java.util.List;
 
+import serviceerrors.InternalErrorException;
 import services.InstanceBP.InstanceState;
 
 public interface InstanceDAO {

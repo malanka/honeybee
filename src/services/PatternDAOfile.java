@@ -11,6 +11,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import serviceerrors.InternalErrorException;
+
 public class PatternDAOfile implements PatternDAO {
 	private static int patternId = 1;
 

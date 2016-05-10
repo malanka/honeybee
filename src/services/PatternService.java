@@ -16,6 +16,8 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import serviceerrors.InternalErrorException;
+
 @Path("/patterns")
 public class PatternService {
 

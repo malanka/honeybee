@@ -19,6 +19,8 @@ import javax.xml.bind.Marshaller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import serviceerrors.InternalErrorException;
+
 public class TemplateDAOfile implements templateDAO{
 	private String fileName = null;
 

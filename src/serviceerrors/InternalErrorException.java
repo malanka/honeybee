@@ -1,4 +1,4 @@
-package services;
+package serviceerrors;
 
 public class InternalErrorException extends Exception {
 

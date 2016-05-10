@@ -1,10 +1,15 @@
-package services;
+package engines;
 
 import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import serviceerrors.InternalErrorException;
+import services.WS;
 
 @XmlRootElement(name = "engine")
 public class Engine implements Serializable{
@@ -65,11 +70,13 @@ public class Engine implements Serializable{
 		return "Engine [name=" + name + ", processId=" + processId + ", baseURI=" + baseURI + "]";
 	}
 
-	WS getProcessResource() {
+	@JsonIgnore
+	public WS getProcessResource() {
 		return null;
 	}
 
-	WS startProcess() {
+	public GeneralCase generateInstance (String instanceId) throws InternalErrorException {
 		return null;
 	}
+
 }
