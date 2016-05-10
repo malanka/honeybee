@@ -82,7 +82,7 @@ public class ResttestInstance {
 	}
 	
 	private static void testCreateInstanceWithExistingPattern(Client client, String patternId) {
-		System.out.println("I am here: patternId" + patternId);
+		System.out.println("patternId" + patternId);
 		WebTarget webTarget = client.target("http://localhost:9000/BP_REST_API/rest").path("instances").queryParam("patternId", patternId);
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_XML);
 		Entity<Object> entity = Entity.entity(null, "application/x-ample");
