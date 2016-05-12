@@ -55,6 +55,7 @@ public class TemplateService {
 			templateDao.deleteAllTemplates();
 			return Response.noContent().build();
 		} catch (InternalErrorException e) {
+			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
@@ -73,6 +74,7 @@ public class TemplateService {
 			GenericEntity<Template> entity = new GenericEntity<Template>(templateDao.createTemplate(template)) {};
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
+			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
@@ -86,6 +88,7 @@ public class TemplateService {
 		try {
 			template = templateDao.getTemplateById(id);
 		} catch (InternalErrorException e) {
+			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 		if ( template != null ) {
@@ -110,6 +113,7 @@ public class TemplateService {
 				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Template not found")).build();
 			}
 		} catch (InternalErrorException e) {
+			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
@@ -126,7 +130,7 @@ public class TemplateService {
 			System.out.println("Seems fine");
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}

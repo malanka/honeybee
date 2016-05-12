@@ -24,6 +24,7 @@ public class TemplateDAOfile implements templateDAO{
 		if ( !file.exists() ) {
 			saveTemplateList(new ArrayList<Template>());
 		}
+		// TODO: id
 	}
 
 	private void saveTemplateList(List<Template> templateList) throws InternalErrorException{
@@ -34,10 +35,8 @@ public class TemplateDAOfile implements templateDAO{
 			oos.writeObject(templateList);
 			oos.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 			throw new InternalErrorException(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new InternalErrorException(e.getMessage());
 		}
 	}
@@ -53,20 +52,17 @@ public class TemplateDAOfile implements templateDAO{
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			templateList = (List<Template>) ois.readObject();
 			ois.close();
+			return templateList;
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new InternalErrorException(e.getMessage());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 			throw new InternalErrorException(e.getMessage());
 		}
-		return templateList;
 	}
 
 	@Override
 	public List<Template> getAllTemplates() throws InternalErrorException {
-		List<Template> templateList = readTemplateList();
-		return templateList;		
+		return readTemplateList();		
 	}
 
 	@Override
