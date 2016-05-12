@@ -59,8 +59,8 @@ public class TemplateService {
 	
 	
 	@POST
-	@Consumes(MediaType.APPLICATION_XML)
-	@Produces(MediaType.APPLICATION_XML)
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response createTemplate(Template template){
 		System.out.println("postTemplates");
 		System.out.println(template);
