@@ -17,7 +17,7 @@ public class TemplateDAOfile implements templateDAO{
 
 	private String fileName = null;
 
-	public TemplateDAOfile(String fileName) {
+	public TemplateDAOfile(String fileName) throws InternalErrorException {
 		super();
 		this.fileName = fileName;
 		File file = new File(fileName);
@@ -26,35 +26,7 @@ public class TemplateDAOfile implements templateDAO{
 		}
 	}
 
-	public List<Template> getAllTemplates() throws InternalErrorException {		
-		File file = new File(fileName);
-		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
-
-		List<Template> templateList = null;
-		try {
-			FileInputStream fis = new FileInputStream(file);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			templateList = (List<Template>) ois.readObject();
-			ois.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new InternalErrorException(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			throw new InternalErrorException(e.getMessage());
-		}
-		return templateList;		
-	}
-
-	public void deleteAllTemplates() throws InternalErrorException {		
-		File file = new File(fileName);
-		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
-		saveTemplateList(new ArrayList<Template>());	
-	}	
-
-	private void saveTemplateList(List<Template> templateList){
+	private void saveTemplateList(List<Template> templateList) throws InternalErrorException{
 		try {
 			File file = new File(fileName);
 			FileOutputStream fos = new FileOutputStream(file);
@@ -63,16 +35,18 @@ public class TemplateDAOfile implements templateDAO{
 			oos.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			throw new InternalErrorException(e.getMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new InternalErrorException(e.getMessage());
 		}
 	}
 
-	public Template getTemplateById(String id) throws InternalErrorException{
+	private List<Template> readTemplateList () throws InternalErrorException {
 		File file = new File(fileName);
 		if ( !file.exists() )
 			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
-
+		
 		List<Template> templateList = null;
 		try {
 			FileInputStream fis = new FileInputStream(file);
@@ -81,9 +55,31 @@ public class TemplateDAOfile implements templateDAO{
 			ois.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new InternalErrorException(e.getMessage());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+			throw new InternalErrorException(e.getMessage());
 		}
+		return templateList;
+	}
+
+	@Override
+	public List<Template> getAllTemplates() throws InternalErrorException {
+		List<Template> templateList = readTemplateList();
+		return templateList;		
+	}
+
+	@Override
+	public void deleteAllTemplates() throws InternalErrorException {
+		File file = new File(fileName);
+		if ( !file.exists() )
+			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
+		saveTemplateList(new ArrayList<Template>());	
+	}	
+
+	@Override
+	public Template getTemplateById(String id) throws InternalErrorException{
+		List<Template> templateList = readTemplateList();
 		Template tmp = new Template();
 		tmp.setId(id);
 		int index = templateList.indexOf(tmp);
@@ -92,74 +88,33 @@ public class TemplateDAOfile implements templateDAO{
 		return null;
 	}
 
-	public Template createTemplate(Template template) {
-		List<Template> templateList = null;
-		try {
-			File file = new File(fileName);
-			if (file.exists()) {
-				FileInputStream fis = new FileInputStream(file);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				templateList = (List<Template>) ois.readObject();
-				ois.close();
-			}
-			// TODO check, the name of the template to be unique
-			System.out.println("OldListsize="+templateList.size());
-			templateList.add(template);
-			saveTemplateList(templateList);
-			System.out.println("NewListsize="+templateList.size());
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	@Override
+	public Template createTemplate(Template template) throws InternalErrorException {
+		List<Template> templateList = readTemplateList();
+		// TODO check, the name of the template to be unique
+		templateList.add(template);
+		saveTemplateList(templateList);
 		return template;
+		
 	}
 
-	public int deleteTemplate(String id) {
-		List<Template> templateList = null;
-		try {
-			File file = new File(fileName);
-			if (file.exists()) {
-				FileInputStream fis = new FileInputStream(file);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				templateList = (List<Template>) ois.readObject();
-				ois.close();
-			}
-			Template tmp = new Template();
-			tmp.setId(id);
-			if ( templateList.remove(tmp) ) {
-				saveTemplateList(templateList);
-				return 0;
-			}
-			else
-				return 1;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return -1;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return -1;
-		}	
-	}
-
-	public Template updateTemplateById(String id, Template newRepresentation) throws InternalErrorException {
-		File file = new File(fileName);
-		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
-
-		List<Template> templateList = null;
-		try {
-			FileInputStream fis = new FileInputStream(file);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			templateList = (List<Template>) ois.readObject();
-			ois.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new InternalErrorException(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			throw new InternalErrorException(e.getMessage());
+	@Override
+	public int deleteTemplate(String id) throws InternalErrorException {
+		List<Template> templateList = readTemplateList();
+		Template tmp = new Template();
+		tmp.setId(id);
+		if ( templateList.remove(tmp) ) {
+			saveTemplateList(templateList);
+			return 0;
 		}
+		else {
+			return 1;
+		}
+	}
+
+	@Override
+	public Template updateTemplateById(String id, Template newRepresentation) throws InternalErrorException {
+		List<Template> templateList = readTemplateList();
 		for ( Template aTemplate : templateList ) {
 			if ( !aTemplate.getId().equals(id) && aTemplate.getName().equals(newRepresentation.getName()) ) {
 				throw new InternalErrorException("Such template name is already used");

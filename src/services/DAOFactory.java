@@ -1,11 +1,13 @@
 package services;
 
+import serviceerrors.InternalErrorException;
+
 final public class DAOFactory {
 
 	/*
 	 Returns all DAO instances.
 	 */
-	TemplateDAOfile getTemplateDAO(){
+	TemplateDAOfile getTemplateDAO() throws InternalErrorException{
 		String fileName = "Templates18.dat";
 		return new TemplateDAOfile(fileName);
 	}

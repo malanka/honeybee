@@ -10,9 +10,9 @@ public interface templateDAO {
 
 	public Template getTemplateById(String id) throws InternalErrorException;
 
-	public Template createTemplate(Template template);
+	public Template createTemplate(Template template) throws InternalErrorException;
 
-	public int deleteTemplate(String id);
+	public int deleteTemplate(String id) throws InternalErrorException;
 
 	public Template updateTemplateById(String id, Template newRepresentation) throws InternalErrorException;
 	

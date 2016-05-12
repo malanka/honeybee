@@ -2,7 +2,6 @@ package services;
 
 
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.PathParam;
@@ -10,7 +9,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
@@ -22,10 +20,14 @@ import serviceerrors.InternalErrorException;
 @Path("/templates")
 public class TemplateService {
 
-	private static final String base = "http://BP_REST_API/rest";
+	private static final String base = "http://localhost:9000/BP_REST_API/rest";
 	
-	private TemplateDAOfile templateDao = new DAOFactory().getTemplateDAO();
+	private TemplateDAOfile templateDao;
 
+	public TemplateService() throws InternalErrorException {
+		templateDao = new DAOFactory().getTemplateDAO();
+	}
+	
 	public static String getTemplateURI(String templateId){
 		return base + "/templates/" + templateId;
 	};
@@ -67,9 +69,12 @@ public class TemplateService {
 		}
 		// TODO links check, may be remove them
 		// TODO check holes, unique names
-
-		GenericEntity<Template> entity = new GenericEntity<Template>(templateDao.createTemplate(template)) {};
-		return Response.ok(entity).build();
+		try {
+			GenericEntity<Template> entity = new GenericEntity<Template>(templateDao.createTemplate(template)) {};
+			return Response.ok(entity).build();
+		} catch (InternalErrorException e) {
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
 	}
 
 	@GET
@@ -93,15 +98,20 @@ public class TemplateService {
 	
 	@DELETE
 	@Path("{id}")
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response deleteTemplate(@PathParam("id") String id){
 		System.out.println("deleteTemplate");
-		if ( templateDao.deleteTemplate(id) == 0 ) {
-			return Response.noContent().build();
+		try {
+			int x = templateDao.deleteTemplate(id);
+			if  ( x == 0 ) {
+				return Response.noContent().build();
+			}
+			else {
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Element not found")).build();
+			}
+		} catch (InternalErrorException e) {
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
-		else
-			return Response.status(404).entity(new WebServiseError("Element not found")).build();
-		// TODO fix error reporting
 	}
 	/*
 	@PUT

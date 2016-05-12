@@ -32,7 +32,7 @@ public class TemplateServiceTest {
 		clientTemplate.deleteTemplates(MediaType.APPLICATION_JSON);
 	}
 	
-//	@After
+	@After
 	public void setAfter() throws Exception {
 		// after each test clean up all
 		System.out.println("setupAfterTest");
@@ -57,7 +57,7 @@ public class TemplateServiceTest {
 		}
 	}
 	
-//	@Test
+	@Test
 	public void testListEmpty() {
 		testTemplateListEmpty(MediaType.APPLICATION_JSON);
 		testTemplateListEmpty(MediaType.APPLICATION_XML);
@@ -78,7 +78,13 @@ public class TemplateServiceTest {
 		}
 	}
 	
-	private void testTemplateGet(Template template, String mediaTypeOut) {
+	private void testTemplateDeleteOk(Template template, String mediaTypeOut) {
+		System.out.println("testTemplateDelete");
+		Response response = clientTemplate.deleteTemplate(template.getId(), mediaTypeOut);
+		assertTrue(response.getStatus() == 204);
+	}
+	
+	private void testTemplateGetOk(Template template, String mediaTypeOut) {
 		System.out.println("testTemplateGet");
 		Response response = clientTemplate.getTemplate(template.getId(), mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
@@ -93,7 +99,7 @@ public class TemplateServiceTest {
 	}
 	
 	@Test
-	public void testAdd() {
+	public void testCRDTemplateOK() {
 		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "7908120732971969775", "http://localhost:8080/bonita");
 		ArrayList <Hole> holes= new ArrayList<Hole>();
 		Hole hole1 = new Hole("holename1","as","asd","ad","aasd");
@@ -102,12 +108,15 @@ public class TemplateServiceTest {
 		holes.add(hole2);
 		Template template1 = new Template("1", "Fisrt", "datain1","dataout1","event1s","event1e", holes, engine);
 		Template template2 = new Template("2", "Second", "datain1","dataout1","event1s","event1e", holes, engine);
-		
+
 		testTemplateAddOk(template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		testTemplateAddOk(template2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
-		
-		testTemplateGet(template1, MediaType.APPLICATION_JSON);
-		testTemplateGet(template2, MediaType.APPLICATION_XML);
+
+		testTemplateGetOk(template1, MediaType.APPLICATION_JSON);
+		testTemplateGetOk(template2, MediaType.APPLICATION_XML);
+
+		testTemplateDeleteOk(template1, MediaType.APPLICATION_JSON);
+		testTemplateDeleteOk(template2, MediaType.APPLICATION_XML);
 	}
 
 }

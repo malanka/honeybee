@@ -31,7 +31,11 @@ public class InstanceService {
 
 	private PatternDAO patternDao = new DAOFactory().getPatternDAO();
 
-	private templateDAO templateDao = new DAOFactory().getTemplateDAO();
+	private templateDAO templateDao ;
+
+	public InstanceService () throws InternalErrorException {
+		templateDao = new DAOFactory().getTemplateDAO();
+	}
 
 	public static String getInstanceURI(String instanceId) {
 		return base + "/instances/" + instanceId;
