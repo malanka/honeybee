@@ -14,7 +14,7 @@ import java.util.List;
 import serviceerrors.InternalErrorException;
 
 public class TemplateDAOfile implements templateDAO{
-	
+
 	private String fileName = null;
 
 	public TemplateDAOfile(String fileName) {
@@ -30,7 +30,7 @@ public class TemplateDAOfile implements templateDAO{
 		File file = new File(fileName);
 		if ( !file.exists() )
 			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
-		
+
 		List<Template> templateList = null;
 		try {
 			FileInputStream fis = new FileInputStream(file);
@@ -53,7 +53,7 @@ public class TemplateDAOfile implements templateDAO{
 			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
 		saveTemplateList(new ArrayList<Template>());	
 	}	
-	
+
 	private void saveTemplateList(List<Template> templateList){
 		try {
 			File file = new File(fileName);
@@ -68,31 +68,28 @@ public class TemplateDAOfile implements templateDAO{
 		}
 	}
 
-	public Template getTemplateById(String id){
+	public Template getTemplateById(String id) throws InternalErrorException{
+		File file = new File(fileName);
+		if ( !file.exists() )
+			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
+
 		List<Template> templateList = null;
-		Template template = null;
 		try {
-			File file = new File(fileName);
-			if (!file.exists()) {
-				return template;	
-			}
-			else{
-				FileInputStream fis = new FileInputStream(file);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				templateList = (List<Template>) ois.readObject();
-				ois.close();
-			}
-			Template tmp = new Template();
-			tmp.setId(id);
-			int index = templateList.indexOf(tmp);
-			if ( index != -1 )
-				template = templateList.get(index);
+			FileInputStream fis = new FileInputStream(file);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			templateList = (List<Template>) ois.readObject();
+			ois.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		}		
-		return template;
+		}
+		Template tmp = new Template();
+		tmp.setId(id);
+		int index = templateList.indexOf(tmp);
+		if ( index != -1 )
+			return templateList.get(index);
+		return null;
 	}
 
 	public Template createTemplate(Template template) {

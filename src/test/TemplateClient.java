@@ -26,15 +26,15 @@ public class TemplateClient {
 		this.uri = uri;
 	}
 
-	public Response getTemplates(String mediaType) {
+	public Response getTemplates(String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
-		Invocation.Builder invocationBuilder =  webTarget.request(mediaType);
+		Invocation.Builder invocationBuilder =  webTarget.request(mediaTypeOut);
 		return invocationBuilder.get();
 	}
 	
-	public Response deleteTemplates(String mediaType) {
+	public Response deleteTemplates(String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
-		Invocation.Builder invocationBuilder = webTarget.request(mediaType);
+		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.delete();
 	}
 	
@@ -42,5 +42,11 @@ public class TemplateClient {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.post(Entity.entity(template, mediaTypeIn));
+	}
+	
+	public Response getTemplate(String templateId, String mediaTypeOut) {
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(templateId);
+		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
+		return invocationBuilder.get();
 	}
 }

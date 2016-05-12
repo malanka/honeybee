@@ -48,7 +48,7 @@ public class TemplateService {
 	@DELETE
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response deleteAllTemplates(){
-		System.out.println("deleteALLTemplates");
+		System.out.println("deleteAllTemplates");
 		try {
 			templateDao.deleteAllTemplates();
 			return Response.noContent().build();
@@ -57,13 +57,11 @@ public class TemplateService {
 		}
 	}
 	
-	
 	@POST
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response createTemplate(Template template){
 		System.out.println("postTemplates");
-		System.out.println(template);
 		if ( template.getEngine() == null || !template.getEngine().isSet() ) {
 			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Property \"engine\" is required to be totally filled")).build();
 		}
@@ -79,13 +77,18 @@ public class TemplateService {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getTemplate(@PathParam("id") String id) {
 		System.out.println("getTemplate");
-		Template template = templateDao.getTemplateById(id);
+		Template template = null;
+		try {
+			template = templateDao.getTemplateById(id);
+		} catch (InternalErrorException e) {
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
 		if ( template != null ) {
-			GenericEntity<Template> entity = new GenericEntity<Template>(templateDao.getTemplateById(id)) {};
+			GenericEntity<Template> entity = new GenericEntity<Template>(template) {};
 			return Response.ok(entity).build();
 		}
 		else
-			return Response.status(404).entity(new WebServiseError("Element not found")).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Element not found")).build();
 	}
 	
 	@DELETE
@@ -100,7 +103,7 @@ public class TemplateService {
 			return Response.status(404).entity(new WebServiseError("Element not found")).build();
 		// TODO fix error reporting
 	}
-	
+	/*
 	@PUT
 	@Path("{templateId}")
 	@Produces(MediaType.APPLICATION_XML)
@@ -117,4 +120,5 @@ public class TemplateService {
 			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
+	*/
 }

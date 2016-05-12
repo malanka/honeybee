@@ -169,7 +169,7 @@ public class Template implements Serializable {
 		return this.engine.isSet();
 	}
 	
-/*	@Override
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -192,7 +192,7 @@ public class Template implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}*/
+	}
 
 	public boolean compareWith(Object obj) {
 		if (this == obj)

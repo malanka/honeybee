@@ -27,18 +27,20 @@ public class TemplateServiceTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		System.out.println("setup");
+		System.out.println("setupBeforeClass");
 		clientTemplate = new TemplateClient(baseURI);
 		clientTemplate.deleteTemplates(MediaType.APPLICATION_JSON);
 	}
 	
-	@After
+//	@After
 	public void setAfter() throws Exception {
-		System.out.println("setupAfter");
+		// after each test clean up all
+		System.out.println("setupAfterTest");
 		clientTemplate.deleteTemplates(MediaType.APPLICATION_JSON);
 	}
 	
 	private void testTemplateListEmpty(String mediaType) {
+		System.out.println("testTemplateListEmpty");
 		Response response = clientTemplate.getTemplates(mediaType);
 		assertTrue(response.getStatus() == 200);
 		try {
@@ -55,7 +57,7 @@ public class TemplateServiceTest {
 		}
 	}
 	
-	@Test
+//	@Test
 	public void testListEmpty() {
 		testTemplateListEmpty(MediaType.APPLICATION_JSON);
 		testTemplateListEmpty(MediaType.APPLICATION_XML);
@@ -63,6 +65,7 @@ public class TemplateServiceTest {
 	
 	
 	private void testTemplateAddOk(Template template, String mediaTypeIn, String mediaTypeOut) {
+		System.out.println("testTemplateAddOk");
 		Response response = clientTemplate.addTemplate(template, mediaTypeIn, mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
@@ -72,6 +75,20 @@ public class TemplateServiceTest {
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			fail ("Cannot read for " + mediaTypeIn + " and " + mediaTypeOut);
+		}
+	}
+	
+	private void testTemplateGet(Template template, String mediaTypeOut) {
+		System.out.println("testTemplateGet");
+		Response response = clientTemplate.getTemplate(template.getId(), mediaTypeOut);
+		assertTrue(response.getStatus() == 200);
+		try {
+			Template templateNew = response.readEntity(new GenericType<Template>(){});
+			assertNotNull(templateNew);
+			assertTrue(template.compareWith(template));
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			fail ("Cannot read for " + mediaTypeOut);
 		}
 	}
 	
@@ -88,6 +105,9 @@ public class TemplateServiceTest {
 		
 		testTemplateAddOk(template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		testTemplateAddOk(template2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
+		
+		testTemplateGet(template1, MediaType.APPLICATION_JSON);
+		testTemplateGet(template2, MediaType.APPLICATION_XML);
 	}
 
 }

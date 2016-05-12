@@ -8,7 +8,7 @@ public interface templateDAO {
 	
 	public List<Template> getAllTemplates() throws InternalErrorException;
 
-	public Template getTemplateById(String id);
+	public Template getTemplateById(String id) throws InternalErrorException;
 
 	public Template createTemplate(Template template);
 
