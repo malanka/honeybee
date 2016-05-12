@@ -142,12 +142,49 @@ public class Pattern implements Serializable {
 			return false;
 		return true;
 	}
-
+	
 	@JsonGetter ("template_id")
 	public String getTemplate() {
 		return template;
 	}
 	
+
+	public boolean compareWith(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Pattern other = (Pattern) obj;
+		if (holes == null) {
+			if (other.holes != null)
+				return false;
+		} else if (!holes.equals(other.holes))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (links == null) {
+			if (other.links != null)
+				return false;
+		} else if (!links.equals(other.links))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (template == null) {
+			if (other.template != null)
+				return false;
+		} else if (!template.equals(other.template))
+			return false;
+		return true;
+	}
+
 	@JsonSetter ("template_id")
 	@XmlElement(name="template_id")
 	public void setTemplate(String template) {

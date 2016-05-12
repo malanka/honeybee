@@ -37,9 +37,14 @@ public class PatternService {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getPatterns(){
 		System.out.println("getPatterns");
-		List<Pattern> tmp = patternDao.getAllPatterns();
-		GenericEntity<List<Pattern>> entity = new GenericEntity<List<Pattern>>(tmp) {};
-		return Response.ok().entity(entity).build();
+		try {
+			List<Pattern> tmp = patternDao.getAllPatterns();
+			GenericEntity<List<Pattern>> entity = new GenericEntity<List<Pattern>>(tmp) {};
+			return Response.ok().entity(entity).build();
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
 	}
 
 	@GET
@@ -47,13 +52,19 @@ public class PatternService {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getPattern(@PathParam("id") String id) {
 		System.out.println("getPattern");
-		Pattern pattern = patternDao.getPatternById(id);
+		Pattern pattern = null;
+		try {
+			pattern = patternDao.getPatternById(id);
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
 		if ( pattern != null ) {
-			GenericEntity<Pattern> entity = new GenericEntity<Pattern>(patternDao.getPatternById(id)) {};
+			GenericEntity<Pattern> entity = new GenericEntity<Pattern>(pattern) {};
 			return Response.ok(entity).build();
 		}
 		else
-			return Response.status(404).entity(new WebServiseError("Element not found")).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern not found")).build();
 	}
 
 	@POST

@@ -12,7 +12,7 @@ final public class DAOFactory {
 		return new TemplateDAOfile(fileName);
 	}
 
-	PatternDAO getPatternDAO(){
+	PatternDAO getPatternDAO() throws InternalErrorException {
 		String fileName = "Patterns18.dat";
 		return new PatternDAOfile(fileName);
 	}
