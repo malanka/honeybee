@@ -30,8 +30,8 @@ public class Pattern implements Serializable {
 	public Pattern(){
 		super();
 	}
-	//	@JsonGetter("holes")
-	@JsonIgnore
+
+	@JsonGetter("holes")
 	public List<PatternHole> getHoles() {
 		return holes;
 	}
@@ -55,10 +55,10 @@ public class Pattern implements Serializable {
 		return Status.READY;
 	}
 
-		@XmlElementWrapper(name="holes")
-		@XmlElement(name="hole")
-		@JsonSetter("holes")
 	@JsonIgnore
+	@XmlElementWrapper(name="holes")
+	@XmlElement(name="hole")
+	@JsonSetter("holes")
 	public void setHoles(List<PatternHole> holes) {
 		this.holes = holes;
 	}
@@ -80,6 +80,7 @@ public class Pattern implements Serializable {
 			this.holes.add (new PatternHole(aHole, this.id));
 		}
 	}
+	
 	@JsonGetter("links")
 	public List<ActionLink> getLinks() {
 		return links;
@@ -142,10 +143,13 @@ public class Pattern implements Serializable {
 		return true;
 	}
 
+	@JsonGetter ("template_id")
 	public String getTemplate() {
 		return template;
 	}
-	@XmlElement(name="template")
+	
+	@JsonSetter ("template_id")
+	@XmlElement(name="template_id")
 	public void setTemplate(String template) {
 		this.template = template;
 	}

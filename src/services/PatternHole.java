@@ -6,6 +6,9 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 @XmlRootElement(name = "hole")
 public class PatternHole extends Hole implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -35,18 +38,22 @@ public class PatternHole extends Hole implements Serializable {
 		this.patternParent = patternParent;
 		// TODO links
 	}
-
+	@JsonGetter("pattern_parent")
 	public String getPatternParent() {
 		return patternParent;
 	}
-	@XmlElement(name = "patternParent")
+	@JsonSetter("pattern_parent")
+	@XmlElement(name = "pattern_parent")
 	public void setPatternParent(String patternParent) {
 		this.patternParent = patternParent;
 	}
 
+	@JsonGetter("pattern_assigned")
 	public String getPatternAssigned() {
 		return patternAssigned;
 	}
+	
+	@JsonSetter("pattern_assigned")
 	@XmlElement(name = "pattern_assigned")
 	public void setPatternAssigned(String patternAssigned) {
 		this.patternAssigned = patternAssigned;
