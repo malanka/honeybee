@@ -59,6 +59,7 @@ public class Engine implements Serializable{
 		this.processId = processId;
 		this.baseURI = baseURI;
 	}
+	@JsonIgnore
 	@XmlTransient
 	public Boolean isSet() {
 		if ( this.name == null || this.processId == null || baseURI == null )
