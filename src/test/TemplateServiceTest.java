@@ -17,7 +17,6 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
-import services.InstanceBP;
 import services.Template;
 
 public class TemplateServiceTest {
@@ -36,10 +35,12 @@ public class TemplateServiceTest {
 		Response response = invocationBuilder.get();
 		assertTrue(response.getStatus() == 200);
 		try {
-			/*List<Template> templates = response.readEntity(new GenericType<List<Template>>(){});
-			assertNotNull(templates);*/
-			String instances = response.readEntity(String.class);
-			System.out.println(instances);
+			List<Template> templates = response.readEntity(new GenericType<List<Template>>(){});
+			assertNotNull(templates);
+			/*
+			String templates = response.readEntity(String.class);
+			System.out.println(templates);
+			*/
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			fail ("Cannot read instance from " + mediaType);
