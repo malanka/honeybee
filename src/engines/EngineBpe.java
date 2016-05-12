@@ -12,7 +12,7 @@ import serviceerrors.InternalErrorException;
 import services.WS;
 
 @XmlRootElement(name = "engine")
-public class Engine implements Serializable{
+public class EngineBpe implements Serializable{
 
 	/**
 	 * 
@@ -49,11 +49,11 @@ public class Engine implements Serializable{
 		this.baseURI = baseURI;
 	}
 	// must have for XML
-	public Engine() {
+	public EngineBpe() {
 		super();
 	}
 
-	public Engine(EngineBP name, String processId, String baseURI) {
+	public EngineBpe(EngineBP name, String processId, String baseURI) {
 		super();
 		this.name = name;
 		this.processId = processId;

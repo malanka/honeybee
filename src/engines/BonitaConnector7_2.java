@@ -22,7 +22,7 @@ import serviceerrors.InternalErrorException;
 import services.WS;
 
 @XmlRootElement(name = "engine")
-public class BonitaConnector7_2 extends Engine implements Serializable{
+public class BonitaConnector7_2 extends EngineBpe implements Serializable{
 
 	/**
 	 * 
@@ -116,7 +116,7 @@ public class BonitaConnector7_2 extends Engine implements Serializable{
 		super(EngineBP.BOONITA7_2, processId, baseURI);
 	}
 
-	public BonitaConnector7_2(Engine engine) {
+	public BonitaConnector7_2(EngineBpe engine) {
 		super(EngineBP.BOONITA7_2, engine.getProcessId(), engine.getBaseURI());
 	}
 }
