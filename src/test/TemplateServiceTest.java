@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 
 import services.Hole;
 import services.Template;
+import services.WebServiseError;
 
 public class TemplateServiceTest {
 
@@ -79,13 +80,13 @@ public class TemplateServiceTest {
 	}
 	
 	private void testTemplateDeleteOk(Template template, String mediaTypeOut) {
-		System.out.println("testTemplateDelete");
+		System.out.println("testTemplateDeleteOk");
 		Response response = clientTemplate.deleteTemplate(template.getId(), mediaTypeOut);
 		assertTrue(response.getStatus() == 204);
 	}
 	
 	private void testTemplateGetOk(Template template, String mediaTypeOut) {
-		System.out.println("testTemplateGet");
+		System.out.println("testTemplateGetOk");
 		Response response = clientTemplate.getTemplate(template.getId(), mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
@@ -98,6 +99,33 @@ public class TemplateServiceTest {
 		}
 	}
 	
+	private void testTemplateGetNotFound(String templateId, String mediaTypeOut) {
+		System.out.println("testTemplateGetNotFound");
+		Response response = clientTemplate.getTemplate(templateId, mediaTypeOut);
+		assertTrue(response.getStatus() == 404);
+		try {
+			WebServiseError error = response.readEntity(new GenericType<WebServiseError>(){});
+			assertNotNull(error);
+			assertTrue(error.getMessage().equals("Template not found"));
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			fail ("Cannot read for " + mediaTypeOut);
+		}
+	}
+
+	private void testTemplateDeleteNotFound(String templateId, String mediaTypeOut) {
+		System.out.println("testTemplateDeleteNotFound");
+		Response response = clientTemplate.deleteTemplate(templateId, mediaTypeOut);
+		assertTrue(response.getStatus() == 404);
+		try {
+			WebServiseError error = response.readEntity(new GenericType<WebServiseError>(){});
+			assertNotNull(error);
+			assertTrue(error.getMessage().equals("Template not found"));
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			fail ("Cannot read for " + mediaTypeOut);
+		}
+	}
 	@Test
 	public void testCRDTemplateOK() {
 		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "7908120732971969775", "http://localhost:8080/bonita");
@@ -106,8 +134,10 @@ public class TemplateServiceTest {
 		Hole hole2 = new Hole("holename2","as","asd","ad","aasd");
 		holes.add(hole1);
 		holes.add(hole2);
-		Template template1 = new Template("1", "Fisrt", "datain1","dataout1","event1s","event1e", holes, engine);
-		Template template2 = new Template("2", "Second", "datain1","dataout1","event1s","event1e", holes, engine);
+		String id1 = "1";
+		String id2 = "2";
+		Template template1 = new Template(id1, "Fisrt", "datain1","dataout1","event1s","event1e", holes, engine);
+		Template template2 = new Template(id2, "Second", "datain1","dataout1","event1s","event1e", holes, engine);
 
 		testTemplateAddOk(template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		testTemplateAddOk(template2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
@@ -117,6 +147,12 @@ public class TemplateServiceTest {
 
 		testTemplateDeleteOk(template1, MediaType.APPLICATION_JSON);
 		testTemplateDeleteOk(template2, MediaType.APPLICATION_XML);
+
+		testTemplateGetNotFound(id1,MediaType.APPLICATION_JSON);
+		testTemplateGetNotFound(id1,MediaType.APPLICATION_XML);
+
+		testTemplateDeleteNotFound(id1,MediaType.APPLICATION_JSON);
+		testTemplateDeleteNotFound(id1,MediaType.APPLICATION_XML);
 	}
 
 }

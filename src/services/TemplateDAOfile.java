@@ -111,7 +111,7 @@ public class TemplateDAOfile implements templateDAO{
 			return 1;
 		}
 	}
-
+/*
 	@Override
 	public Template updateTemplateById(String id, Template newRepresentation) throws InternalErrorException {
 		List<Template> templateList = readTemplateList();
@@ -130,4 +130,5 @@ public class TemplateDAOfile implements templateDAO{
 		saveTemplateList(templateList);
 		return newRepresentation;
 	}
+	*/
 }

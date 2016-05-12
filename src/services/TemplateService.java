@@ -55,7 +55,7 @@ public class TemplateService {
 			templateDao.deleteAllTemplates();
 			return Response.noContent().build();
 		} catch (InternalErrorException e) {
-			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
 	
@@ -93,7 +93,7 @@ public class TemplateService {
 			return Response.ok(entity).build();
 		}
 		else
-			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Element not found")).build();
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Template not found")).build();
 	}
 	
 	@DELETE
@@ -107,7 +107,7 @@ public class TemplateService {
 				return Response.noContent().build();
 			}
 			else {
-				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Element not found")).build();
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Template not found")).build();
 			}
 		} catch (InternalErrorException e) {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
@@ -127,7 +127,7 @@ public class TemplateService {
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
 			System.out.println(e.getMessage());
-			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
 	*/
