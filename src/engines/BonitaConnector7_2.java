@@ -55,16 +55,20 @@ public class BonitaConnector7_2 extends Engine implements Serializable{
 	}
 	@Override
 	public GeneralCase generateInstance (String instanceId) throws InternalErrorException {
-		Map<String, NewCookie> cookies = authorize();
-		if ( cookies == null ) {
-			throw new InternalErrorException ("Cookies are missing");
+		try {
+			Map<String, NewCookie> cookies = authorize();
+			if ( cookies == null ) {
+				throw new InternalErrorException ("Cookies are missing");
+			}
+			BonitaCase bonitaCase = createCase(instanceId, cookies);
+			if ( bonitaCase == null ) {
+				throw new InternalErrorException ("Insttance was not created");
+			}
+			// TODO logout service
+			return new GeneralCase(bonitaCase.startDateCorrect(), bonitaCase.getId(), bonitaCase.getState());	
+		} catch ( Exception e) {
+			throw new InternalErrorException(e.getMessage());
 		}
-		BonitaCase bonitaCase = createCase(instanceId, cookies);
-		if ( bonitaCase == null ) {
-			throw new InternalErrorException ("Insttance was not created");
-		}
-		// TODO logout service
-		return new GeneralCase(bonitaCase.startDateCorrect(), bonitaCase.getId(), bonitaCase.getState());		
 	}
 
 	private BonitaCase createCase(String instanceId, Map<String, NewCookie> cookies) throws InternalErrorException {
