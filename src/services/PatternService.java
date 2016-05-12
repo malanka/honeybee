@@ -23,8 +23,12 @@ public class PatternService {
 
 	private static final String base = "http://localhost:9000/BP_REST_API/rest";
 
-	private PatternDAO patternDao = new DAOFactory().getPatternDAO();
+	private PatternDAO patternDao;
 
+	public PatternService() throws InternalErrorException {
+		patternDao = new DAOFactory().getPatternDAO();
+	}
+	
 	public static String getPatternHolesURI(String patternId) {
 		return base + "/patterns/" + patternId + "/holes";
 	}
@@ -40,7 +44,7 @@ public class PatternService {
 
 	@GET
 	@Path("{id}")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getPattern(@PathParam("id") String id) {
 		System.out.println("getPattern");
 		Pattern pattern = patternDao.getPatternById(id);
@@ -53,8 +57,8 @@ public class PatternService {
 	}
 
 	@POST
-	@Consumes(MediaType.APPLICATION_XML)
-	@Produces(MediaType.APPLICATION_XML)
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response createPattern(@QueryParam("templateId") String templateId, PatternBasic patternBasic){
 		System.out.println("createPattern");
 		if ( templateId == null ) {
@@ -84,19 +88,18 @@ public class PatternService {
 		}
 	}
 	
-	/*
+/*	
 	@DELETE
 	@Path("{id}")
-	//@Produces(MediaType.APPLICATION_XML)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response deleteTemplate(@PathParam("id") String id){
-		System.out.println("createTemplates");
-		if ( templateDao.deleteTemplate(id) == 0 )
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response deletePattern(@PathParam("id") String id){
+		System.out.println("deletePattern");
+		if ( patternDao.deletePattern(id) == 0 )
 			return Response.noContent().build();
 		else
 			return Response.status(404).entity("Element not found").build();
 		// TODO fix error reporting
-	}*/
-
+	}
+*/
 
 }
