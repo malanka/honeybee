@@ -134,10 +134,8 @@ public class TemplateServiceTest {
 		Hole hole2 = new Hole("holename2","as","asd","ad","aasd");
 		holes.add(hole1);
 		holes.add(hole2);
-		String id1 = "1";
-		String id2 = "2";
-		Template template1 = new Template(id1, "Fisrt", "datain1","dataout1","event1s","event1e", holes, engine);
-		Template template2 = new Template(id2, "Second", "datain1","dataout1","event1s","event1e", holes, engine);
+		Template template1 = new Template("id1", "Fisrt", "datain1","dataout1","event1s","event1e", holes, engine);
+		Template template2 = new Template("id2", "Second", "datain1","dataout1","event1s","event1e", holes, engine);
 
 		testTemplateAddOk(template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		testTemplateAddOk(template2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
@@ -148,11 +146,11 @@ public class TemplateServiceTest {
 		testTemplateDeleteOk(template1, MediaType.APPLICATION_JSON);
 		testTemplateDeleteOk(template2, MediaType.APPLICATION_XML);
 
-		testTemplateGetNotFound(id1,MediaType.APPLICATION_JSON);
-		testTemplateGetNotFound(id1,MediaType.APPLICATION_XML);
+		testTemplateGetNotFound(template1.getId(), MediaType.APPLICATION_JSON);
+		testTemplateGetNotFound(template2.getId(), MediaType.APPLICATION_XML);
 
-		testTemplateDeleteNotFound(id1,MediaType.APPLICATION_JSON);
-		testTemplateDeleteNotFound(id1,MediaType.APPLICATION_XML);
+		testTemplateDeleteNotFound(template1.getId(), MediaType.APPLICATION_JSON);
+		testTemplateDeleteNotFound(template2.getId(), MediaType.APPLICATION_XML);
 	}
 
 }
