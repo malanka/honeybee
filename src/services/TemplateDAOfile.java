@@ -8,20 +8,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import serviceerrors.InternalErrorException;
 
 public class TemplateDAOfile implements templateDAO{
+	
 	private String fileName = null;
 
 	public TemplateDAOfile(String fileName) {
@@ -54,6 +47,13 @@ public class TemplateDAOfile implements templateDAO{
 		return templateList;		
 	}
 
+	public void deleteAllTemplates() throws InternalErrorException {		
+		File file = new File(fileName);
+		if ( !file.exists() )
+			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
+		saveTemplateList(new ArrayList<Template>());	
+	}	
+	
 	private void saveTemplateList(List<Template> templateList){
 		try {
 			File file = new File(fileName);
@@ -113,31 +113,6 @@ public class TemplateDAOfile implements templateDAO{
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		//Object to JSON in String
-		try {
-			String jsonInString = mapper.writeValueAsString(template);
-			System.out.println("Created templateJSON=" + jsonInString);
-			System.out.println("Created templateString=" + template);
-			/* TODO fix this, it doesn't work :(
-			String xmlString = "";
-		    try {
-		        JAXBContext context = JAXBContext.newInstance(InstanceBP.class);
-		        Marshaller m = context.createMarshaller();
-
-		        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); // To format XML
-
-		        StringWriter sw = new StringWriter();
-		        m.marshal(template, sw);
-		        xmlString = sw.toString();
-		        System.out.println("Created templateXML=" + xmlString);
-		    } catch (JAXBException e) {
-		        e.printStackTrace();
-		    }
-		    */
-		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		return template;

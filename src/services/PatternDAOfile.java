@@ -79,6 +79,13 @@ public class PatternDAOfile implements PatternDAO {
 		}
 	}
 
+	public void deleteAllPatterns() throws InternalErrorException {		
+		File file = new File(fileName);
+		if ( !file.exists() )
+			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
+		savePatternList(new ArrayList<Pattern>());	
+	}
+	
 	public Pattern getPatternById(String id){
 		List<Pattern> patternList = null;
 		Pattern pattern = null;

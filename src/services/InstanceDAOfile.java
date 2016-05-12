@@ -57,6 +57,13 @@ public class InstanceDAOfile implements InstanceDAO{
 		}
 	}
 
+	public void deleteAllInstances() throws InternalErrorException {		
+		File file = new File(fileName);
+		if ( !file.exists() )
+			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
+		saveInstanceList(new ArrayList<InstanceBP>());	
+	}
+	
 	@Override
 	public List<InstanceBP> getAllInstances(String patternId, InstanceState state) throws InternalErrorException {
 		File file = new File(fileName);
