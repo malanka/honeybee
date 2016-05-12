@@ -39,8 +39,8 @@ public class PatternClient {
 		return invocationBuilder.delete();
 	}
 	
-	public Response addPattern(PatternBasic patternBasic, String templateId, String mediaTypeIn, String mediaTypeOut) {
-		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).queryParam("templateId", templateId);
+	public Response addPattern(PatternBasic patternBasic, String mediaTypeIn, String mediaTypeOut) {
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.post(Entity.entity(patternBasic, mediaTypeIn));
 	}

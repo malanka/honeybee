@@ -72,9 +72,9 @@ public class PatternServiceTest {
 	}
 
 
-	private void testPatternAddOk(PatternBasic patternBasic, String templateId, String mediaTypeIn, String mediaTypeOut) {
+	private void testPatternAddOk(PatternBasic patternBasic, String mediaTypeIn, String mediaTypeOut) {
 		System.out.println("testPatternAddOk");
-		Response response = clientPattern.addPattern(patternBasic, templateId, mediaTypeIn, mediaTypeOut);
+		Response response = clientPattern.addPattern(patternBasic, mediaTypeIn, mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
 			Pattern patternNew = response.readEntity(new GenericType<Pattern>(){});
@@ -136,7 +136,7 @@ public class PatternServiceTest {
 
 	private void testPatternAddBadRequestDocument(PatternBasic patternBasic, String mediaTypeIn, String mediaTypeOut, String expectedError, int expectedHttpError) {
 		System.out.println("testPatternAddBadRequestDocument");
-		Response response = clientPattern.addPattern(patternBasic, "", mediaTypeIn, mediaTypeOut);
+		Response response = clientPattern.addPattern(patternBasic, mediaTypeIn, mediaTypeOut);
 		assertTrue(response.getStatus() == expectedHttpError);
 		try {
 			WebServiseError error = response.readEntity(new GenericType<WebServiseError>(){});
@@ -160,11 +160,11 @@ public class PatternServiceTest {
 		testPatternAddBadRequestDocument(patternBasic2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, "'template_id' has to be specified", 400);
 		testPatternAddBadRequestDocument(patternBasic2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, "'template_id' has to be specified", 400);
 
+		// empty name
 		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "7908120732971969775", "http://localhost:8080/bonita");
 		String id = "1";
 		Template template = new Template(id, "Fisrt", "datain1","dataout1","event1s","event1e", null, engine);
 		clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-		// empty name
 		PatternBasic patternBasic3 = new PatternBasic("", "1");
 		testPatternAddBadRequestDocument(patternBasic3, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, "'name' has to be specified", 400);
 		testPatternAddBadRequestDocument(patternBasic3, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, "'name' has to be specified", 400);
