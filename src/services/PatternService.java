@@ -70,13 +70,15 @@ public class PatternService {
 	@POST
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Response createPattern(@QueryParam("templateId") String templateId, PatternBasic patternBasic){
+	public Response createPattern(PatternBasic patternBasic){
 		System.out.println("createPattern");
-		if ( templateId == null ) {
-			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Parameter templateId is required")).build();
+		try {
+			patternBasic.checkIt();
+		} catch (NotReadyException e) {
+			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError(e.getMessage())).build();
 		}
 		try {
-			Pattern pattern = patternDao.createPattern(templateId, patternBasic);
+			Pattern pattern = patternDao.createPattern(patternBasic);
 			GenericEntity<Pattern> entity = new GenericEntity<Pattern>(pattern) {};
 			System.out.println("Seems fine"+pattern);
 			return Response.ok(entity).build();

@@ -73,7 +73,7 @@ public class ResttestPattern {
 	}
 	
 	private static void testCreatePatternWithExistingTemplate(Client client, String templateId, String patternName) {		
-		PatternBasic patternBasic = new PatternBasic(patternName);
+		PatternBasic patternBasic = new PatternBasic(patternName, templateId);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		//Object to JSON in String
@@ -84,7 +84,7 @@ public class ResttestPattern {
 			e.printStackTrace();
 		}
 		
-		WebTarget webTarget3 = client.target("http://localhost:9000/BP_REST_API/rest").path("patterns").queryParam("templateId", templateId);
+		WebTarget webTarget3 = client.target("http://localhost:9000/BP_REST_API/rest").path("patterns");
 		Invocation.Builder invocationBuilder3 =  webTarget3.request(MediaType.APPLICATION_XML);
 		Response response3 = invocationBuilder3.post(Entity.entity(patternBasic, MediaType.APPLICATION_XML));
 		     

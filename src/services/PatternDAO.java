@@ -10,7 +10,7 @@ public interface PatternDAO {
 
 	public Pattern getPatternById(String id) throws InternalErrorException;
 
-	public Pattern createPattern(String templateId, PatternBasic patternBasic) throws InternalErrorException;
+	public Pattern createPattern(PatternBasic patternBasic) throws InternalErrorException;
 	
 	public void deleteAllPatterns() throws InternalErrorException ;
 }

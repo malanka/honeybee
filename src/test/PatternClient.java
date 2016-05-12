@@ -11,6 +11,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
 import services.Pattern;
+import services.PatternBasic;
 
 public class PatternClient {
 
@@ -25,6 +26,7 @@ public class PatternClient {
 		this.uri = uri;
 	}
 
+	// Correct URI
 	public Response getPatterns(String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
 		Invocation.Builder invocationBuilder =  webTarget.request(mediaTypeOut);
@@ -37,10 +39,10 @@ public class PatternClient {
 		return invocationBuilder.delete();
 	}
 	
-	public Response addPattern(Pattern pattern, String mediaTypeIn, String mediaTypeOut) {
-		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
+	public Response addPattern(PatternBasic patternBasic, String templateId, String mediaTypeIn, String mediaTypeOut) {
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).queryParam("templateId", templateId);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
-		return invocationBuilder.post(Entity.entity(pattern, mediaTypeIn));
+		return invocationBuilder.post(Entity.entity(patternBasic, mediaTypeIn));
 	}
 	
 	public Response getPattern(String patternId, String mediaTypeOut) {
@@ -54,4 +56,5 @@ public class PatternClient {
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.delete();
 	}
+
 }

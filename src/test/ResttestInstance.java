@@ -67,8 +67,8 @@ public class ResttestInstance {
 		list.add(template1);
 		list.add(template2);
 		
-		PatternBasic patternBasic = new PatternBasic("patternName"+dateFormat.format(date));
-		WebTarget webTarget3 = client.target("http://localhost:9000/BP_REST_API/rest").path("patterns").queryParam("templateId", template1.getId());
+		PatternBasic patternBasic = new PatternBasic("patternName"+dateFormat.format(date), template1.getId());
+		WebTarget webTarget3 = client.target("http://localhost:9000/BP_REST_API/rest").path("patterns");
 		Invocation.Builder invocationBuilder3 =  webTarget3.request(MediaType.APPLICATION_XML);
 		Response response3 = invocationBuilder3.post(Entity.entity(patternBasic, MediaType.APPLICATION_XML));
 		     	     

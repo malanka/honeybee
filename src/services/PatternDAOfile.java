@@ -98,47 +98,36 @@ public class PatternDAOfile implements PatternDAO {
 	}
 
 	@Override
-	public Pattern createPattern(String templateId, PatternBasic patternBasic) throws InternalErrorException  {
+	public Pattern createPattern(PatternBasic patternBasic) throws InternalErrorException  {
 		File file = new File(fileName);
 		if ( !file.exists() )
 			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
 
-		List<Pattern> patternList = null;
-		try{
-			// read all patterns
-			FileInputStream fis = new FileInputStream(file);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			patternList = (List<Pattern>) ois.readObject();
-			ois.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new InternalErrorException(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			throw new InternalErrorException(e.getMessage());
-		}
-		// check, that name is not used
-		for ( Pattern aPattern : patternList ) {
-			if ( aPattern.getTemplate().equals(templateId) && aPattern.getName().equals(patternBasic.getName()) ) {
-				// TODO change exception
-				throw new InternalErrorException("Such pattern name is already used");
-			}
-		}
 		// find a template
 		TemplateDAOfile templateDao = new DAOFactory().getTemplateDAO();
 		List<Template> templates = templateDao.getAllTemplates();
 		Template template = new Template();
-		template.setId(templateId);
+		template.setId(patternBasic.getTemplateId());
 		int x = templates.indexOf(template);
 		if ( x == -1) {
 			// TODO change exception
 			throw new InternalErrorException("Such template doesn't exist");
 		}
+
+		List<Pattern> patternList = readPatternList();
+		// check, that name is not used
+		for ( Pattern aPattern : patternList ) {
+			if ( aPattern.getTemplate().equals(patternBasic.getTemplateId()) && aPattern.getName().equals(patternBasic.getName()) ) {
+				// TODO change exception
+				throw new InternalErrorException("Such pattern name is already used for the template");
+			}
+		}
+
 		template = templates.get(x);
 		// TODO create a constructor
 		Pattern pattern = new Pattern();
 		pattern.setName(patternBasic.getName());
-		pattern.setTemplate(templateId);
+		pattern.setTemplate(patternBasic.getTemplateId());
 		pattern.setId(PatternDAOfile.getNewId());
 		pattern.setHolesFromTemplate(template.getHoles());
 		pattern.generateLinks();

@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 @XmlRootElement(name = "pattern")
 public class PatternBasic implements Serializable{
 
@@ -14,6 +18,19 @@ public class PatternBasic implements Serializable{
 
 	private String name = null;
 
+	private String templateId = null;
+	
+	@JsonGetter("template_id")
+	public String getTemplateId() {
+		return templateId;
+	}
+	
+	@JsonSetter("template_id")
+	@XmlElement(name="template_id")
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -27,9 +44,10 @@ public class PatternBasic implements Serializable{
 		return "PatternBasic [name=" + name + "]";
 	}
 
-	public PatternBasic(String name) {
+	public PatternBasic(String name, String templateId) {
 		super();
 		this.name = name;
+		this.templateId = templateId;
 	}
 
 	public PatternBasic() {
@@ -59,6 +77,13 @@ public class PatternBasic implements Serializable{
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+	
+	public void checkIt() throws NotReadyException {
+		if ( name.isEmpty() )
+			throw new NotReadyException("'name' has to be specified");
+		if ( templateId.isEmpty() )
+			throw new NotReadyException("'template_id' has to be specified");
 	}
 
 }
