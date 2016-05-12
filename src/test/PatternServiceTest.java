@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import services.Hole;
 import services.Pattern;
 import services.PatternBasic;
+import services.PatternStatus;
 import services.Template;
 import services.WebServiseError;
 
@@ -72,17 +73,28 @@ public class PatternServiceTest {
 	}
 
 
-	private void testPatternAddOk(PatternBasic patternBasic, String mediaTypeIn, String mediaTypeOut) {
+	private Pattern testPatternAddOk(PatternBasic patternBasic, Template template, String mediaTypeIn, String mediaTypeOut) {
 		System.out.println("testPatternAddOk");
 		Response response = clientPattern.addPattern(patternBasic, mediaTypeIn, mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
 			Pattern patternNew = response.readEntity(new GenericType<Pattern>(){});
 			assertNotNull(patternNew);
-//			assertTrue(patternBasic.compareWith(patternBasic));
+			assertTrue(patternNew.getName().equals(patternBasic.getName()));
+			assertTrue(patternNew.getTemplate().equals(patternBasic.getTemplateId()));
+			if ( template.getHoles() == null || template.getHoles().isEmpty() ) {
+				assertTrue(patternNew.getStatus().equals(PatternStatus.READY));
+			}
+			else {
+				assertTrue(patternNew.getStatus().equals(PatternStatus.WIP));
+			}
+			return patternNew;
+			// TODO links
+			// TODO holes
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			fail ("Cannot read for " + mediaTypeIn + " and " + mediaTypeOut);
+			return null;
 		}
 	}
 
@@ -182,21 +194,25 @@ public class PatternServiceTest {
 		String t_id2 = "2";
 		Template template1 = new Template(t_id1, "Fisrt", "datain1","dataout1","event1s","event1e", null, engine);
 		Template template2 = new Template(t_id2, "Second", "datain1","dataout1","event1s","event1e", holes, engine);
-		/*
-		testPatternAddOk(pattern1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-		testPatternAddOk(pattern2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
+		clientTemplate.addTemplate(template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		clientTemplate.addTemplate(template2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+
+		PatternBasic patternBasic1 = new PatternBasic("FirstPattern", template1.getId());
+		Pattern pattern1 = testPatternAddOk(patternBasic1, template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		PatternBasic patternBasic2= new PatternBasic("SecondPattern", template2.getId());
+		Pattern pattern2= testPatternAddOk(patternBasic2, template2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
 
 		testPatternGetOk(pattern1, MediaType.APPLICATION_JSON);
 		testPatternGetOk(pattern2, MediaType.APPLICATION_XML);
-
+/*
 		testPatternDeleteOk(pattern1, MediaType.APPLICATION_JSON);
 		testPatternDeleteOk(pattern2, MediaType.APPLICATION_XML);
 
-		testPatternGetNotFound(id1,MediaType.APPLICATION_JSON);
-		testPatternGetNotFound(id1,MediaType.APPLICATION_XML);
+		testPatternGetNotFound(pattern1.getId(), MediaType.APPLICATION_JSON);
+		testPatternGetNotFound(pattern2.getId(), MediaType.APPLICATION_XML);
 
-		testPatternDeleteNotFound(id1,MediaType.APPLICATION_JSON);
-		testPatternDeleteNotFound(id1,MediaType.APPLICATION_XML);*/
+		testPatternDeleteNotFound(pattern1.getId(), MediaType.APPLICATION_JSON);
+		testPatternDeleteNotFound(pattern2.getId(), MediaType.APPLICATION_XML);*/
 	}
 
 }

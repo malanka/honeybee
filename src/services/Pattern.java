@@ -16,7 +16,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 @XmlRootElement(name = "pattern")
 public class Pattern implements Serializable {
 
-	enum Status { WIP, READY };
 	private static final long serialVersionUID = 1L;
 	private String id;
 	private String name;
@@ -38,21 +37,21 @@ public class Pattern implements Serializable {
 
 	@JsonSetter("status")
 	@JsonIgnore // This field is read only
-	public void setStatus(Status status) {
+	public void setStatus(PatternStatus status) {
 	}
 		
 	
 	@XmlElement(name="status")
 	@JsonGetter("status")
-	public Status getStatus(){
+	public PatternStatus getStatus(){
 		if ( holes == null ) {
-			return Status.READY;
+			return PatternStatus.READY;
 		}
 		for (PatternHole aHole: holes) {
 			if (( aHole.getPatternAssigned() == null ) || ( aHole.getPatternAssigned().isEmpty() ) )
-				return Status.WIP;
+				return PatternStatus.WIP;
 		}
-		return Status.READY;
+		return PatternStatus.READY;
 	}
 
 	@JsonIgnore
