@@ -1,6 +1,8 @@
 package test;
 
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -14,8 +16,6 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
-import org.junit.Before;
-import org.junit.Test;
 
 import services.InstanceBP;
 
@@ -27,7 +27,6 @@ public class InstanceServiceTest {
 	public void setUp() throws Exception {
 		System.out.println("setup");
 	}
-
 	
 	private void testInstanceList(String mediaType) {
 		Client client = ClientBuilder.newClient( new ClientConfig().register( LoggingFilter.class ) );
@@ -38,8 +37,8 @@ public class InstanceServiceTest {
 		try {
 			List<InstanceBP> instances = response.readEntity(new GenericType<List<InstanceBP>>(){});
 			assertNotNull(instances);
-			//String inst = response.readEntity(String.class);
-			//System.out.println(inst);
+			/*String instances = response.readEntity(String.class);
+			System.out.println(instances);*/
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			fail ("Cannot read instance from " + mediaType);
