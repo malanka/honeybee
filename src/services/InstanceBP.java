@@ -11,9 +11,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
+
+/*
+@JsonProperty("id") String instanceId,
+@JsonProperty("start_date") Date startDate,
+@JsonProperty("last_change_date") Date lastChangeDate,
+@JsonProperty("pattern_id")
+
+
+*/
 @XmlRootElement(name = "instance")
 public class InstanceBP implements Serializable{
 
@@ -63,9 +74,17 @@ public class InstanceBP implements Serializable{
 	public void setTemplateId(String templateId) {
 		this.templateId = templateId;
 	}
+	
+	@JsonIgnore // This field is read only
+	public void setState(InstanceBP.InstanceState state) {
+		
+	}
+	
+	@JsonGetter ("id")
 	public String getInstanceId() {
 		return instanceId;
 	}
+	@JsonSetter ("id")
 	public void setInstanceId(String instanceId) {
 		this.instanceId = instanceId;
 	}
@@ -93,6 +112,8 @@ public class InstanceBP implements Serializable{
 	}
 	@XmlElementWrapper(name="currentActivities")
 	@XmlElement(name="activity")
+	@JsonIgnore
+	@JsonSetter("current_activities")
 	public void setCurrentActivities(List<Integer> currentActivities) {
 		this.currentActivities = currentActivities;
 	}
