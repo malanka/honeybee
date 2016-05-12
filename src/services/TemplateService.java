@@ -44,6 +44,20 @@ public class TemplateService {
 		}
 	}
 
+	// just for testing purposes
+	@DELETE
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response deleteAllTemplates(){
+		System.out.println("deleteALLTemplates");
+		try {
+			templateDao.deleteAllTemplates();
+			return Response.noContent().build();
+		} catch (InternalErrorException e) {
+			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
+		}
+	}
+	
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_XML)

@@ -15,4 +15,6 @@ public interface templateDAO {
 	public int deleteTemplate(String id);
 
 	public Template updateTemplateById(String id, Template newRepresentation) throws InternalErrorException;
+	
+	public void deleteAllTemplates() throws InternalErrorException;
 }

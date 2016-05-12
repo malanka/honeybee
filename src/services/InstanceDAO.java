@@ -12,4 +12,6 @@ public interface InstanceDAO {
 	public InstanceBP getInstanceById(String id);
 
 	public InstanceBP createInstance(String patternId) throws InternalErrorException;
+	
+	public void deleteAllInstances() throws InternalErrorException;
 }

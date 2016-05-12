@@ -70,6 +70,20 @@ public class PatternService {
 			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
+	
+	// just for testing purposes
+	@DELETE
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response deleteAllPatterns(){
+		System.out.println("deleteALLPatterns");
+		try {
+			patternDao.deleteAllPatterns();
+			return Response.noContent().build();
+		} catch (InternalErrorException e) {
+			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
+		}
+	}
+	
 	/*
 	@DELETE
 	@Path("{id}")

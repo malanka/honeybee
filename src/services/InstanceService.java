@@ -92,6 +92,19 @@ public class InstanceService {
 			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
+	
+	// just for testing purposes
+	@DELETE
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response deleteAllInstances(){
+		System.out.println("deleteALLInstances");
+		try {
+			instanceDao.deleteAllInstances();
+			return Response.noContent().build();
+		} catch (InternalErrorException e) {
+			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
+		}
+	}
 /* 
 	@GET
 	@Path("{id}")
