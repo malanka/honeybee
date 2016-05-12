@@ -67,6 +67,10 @@ public class Hole implements Serializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((data_in == null) ? 0 : data_in.hashCode());
+		result = prime * result + ((data_out == null) ? 0 : data_out.hashCode());
+		result = prime * result + ((event_end == null) ? 0 : event_end.hashCode());
+		result = prime * result + ((event_start == null) ? 0 : event_start.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -80,6 +84,26 @@ public class Hole implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Hole other = (Hole) obj;
+		if (data_in == null) {
+			if (other.data_in != null)
+				return false;
+		} else if (!data_in.equals(other.data_in))
+			return false;
+		if (data_out == null) {
+			if (other.data_out != null)
+				return false;
+		} else if (!data_out.equals(other.data_out))
+			return false;
+		if (event_end == null) {
+			if (other.event_end != null)
+				return false;
+		} else if (!event_end.equals(other.event_end))
+			return false;
+		if (event_start == null) {
+			if (other.event_start != null)
+				return false;
+		} else if (!event_start.equals(other.event_start))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;

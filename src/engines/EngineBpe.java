@@ -79,5 +79,38 @@ public class EngineBpe implements Serializable{
 	public GeneralCase generateInstance (String instanceId) throws InternalErrorException {
 		return null;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((baseURI == null) ? 0 : baseURI.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((processId == null) ? 0 : processId.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EngineBpe other = (EngineBpe) obj;
+		if (baseURI == null) {
+			if (other.baseURI != null)
+				return false;
+		} else if (!baseURI.equals(other.baseURI))
+			return false;
+		if (name != other.name)
+			return false;
+		if (processId == null) {
+			if (other.processId != null)
+				return false;
+		} else if (!processId.equals(other.processId))
+			return false;
+		return true;
+	}
 
 }

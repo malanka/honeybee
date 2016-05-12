@@ -169,7 +169,7 @@ public class Template implements Serializable {
 		return this.engine.isSet();
 	}
 	
-	@Override
+/*	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -192,6 +192,63 @@ public class Template implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}*/
+
+	public boolean compareWith(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Template other = (Template) obj;
+		if (data_in == null) {
+			if (other.data_in != null)
+				return false;
+		} else if (!data_in.equals(other.data_in))
+			return false;
+		if (data_out == null) {
+			if (other.data_out != null)
+				return false;
+		} else if (!data_out.equals(other.data_out))
+			return false;
+		if (engine == null) {
+			if (other.engine != null)
+				return false;
+		} else if (!engine.equals(other.engine))
+			return false;
+		if (event_end == null) {
+			if (other.event_end != null)
+				return false;
+		} else if (!event_end.equals(other.event_end))
+			return false;
+		if (event_start == null) {
+			if (other.event_start != null)
+				return false;
+		} else if (!event_start.equals(other.event_start))
+			return false;
+		if (holes == null) {
+			if (other.holes != null)
+				return false;
+		} else if (!holes.equals(other.holes))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (links == null) {
+			if (other.links != null)
+				return false;
+		} else if (!links.equals(other.links))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 
+	
 }
