@@ -21,7 +21,7 @@ import serviceerrors.InternalErrorException;
 @Path("/patterns")
 public class PatternService {
 
-	private static final String base = "http://BP_REST_API/rest";
+	private static final String base = "http://localhost:9000/BP_REST_API/rest";
 
 	private PatternDAO patternDao = new DAOFactory().getPatternDAO();
 
@@ -30,7 +30,7 @@ public class PatternService {
 	}
 
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getPatterns(){
 		System.out.println("getPatterns");
 		List<Pattern> tmp = patternDao.getAllPatterns();

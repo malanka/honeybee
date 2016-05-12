@@ -36,7 +36,14 @@ public class Pattern implements Serializable {
 		return holes;
 	}
 
+	@JsonSetter("status")
+	@JsonIgnore // This field is read only
+	public void setStatus(Status status) {
+	}
+		
+	
 	@XmlElement(name="status")
+	@JsonGetter("status")
 	public Status getStatus(){
 		if ( holes == null ) {
 			return Status.READY;
@@ -48,14 +55,15 @@ public class Pattern implements Serializable {
 		return Status.READY;
 	}
 
-	//	@XmlElementWrapper(name="holes")
-	//	@XmlElement(name="hole")
-	//	@JsonSetter("holes")
+		@XmlElementWrapper(name="holes")
+		@XmlElement(name="hole")
+		@JsonSetter("holes")
 	@JsonIgnore
 	public void setHoles(List<PatternHole> holes) {
 		this.holes = holes;
 	}
 
+	@JsonIgnore
 	public void setHolesFromTemplate(List<Hole> holes) {
 		if ( holes == null ) {
 			this.holes = null;
@@ -76,6 +84,8 @@ public class Pattern implements Serializable {
 	public List<ActionLink> getLinks() {
 		return links;
 	}
+	
+	@JsonSetter("links")
 	@XmlElementWrapper(name="links")
 	@XmlElement(name="link")
 	public void setLinks(List<ActionLink> links) {
