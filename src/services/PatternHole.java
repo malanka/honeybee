@@ -73,4 +73,36 @@ public class PatternHole extends Hole implements Serializable {
 				+ links + ", toString()=" + super.toString() + "]";
 	}
 
+	public boolean compareWith(Hole obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getData_in() == null) {
+			if (obj.getData_in() != null)
+				return false;
+		} else if (!getData_in().equals(obj.getData_in()))
+			return false;
+		if (getData_out() == null) {
+			if (obj.getData_out() != null)
+				return false;
+		} else if (!getData_out().equals(obj.getData_out()))
+			return false;
+		if (getEvent_end() == null) {
+			if (obj.getEvent_end() != null)
+				return false;
+		} else if (!getEvent_end().equals(obj.getEvent_end()))
+			return false;
+		if (getEvent_start() == null) {
+			if (obj.getEvent_start() != null)
+				return false;
+		} else if (!getEvent_start().equals(obj.getEvent_start()))
+			return false;
+		if (getName() == null) {
+			if (obj.getName() != null)
+				return false;
+		} else if (!getName().equals(obj.getName()))
+			return false;
+		return true;
+	}
 }

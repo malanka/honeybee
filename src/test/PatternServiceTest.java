@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import services.Hole;
 import services.Pattern;
 import services.PatternBasic;
+import services.PatternHole;
 import services.PatternStatus;
 import services.Template;
 import services.WebServiseError;
@@ -88,9 +89,24 @@ public class PatternServiceTest {
 			else {
 				assertTrue(patternNew.getStatus().equals(PatternStatus.WIP));
 			}
+			// TODO pattern links
+			if ( template.getHoles() == null ) {
+				assertTrue (patternNew.getHoles() == null || patternNew.getHoles().isEmpty());
+			} else {
+				for (PatternHole patternHole : patternNew.getHoles() ) {
+					// TODO pattern hole links
+					assertNull(patternHole.getPatternAssigned());
+					assertTrue(patternHole.getPatternParent().equals(patternNew.getId()));
+					int x = 0;
+					for ( Hole templateHole : template.getHoles() ) {
+						if  (patternHole.compareWith(templateHole) ) {
+							x++;
+						}
+					}
+					assertTrue(x == 1);
+				}
+			}
 			return patternNew;
-			// TODO links
-			// TODO holes
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			fail ("Cannot read for " + mediaTypeIn + " and " + mediaTypeOut);
@@ -159,14 +175,14 @@ public class PatternServiceTest {
 			fail ("Cannot read for " + mediaTypeIn + " and " + mediaTypeOut);
 		}
 	}
-	
+
 	@Test
 	public void testAddPatternBad() {
 		// template doesn't exist TODO fix the code
 		PatternBasic patternBasic1 = new PatternBasic("TestABC", "qwert");
 		testPatternAddBadRequestDocument(patternBasic1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, "Such template doesn't exist", 500);
 		testPatternAddBadRequestDocument(patternBasic1, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, "Such template doesn't exist", 500);
-		
+
 		// empty template
 		PatternBasic patternBasic2 = new PatternBasic("TestABC", "");
 		testPatternAddBadRequestDocument(patternBasic2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, "'template_id' has to be specified", 400);
@@ -204,7 +220,7 @@ public class PatternServiceTest {
 
 		testPatternGetOk(pattern1, MediaType.APPLICATION_JSON);
 		testPatternGetOk(pattern2, MediaType.APPLICATION_XML);
-/*
+		/*
 		testPatternDeleteOk(pattern1, MediaType.APPLICATION_JSON);
 		testPatternDeleteOk(pattern2, MediaType.APPLICATION_XML);
 
