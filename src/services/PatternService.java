@@ -100,19 +100,24 @@ public class PatternService {
 			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
-	
-/*	
+
 	@DELETE
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response deletePattern(@PathParam("id") String id){
 		System.out.println("deletePattern");
-		if ( patternDao.deletePattern(id) == 0 )
-			return Response.noContent().build();
-		else
-			return Response.status(404).entity("Element not found").build();
-		// TODO fix error reporting
+		try {
+			int x = patternDao.deletePattern(id);
+			if  ( x == 0 ) {
+				return Response.noContent().build();
+			}
+			else {
+				return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern not found")).build();
+			}
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
 	}
-*/
 
 }

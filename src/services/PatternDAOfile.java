@@ -43,10 +43,8 @@ public class PatternDAOfile implements PatternDAO {
 			oos.writeObject(patternList);
 			oos.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 			throw new InternalErrorException(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new InternalErrorException(e.getMessage());
 		}
 	}
@@ -64,10 +62,8 @@ public class PatternDAOfile implements PatternDAO {
 			ois.close();
 			return patternList;
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new InternalErrorException(e.getMessage());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 			throw new InternalErrorException(e.getMessage());
 		}
 	}
@@ -88,13 +84,13 @@ public class PatternDAOfile implements PatternDAO {
 	@Override
 	public Pattern getPatternById(String id) throws InternalErrorException{
 		List<Pattern> patternList = readPatternList();
-		Pattern pattern = null;
 		Pattern tmp = new Pattern();
 		tmp.setId(id);
 		int index = patternList.indexOf(tmp);
-		if ( index != -1 )
-			pattern = patternList.get(index);
-		return pattern;
+		if ( index != -1 ) {
+			return patternList.get(index);
+		}
+		return null;
 	}
 
 	@Override
@@ -135,31 +131,18 @@ public class PatternDAOfile implements PatternDAO {
 		savePatternList(patternList);
 		return pattern;
 	}
-	/*
-	public int deleteTemplate(String id) {
-		List<Template> templateList = null;
-		try {
-			File file = new File(fileName);
-			if (file.exists()) {
-				FileInputStream fis = new FileInputStream(file);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				templateList = (List<Template>) ois.readObject();
-				ois.close();
-			}
-			Template tmp = new Template();
-			tmp.setId(id);
-			if ( templateList.remove(tmp) ) {
-				saveTemplateList(templateList);
-				return 0;
-			}
-			else
-				return 1;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return -1;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return -1;
+
+	@Override
+	public int deletePattern(String id) throws InternalErrorException {
+		List<Pattern> patternList = readPatternList();
+		Pattern tmp = new Pattern();
+		tmp.setId(id);
+		if ( patternList.remove(tmp) ) {
+			savePatternList(patternList);
+			return 0;
+		}
+		else {
+			return 1;
 		}	
-	}*/
+	}
 }

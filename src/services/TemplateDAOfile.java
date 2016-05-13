@@ -79,8 +79,9 @@ public class TemplateDAOfile implements templateDAO{
 		Template tmp = new Template();
 		tmp.setId(id);
 		int index = templateList.indexOf(tmp);
-		if ( index != -1 )
+		if ( index != -1 ) {
 			return templateList.get(index);
+		}
 		return null;
 	}
 

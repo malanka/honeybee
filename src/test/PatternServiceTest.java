@@ -220,7 +220,7 @@ public class PatternServiceTest {
 
 		testPatternGetOk(pattern1, MediaType.APPLICATION_JSON);
 		testPatternGetOk(pattern2, MediaType.APPLICATION_XML);
-		/*
+		
 		testPatternDeleteOk(pattern1, MediaType.APPLICATION_JSON);
 		testPatternDeleteOk(pattern2, MediaType.APPLICATION_XML);
 
@@ -228,7 +228,7 @@ public class PatternServiceTest {
 		testPatternGetNotFound(pattern2.getId(), MediaType.APPLICATION_XML);
 
 		testPatternDeleteNotFound(pattern1.getId(), MediaType.APPLICATION_JSON);
-		testPatternDeleteNotFound(pattern2.getId(), MediaType.APPLICATION_XML);*/
+		testPatternDeleteNotFound(pattern2.getId(), MediaType.APPLICATION_XML);
 	}
 
 }

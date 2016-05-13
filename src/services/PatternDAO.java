@@ -13,4 +13,6 @@ public interface PatternDAO {
 	public Pattern createPattern(PatternBasic patternBasic) throws InternalErrorException;
 	
 	public void deleteAllPatterns() throws InternalErrorException ;
+
+	int deletePattern(String id) throws InternalErrorException;
 }
