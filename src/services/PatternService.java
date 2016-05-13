@@ -11,7 +11,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -75,6 +74,7 @@ public class PatternService {
 		try {
 			patternBasic.checkIt();
 		} catch (NotReadyException e) {
+			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError(e.getMessage())).build();
 		}
 		try {
@@ -83,8 +83,8 @@ public class PatternService {
 			System.out.println("Seems fine"+pattern);
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
-			System.out.println(e.getMessage());
-			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
 	
@@ -97,7 +97,8 @@ public class PatternService {
 			patternDao.deleteAllPatterns();
 			return Response.noContent().build();
 		} catch (InternalErrorException e) {
-			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
 
