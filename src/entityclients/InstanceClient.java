@@ -11,6 +11,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
 import services.InstanceBasic;
+import services.InstanceManipulation;
 
 public class InstanceClient {
 
@@ -25,7 +26,6 @@ public class InstanceClient {
 		this.uri = uri;
 	}
 
-	// Correct URI
 	public Response getInstances(String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
 		Invocation.Builder invocationBuilder =  webTarget.request(mediaTypeOut);
@@ -56,4 +56,9 @@ public class InstanceClient {
 		return invocationBuilder.delete();
 	}
 
+	public Response doAction(String instanceId, InstanceManipulation instanceManipulation, String mediaTypeIn, String mediaTypeOut) {
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(instanceId);
+		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
+		return invocationBuilder.put(Entity.entity(instanceManipulation, mediaTypeIn));
+	}
 }

@@ -16,14 +16,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 
-/*
-@JsonProperty("id") String instanceId,
-@JsonProperty("start_date") Date startDate,
-@JsonProperty("last_change_date") Date lastChangeDate,
-@JsonProperty("pattern_id")
-
-
-*/
 @XmlRootElement(name = "instance")
 public class InstanceBP implements Serializable{
 
@@ -32,7 +24,7 @@ public class InstanceBP implements Serializable{
 	 */
 	private static final long serialVersionUID = 3970402595042367862L;
 
-	enum InstanceState { RUNNING, ABORT , TERMINATED, WAITING, PAUSE};
+	private InstanceState state = null;
 
 	private String instanceId = null;
 
@@ -77,8 +69,8 @@ public class InstanceBP implements Serializable{
 	}
 	
 	@JsonIgnore // This field is read only
-	public void setState(InstanceBP.InstanceState state) {
-		
+	public void setState(InstanceState state) {
+		this.state = state;
 	}
 	
 	@JsonGetter ("id")
@@ -208,6 +200,9 @@ public class InstanceBP implements Serializable{
 	@XmlElement(name="state")
 	public InstanceState getState(){
 		// TODO ADD LOGIC
+		if ( state.equals(InstanceState.ABORTED) || state.equals(InstanceState.TERMINATED)) {
+			return state;
+		}
 		if ( holes == null ) {
 			return InstanceState.RUNNING;
 		}
@@ -231,6 +226,7 @@ public class InstanceBP implements Serializable{
 		this.lastChangeDate = lastChangeDate;
 		this.patternId = patternId;
 		this.links = generateLinks();
+		this.state = InstanceState.RUNNING;
 	}
 	
 	public InstanceBP(
@@ -249,6 +245,7 @@ public class InstanceBP implements Serializable{
 		setHolesFromPattern(holes);
 		this.links = generateLinks();
 		this.templateId = templateId;
+		this.state = InstanceState.RUNNING;
 	}
 	
 	public InstanceBP() {

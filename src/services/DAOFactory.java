@@ -2,7 +2,7 @@ package services;
 
 import serviceerrors.InternalErrorException;
 
-final public class DAOFactory {
+public final class DAOFactory {
 
 	/*
 	 Returns all DAO instances.

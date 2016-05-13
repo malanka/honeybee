@@ -20,6 +20,8 @@ import javax.ws.rs.core.Response;
 
 import services.InstanceBP;
 import services.InstanceBasic;
+import services.InstanceManipulation;
+import services.InstanceState;
 import services.Pattern;
 import services.PatternBasic;
 import services.Template;
@@ -211,6 +213,9 @@ public class InstanceServiceTest {
 
 		testInstanceGetOk(instance1, MediaType.APPLICATION_JSON);
 		testInstanceGetOk(instance2, MediaType.APPLICATION_XML);
+		
+		InstanceManipulation instanceManipulation = new InstanceManipulation(InstanceState.TERMINATED);
+		testInstancePutOk(instance1,instanceManipulation, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 /*
 		testPatternDeleteOk(instance1, MediaType.APPLICATION_JSON);
 		testPatternDeleteOk(instance2, MediaType.APPLICATION_XML);
@@ -221,6 +226,47 @@ public class InstanceServiceTest {
 		testPatternDeleteNotFound(instance1.getId(), MediaType.APPLICATION_JSON);
 		testPatternDeleteNotFound(instance2.getId(), MediaType.APPLICATION_XML);
 	*/
+	}
+
+	private InstanceBP testInstancePutOk(InstanceBP instance1, InstanceManipulation instanceManipulation, String mediaTypeIn, String mediaTypeOut) {
+		System.out.println("testInstancePutOk");
+		Response response = clientInstance.doAction(instance1.getInstanceId(), instanceManipulation, mediaTypeIn, mediaTypeOut);
+		assertTrue(response.getStatus() == 200);
+		try {
+			InstanceBP instanceNew = response.readEntity(new GenericType<InstanceBP>(){});
+			assertNotNull(instanceNew);
+			
+			assertTrue(instanceNew.getState().equals(instanceManipulation.getState()));
+			/*if ( template.getHoles() == null || template.getHoles().isEmpty() ) {
+				assertTrue(instanceNew.getStatus().equals(InstanceStatus.READY));
+			}
+			else {
+				assertTrue(instanceNew.getStatus().equals(InstanceStatus.WIP));
+			}
+			// TODO instance links
+			if ( template.getHoles() == null ) {
+				assertTrue (instanceNew.getHoles() == null || instanceNew.getHoles().isEmpty());
+			} else {
+				for (InstanceHole instanceHole : instanceNew.getHoles() ) {
+					// TODO instance hole links
+					assertNull(instanceHole.getInstanceAssigned());
+					assertTrue(instanceHole.getInstanceParent().equals(instanceNew.getId()));
+					int x = 0;
+					for ( Hole templateHole : template.getHoles() ) {
+						if  (instanceHole.compareWith(templateHole) ) {
+							x++;
+						}
+					}
+					assertTrue(x == 1);
+				}
+			}*/
+			return instanceNew;
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			fail ("Cannot read for " + mediaTypeIn + " and " + mediaTypeOut);
+			return null;
+		}
+		
 	}
 
 }

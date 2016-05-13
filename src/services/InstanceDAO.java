@@ -3,7 +3,6 @@ package services;
 import java.util.List;
 
 import serviceerrors.InternalErrorException;
-import services.InstanceBP.InstanceState;
 
 public interface InstanceDAO {
 
@@ -14,4 +13,6 @@ public interface InstanceDAO {
 	public InstanceBP createInstance(String patternId) throws InternalErrorException;
 	
 	public void deleteAllInstances() throws InternalErrorException;
+
+	public InstanceBP putInstanceById(String id, InstanceState instanceState) throws InternalErrorException;
 }

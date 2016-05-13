@@ -19,7 +19,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import serviceerrors.InternalErrorException;
-import services.InstanceBP.InstanceState;
 
 public class InstanceDAOfile implements InstanceDAO{
 
@@ -185,10 +184,6 @@ public class InstanceDAOfile implements InstanceDAO{
 		return null;
 	}
 /*
-	public Pattern createPattern(String templateId, PatternBasic patternBasic) throws InternalErrorException  {
-
-	}
-	
 	public int deleteTemplate(String id) {
 		List<Template> templateList = null;
 		try {
@@ -215,6 +210,22 @@ public class InstanceDAOfile implements InstanceDAO{
 			return -1;
 		}	
 	}*/
+
+	@Override
+	public InstanceBP putInstanceById(String id, InstanceState state) throws InternalErrorException {
+		List<InstanceBP> instanceList = readInstanceList();
+		InstanceBP tmp = new InstanceBP();
+		tmp.setInstanceId(id);
+		int index = instanceList.indexOf(tmp);
+		if ( index != -1 ) {
+			InstanceBP instance= instanceList.get(index);
+			instance.setState(state);
+			System.out.println(instance);
+			saveInstanceList(instanceList);
+			return instance;
+		}
+		return null;
+	}
 
 
 }
