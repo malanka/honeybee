@@ -70,6 +70,9 @@ public class InstanceService {
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response createInstance(InstanceBasic instanceBasic){
+		if ( instanceBasic == null ) {
+			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Request document doesn't fit the expected format")).build();
+		}
 		System.out.println("createInstance");
 		try {
 			instanceBasic.checkIt();
@@ -116,8 +119,11 @@ public class InstanceService {
 	@Path("{id}")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Response getPattern(@PathParam("id") String id, InstanceManipulation action) {
-		System.out.println("put instanceFINISHED");
+	public Response getInstance(@PathParam("id") String id, InstanceManipulation action) {
+		if ( action == null ) {
+			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Request document doesn't fit the expected format")).build();
+		}
+		System.out.println("put instanceFINISHED" + action);
 		InstanceBP instance = null;
 		try {
 			instance = instanceDao.putInstanceById(id, action.getState());

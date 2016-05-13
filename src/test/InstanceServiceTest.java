@@ -235,7 +235,6 @@ public class InstanceServiceTest {
 		try {
 			InstanceBP instanceNew = response.readEntity(new GenericType<InstanceBP>(){});
 			assertNotNull(instanceNew);
-			
 			assertTrue(instanceNew.getState().equals(instanceManipulation.getState()));
 			/*if ( template.getHoles() == null || template.getHoles().isEmpty() ) {
 				assertTrue(instanceNew.getStatus().equals(InstanceStatus.READY));

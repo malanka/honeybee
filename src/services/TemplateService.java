@@ -65,6 +65,9 @@ public class TemplateService {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response createTemplate(Template template){
 		System.out.println("postTemplates");
+		if ( template == null ) {
+			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Request document doesn't fit the expected format")).build();
+		}
 		if ( template.getEngine() == null || !template.getEngine().isSet() ) {
 			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Property \"engine\" is required to be totally filled")).build();
 		}

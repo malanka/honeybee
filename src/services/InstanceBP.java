@@ -149,13 +149,13 @@ public class InstanceBP implements Serializable{
 		this.holes = holes;
 	}
 
-	
 	@Override
 	public String toString() {
-		return "InstanceBP [instanceId=" + instanceId + ", startDate=" + startDate + ", lastChangeDate="
-				+ lastChangeDate + ", patternId=" + patternId + ", currentActivities=" + currentActivities + ", links="
-				+ links + ", holes=" + holes + ", templateId=" + templateId + "]";
+		return "InstanceBP [state=" + state + ", instanceId=" + instanceId + ", bpeId=" + bpeId + ", startDate="
+				+ startDate + ", lastChangeDate=" + lastChangeDate + ", patternId=" + patternId + ", currentActivities="
+				+ currentActivities + ", links=" + links + ", holes=" + holes + ", templateId=" + templateId + "]";
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

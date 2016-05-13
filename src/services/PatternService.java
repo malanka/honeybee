@@ -71,6 +71,9 @@ public class PatternService {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response createPattern(PatternBasic patternBasic){
 		System.out.println("createPattern");
+		if ( patternBasic == null ) {
+			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Request document doesn't fit the expected format")).build();
+		}
 		try {
 			patternBasic.checkIt();
 		} catch (NotReadyException e) {
