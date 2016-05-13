@@ -1,4 +1,4 @@
-package test;
+package entityclients;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -10,51 +10,48 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
-import services.Pattern;
-import services.PatternBasic;
+import services.Template;
 
-public class PatternClient {
+public class TemplateClient {
 
-	public static final String RESOURCE_PATH = "/patterns";
+	public static final String RESOURCE_PATH = "/templates";
 
 	private final String uri;
 
 	private final Client client = ClientBuilder.newClient(new ClientConfig().register( LoggingFilter.class ) );
 
-	public PatternClient(String uri) {
+	public TemplateClient(String uri) {
 		super();
 		this.uri = uri;
 	}
 
-	// Correct URI
-	public Response getPatterns(String mediaTypeOut) {
+	public Response getTemplates(String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
 		Invocation.Builder invocationBuilder =  webTarget.request(mediaTypeOut);
 		return invocationBuilder.get();
 	}
 	
-	public Response deletePatterns(String mediaTypeOut) {
+	public Response deleteTemplates(String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.delete();
 	}
 	
-	public Response addPattern(PatternBasic patternBasic, String mediaTypeIn, String mediaTypeOut) {
+	public Response addTemplate(Template template, String mediaTypeIn, String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
-		return invocationBuilder.post(Entity.entity(patternBasic, mediaTypeIn));
+		return invocationBuilder.post(Entity.entity(template, mediaTypeIn));
 	}
 	
-	public Response getPattern(String patternId, String mediaTypeOut) {
-		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId);
+	public Response getTemplate(String templateId, String mediaTypeOut) {
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(templateId);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.get();
 	}
 	
-	public Response deletePattern(String patternId, String mediaTypeOut) {
-		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId);
+	public Response deleteTemplate(String templateId, String mediaTypeOut) {
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(templateId);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.delete();
 	}
-
 }

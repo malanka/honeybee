@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import engines.EngineBP;
 import engines.EngineBpe;
+import entityclients.PatternClient;
+import entityclients.TemplateClient;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import engines.EngineBP;
 import engines.EngineBpe;
+import entityclients.InstanceClient;
+import entityclients.PatternClient;
+import entityclients.TemplateClient;
 
 import java.net.NetworkInterface;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package test;
+package entityclients;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
