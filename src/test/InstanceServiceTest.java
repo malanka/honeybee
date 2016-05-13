@@ -3,7 +3,6 @@ package test;
 import static org.junit.Assert.*;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,24 +12,16 @@ import entityclients.InstanceClient;
 import entityclients.PatternClient;
 import entityclients.TemplateClient;
 
-import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.filter.LoggingFilter;
-
-import services.Hole;
 import services.InstanceBP;
 import services.InstanceBasic;
+import services.Pattern;
+import services.PatternBasic;
 import services.Template;
 import services.WebServiseError;
 
@@ -46,14 +37,14 @@ public class InstanceServiceTest {
 	public static void setUp() throws Exception {
 		System.out.println("setupBeforeClass");
 		clientTemplate = new TemplateClient(baseURI);
-//		clientTemplate.deleteTemplates(MediaType.APPLICATION_JSON);
+		clientTemplate.deleteTemplates(MediaType.APPLICATION_JSON);
 		clientPattern = new PatternClient(baseURI);
-//		clientPattern.deletePatterns(MediaType.APPLICATION_JSON);
+		clientPattern.deletePatterns(MediaType.APPLICATION_JSON);
 		clientInstance = new InstanceClient(baseURI);
-//		clientInstance.deleteInstances(MediaType.APPLICATION_JSON);
+		clientInstance.deleteInstances(MediaType.APPLICATION_JSON);
 	}
 
-//	@After
+	@After
 	public void setAfter() throws Exception {
 		// after each test clean up all
 		System.out.println("setupAfterTest");
@@ -80,21 +71,20 @@ public class InstanceServiceTest {
 		}
 	}
 
-//	@Test
+	@Test
 	public void testListEmpty() {
 		testInstanceListEmpty(MediaType.APPLICATION_JSON);
 		testInstanceListEmpty(MediaType.APPLICATION_XML);
 	}
 
-/*
-	private Instance testInstanceAddOk(InstanceBasic instanceBasic, Template template, String mediaTypeIn, String mediaTypeOut) {
+	private InstanceBP testInstanceAddOk(InstanceBasic instanceBasic, String mediaTypeIn, String mediaTypeOut) {
 		System.out.println("testInstanceAddOk");
 		Response response = clientInstance.addInstance(instanceBasic, mediaTypeIn, mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
-			Instance instanceNew = response.readEntity(new GenericType<Instance>(){});
+			InstanceBP instanceNew = response.readEntity(new GenericType<InstanceBP>(){});
 			assertNotNull(instanceNew);
-			assertTrue(instanceNew.getName().equals(instanceBasic.getName()));
+			/*
 			assertTrue(instanceNew.getTemplate().equals(instanceBasic.getTemplateId()));
 			if ( template.getHoles() == null || template.getHoles().isEmpty() ) {
 				assertTrue(instanceNew.getStatus().equals(InstanceStatus.READY));
@@ -118,7 +108,7 @@ public class InstanceServiceTest {
 					}
 					assertTrue(x == 1);
 				}
-			}
+			}*/
 			return instanceNew;
 		} catch ( Exception e ) {
 			e.printStackTrace();
@@ -126,27 +116,27 @@ public class InstanceServiceTest {
 			return null;
 		}
 	}
-
+/*
 	private void testInstanceDeleteOk(Instance instance, String mediaTypeOut) {
 		System.out.println("testInstanceDeleteOk");
 		Response response = clientInstance.deleteInstance(instance.getId(), mediaTypeOut);
 		assertTrue(response.getStatus() == 204);
 	}
-
-	private void testInstanceGetOk(Instance instance, String mediaTypeOut) {
+*/
+	private void testInstanceGetOk(InstanceBP instance, String mediaTypeOut) {
 		System.out.println("testInstanceGetOk");
-		Response response = clientInstance.getInstance(instance.getId(), mediaTypeOut);
+		Response response = clientInstance.getInstance(instance.getInstanceId(), mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
-			Instance instanceNew = response.readEntity(new GenericType<Instance>(){});
+			InstanceBP instanceNew = response.readEntity(new GenericType<InstanceBP>(){});
 			assertNotNull(instanceNew);
-			assertTrue(instance.compareWith(instance));
+//			assertTrue(instance.compareWith(instance));
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			fail ("Cannot read for " + mediaTypeOut);
 		}
 	}
-
+/*
 	private void testInstanceGetNotFound(String instanceId, String mediaTypeOut) {
 		System.out.println("testInstanceGetNotFound");
 		Response response = clientInstance.getInstance(instanceId, mediaTypeOut);
@@ -201,30 +191,27 @@ public class InstanceServiceTest {
 		testInstanceAddBadRequestDocument(instanceBasic2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, "'pattern_id' has to be specified", 400);
 		testInstanceAddBadRequestDocument(instanceBasic2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, "'pattern_id' has to be specified", 400);
 	}
-/*
+
 	@Test
-	public void testCRDInstanceOK() {
-		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "7908120732971969775", "http://localhost:8080/bonita");
-		ArrayList <Hole> holes= new ArrayList<Hole>();
-		Hole hole1 = new Hole("holename1","as","asd","ad","aasd");
-		Hole hole2 = new Hole("holename2","as","asd","ad","aasd");
-		holes.add(hole1);
-		holes.add(hole2);
-		String t_id1 = "1";
-		String t_id2 = "2";
-		Template template1 = new Template(t_id1, "Fisrt", "datain1","dataout1","event1s","event1e", null, engine);
-		Template template2 = new Template(t_id2, "Second", "datain1","dataout1","event1s","event1e", holes, engine);
-		clientTemplate.addTemplate(template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-		clientTemplate.addTemplate(template2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-
-		PatternBasic instanceBasic1 = new PatternBasic("FirstPattern", template1.getId());
-		Pattern instance1 = testPatternAddOk(instanceBasic1, template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-		PatternBasic instanceBasic2= new PatternBasic("SecondPattern", template2.getId());
-		Pattern instance2= testPatternAddOk(instanceBasic2, template2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
-
-		testPatternGetOk(instance1, MediaType.APPLICATION_JSON);
-		testPatternGetOk(instance2, MediaType.APPLICATION_XML);
+	public void testCRDInstanceOKwithoutHoles() {
+		// create template
+		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "6330940062738924565", "http://localhost:8080/bonita");
+		Template template = new Template("1", "Fisrt", "datain1","dataout1","event1s","event1e", null, engine);
+		clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		// create pattern
+		PatternBasic patternBasic = new PatternBasic("FirstPattern", template.getId());
+		Response response = clientPattern.addPattern(patternBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		Pattern pattern = response.readEntity(new GenericType<Pattern>(){});
 		
+		// test instance creation
+		InstanceBasic instanceBasic = new InstanceBasic(pattern.getId());
+		InstanceBP instance1 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		InstanceBP instance2 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
+
+		testInstanceGetOk(instance1, MediaType.APPLICATION_JSON);
+		testInstanceGetOk(instance2, MediaType.APPLICATION_XML);
+/*
 		testPatternDeleteOk(instance1, MediaType.APPLICATION_JSON);
 		testPatternDeleteOk(instance2, MediaType.APPLICATION_XML);
 
@@ -233,6 +220,7 @@ public class InstanceServiceTest {
 
 		testPatternDeleteNotFound(instance1.getId(), MediaType.APPLICATION_JSON);
 		testPatternDeleteNotFound(instance2.getId(), MediaType.APPLICATION_XML);
-	}*/
+	*/
+	}
 
 }

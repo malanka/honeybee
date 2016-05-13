@@ -13,16 +13,11 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import engines.EngineBpe;
 import engines.EngineBP;
 import services.Hole;
-import services.InstanceBP;
 import services.PatternBasic;
 import services.Template;
-import services.WS;
 import services.Pattern;
 
 public class ResttestInstance {

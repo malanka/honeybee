@@ -17,7 +17,7 @@ final public class DAOFactory {
 		return new PatternDAOfile(fileName);
 	}
 
-	InstanceDAO getInstanceDAO(){
+	InstanceDAO getInstanceDAO() throws InternalErrorException{
 		String fileName = "Instance18.dat";
 		return new InstanceDAOfile(fileName);
 	}

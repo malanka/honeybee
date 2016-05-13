@@ -112,22 +112,43 @@ public class InstanceService {
 			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
-/* 
-	@GET
-	@Path("{id}")
+	
+	@POST
+	@Path("{id}/finished")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getPattern(@PathParam("id") String id) {
-		System.out.println("getPattern");
-		Pattern pattern = patternDao.getPatternById(id);
+		System.out.println("post instanceFINISHED");
+/*		Pattern pattern = patternDao.getPatternById(id);
 		if ( pattern != null ) {
 			GenericEntity<Pattern> entity = new GenericEntity<Pattern>(patternDao.getPatternById(id)) {};
 			return Response.ok(entity).build();
 		}
 		else
-			return Response.status(404).entity(new WebServiseError("Element not found")).build();
+			return Response.status(404).entity(new WebServiseError("Element not found")).build();*/
+		return Response.noContent().build();
 	}
 
+	@GET
+	@Path("{id}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response getInstance(@PathParam("id") String id) {
+		System.out.println("getInstance");
+		InstanceBP instance = null;
+		try {
+			instance = instanceDao.getInstanceById(id);
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
+		if ( instance != null ) {
+			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
+			return Response.ok(entity).build();
+		}
+		else
+			return Response.status(404).entity(new WebServiseError("Instance not found")).build();
+	}
 
+/*
 	
 	@DELETE
 	@Path("{id}")

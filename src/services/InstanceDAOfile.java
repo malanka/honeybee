@@ -28,13 +28,14 @@ public class InstanceDAOfile implements InstanceDAO{
 
 	private String fileName = null;
 
-	public InstanceDAOfile(String fileName) {
+	public InstanceDAOfile(String fileName) throws InternalErrorException {
 		super();
 		this.fileName = fileName;
 		File file = new File(fileName);
 		if ( !file.exists() ) {
 			saveInstanceList(new ArrayList<InstanceBP>());
 		}
+		// TODO id
 	}
 
 	private static String getNewId() {
@@ -43,7 +44,7 @@ public class InstanceDAOfile implements InstanceDAO{
 		return id;
 	}
 
-	private void saveInstanceList(List<InstanceBP> instanceList){
+	private void saveInstanceList(List<InstanceBP> instanceList) throws InternalErrorException{
 		try {
 			File file = new File(fileName);
 			FileOutputStream fos = new FileOutputStream(file);
@@ -51,12 +52,32 @@ public class InstanceDAOfile implements InstanceDAO{
 			oos.writeObject(instanceList);
 			oos.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			throw new InternalErrorException(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new InternalErrorException(e.getMessage());
 		}
 	}
 
+	private List<InstanceBP> readInstanceList () throws InternalErrorException {
+		File file = new File(fileName);
+		if ( !file.exists() )
+			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
+		
+		List<InstanceBP> instanceList = null;
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			instanceList = (List<InstanceBP>) ois.readObject();
+			ois.close();
+			return instanceList;
+		} catch (IOException e) {
+			throw new InternalErrorException(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			throw new InternalErrorException(e.getMessage());
+		}
+	}
+
+	@Override
 	public void deleteAllInstances() throws InternalErrorException {		
 		File file = new File(fileName);
 		if ( !file.exists() )
@@ -152,34 +173,19 @@ public class InstanceDAOfile implements InstanceDAO{
 		
 		return instance;
 	}
-/*
-	public Pattern getPatternById(String id){
-		List<Pattern> patternList = null;
-		Pattern pattern = null;
-		try {
-			File file = new File(fileName);
-			if (!file.exists()) {
-				return pattern;	
-			}
-			else{
-				FileInputStream fis = new FileInputStream(file);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				patternList = (List<Pattern>) ois.readObject();
-				ois.close();
-			}
-			Pattern tmp = new Pattern();
-			tmp.setId(id);
-			int index = patternList.indexOf(tmp);
-			if ( index != -1 )
-				pattern = patternList.get(index);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}		
-		return pattern;
+	
+	@Override
+	public InstanceBP getInstanceById(String id) throws InternalErrorException{
+		List<InstanceBP> instanceList = readInstanceList();
+		InstanceBP tmp = new InstanceBP();
+		tmp.setInstanceId(id);
+		int index = instanceList.indexOf(tmp);
+		if ( index != -1 ) {
+			return instanceList.get(index);
+		}
+		return null;
 	}
-
+/*
 	public Pattern createPattern(String templateId, PatternBasic patternBasic) throws InternalErrorException  {
 
 	}
@@ -210,14 +216,6 @@ public class InstanceDAOfile implements InstanceDAO{
 			return -1;
 		}	
 	}*/
-
-
-
-	@Override
-	public InstanceBP getInstanceById(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 }
