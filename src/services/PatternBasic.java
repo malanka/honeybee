@@ -41,7 +41,7 @@ public class PatternBasic implements Serializable{
 
 	@Override
 	public String toString() {
-		return "PatternBasic [name=" + name + "]";
+		return "PatternBasic [name=" + name + ", templateId=" + templateId + "]";
 	}
 
 	public PatternBasic(String name, String templateId) {

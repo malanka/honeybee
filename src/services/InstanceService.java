@@ -68,16 +68,19 @@ public class InstanceService {
 	}
 	
 	@POST
-	@Produces(MediaType.APPLICATION_XML)
-	public Response createInstance(@QueryParam("patternId") String patternId){
-		System.out.println("createInstance from patternId="+patternId);
-		if ( patternId == null ) {
-			System.out.println("patternId is null");
-			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Parameter patternId is required")).build();
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response createInstance(InstanceBasic instanceBasic){
+		System.out.println("createInstance");
+		try {
+			instanceBasic.checkIt();
+		} catch (NotReadyException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError(e.getMessage())).build();
 		}
 		try {
 			// 1.   Create an instance object
-			InstanceBP instance = instanceDao.createInstance(patternId);
+			InstanceBP instance = instanceDao.createInstance(instanceBasic.getPatternId());
 
 			// 2.   Get information about the engine for the instance
 			// ASSUMPTION: "engine" part in template is immutable
@@ -112,7 +115,7 @@ public class InstanceService {
 /* 
 	@GET
 	@Path("{id}")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getPattern(@PathParam("id") String id) {
 		System.out.println("getPattern");
 		Pattern pattern = patternDao.getPatternById(id);
@@ -128,7 +131,7 @@ public class InstanceService {
 	
 	@DELETE
 	@Path("{id}")
-	//@Produces(MediaType.APPLICATION_XML)
+	//@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response deleteTemplate(@PathParam("id") String id){
 		System.out.println("createTemplates");
