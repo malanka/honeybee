@@ -192,24 +192,14 @@ public class InstanceServiceTest {
 	@Test
 	public void testAddInstanceBad() {
 		// pattern doesn't exist TODO fix the code
-		InstanceBasic instanceBasic = new InstanceBasic("nonsense");
-		testInstanceAddBadRequestDocument(instanceBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, "Such pattern doesn't exist", 500);
-		testInstanceAddBadRequestDocument(instanceBasic, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, "Such pattern doesn't exist", 500);
-/*
-		// empty template
-		InstanceBasic instanceBasic2 = new InstanceBasic("TestABC", "");
-		testInstanceAddBadRequestDocument(instanceBasic2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, "'template_id' has to be specified", 400);
-		testInstanceAddBadRequestDocument(instanceBasic2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, "'template_id' has to be specified", 400);
+		InstanceBasic instanceBasic1 = new InstanceBasic("nonsense");
+		testInstanceAddBadRequestDocument(instanceBasic1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, "Such pattern doesn't exist", 500);
+		testInstanceAddBadRequestDocument(instanceBasic1, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, "Such pattern doesn't exist", 500);
 
-		// empty name
-		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "7908120732971969775", "http://localhost:8080/bonita");
-		String id = "1";
-		Template template = new Template(id, "Fisrt", "datain1","dataout1","event1s","event1e", null, engine);
-		clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-		InstanceBasic instanceBasic3 = new InstanceBasic("", "1");
-		testInstanceAddBadRequestDocument(instanceBasic3, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, "'name' has to be specified", 400);
-		testInstanceAddBadRequestDocument(instanceBasic3, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, "'name' has to be specified", 400);
-*/
+		// empty pattern
+		InstanceBasic instanceBasic2 = new InstanceBasic("");
+		testInstanceAddBadRequestDocument(instanceBasic2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, "'pattern_id' has to be specified", 400);
+		testInstanceAddBadRequestDocument(instanceBasic2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, "'pattern_id' has to be specified", 400);
 	}
 /*
 	@Test
