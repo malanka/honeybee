@@ -10,7 +10,6 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
-import services.Pattern;
 import services.PatternBasic;
 
 public class PatternClient {

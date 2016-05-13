@@ -11,8 +11,6 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
 import services.InstanceBasic;
-import services.Pattern;
-import services.PatternBasic;
 
 public class InstanceClient {
 
