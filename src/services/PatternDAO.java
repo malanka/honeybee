@@ -4,6 +4,7 @@ import java.util.List;
 
 import businessentities.Pattern;
 import businessentities.PatternBasic;
+import businessentities.PatternHole;
 import serviceerrors.InternalErrorException;
 
 public interface PatternDAO {
@@ -17,4 +18,7 @@ public interface PatternDAO {
 	public void deleteAllPatterns() throws InternalErrorException ;
 
 	int deletePattern(String id) throws InternalErrorException;
+
+	PatternHole assignPatternToHole(String patternId, String holeName, String assignedPattern)
+			throws InternalErrorException;
 }

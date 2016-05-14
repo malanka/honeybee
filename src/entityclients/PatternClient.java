@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
+import businessentities.HoleManipulation;
 import businessentities.PatternBasic;
 
 public class PatternClient {
@@ -56,4 +57,9 @@ public class PatternClient {
 		return invocationBuilder.delete();
 	}
 
+	public Response assignPattern(String patternId, String holeName, HoleManipulation holeManipulation, String mediaTypeIn, String mediaTypeOut) {
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId).path("holes").path(holeName);
+		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
+		return invocationBuilder.post(Entity.entity(holeManipulation, mediaTypeIn));
+	}
 }

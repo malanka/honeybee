@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import businessentities.Hole;
+import businessentities.HoleManipulation;
 import businessentities.Pattern;
 import businessentities.PatternBasic;
 import businessentities.PatternHole;
@@ -230,6 +231,46 @@ public class PatternServiceTest {
 
 		testPatternDeleteNotFound(pattern1.getId(), MediaType.APPLICATION_JSON);
 		testPatternDeleteNotFound(pattern2.getId(), MediaType.APPLICATION_XML);
+	}
+
+	
+	@Test
+	public void testAssignPatternHole() {
+		EngineBpe engine = new EngineBpe(EngineBP.TESTCONNECTOR, "7908120732971969775", "http://localhost:8080/bonita");
+		ArrayList <Hole> holes= new ArrayList<Hole>();
+		Hole hole1 = new Hole("holename1","as","asd","ad","aasd");
+		Hole hole2 = new Hole("holename2","as","asd","ad","aasd");
+		holes.add(hole1);
+		holes.add(hole2);
+		Template template = new Template("1", "Second", "datain1","dataout1","event1s","event1e", holes, engine);
+		clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		
+		PatternBasic patternBasic1 = new PatternBasic("FirstPattern", template.getId());
+		Pattern pattern1 = testPatternAddOk(patternBasic1, template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		testPatternGetOk(pattern1, MediaType.APPLICATION_JSON);
+		
+		PatternBasic patternBasic2 = new PatternBasic("SecondPattern", template.getId());
+		Pattern pattern2 = testPatternAddOk(patternBasic2, template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		testPatternGetOk(pattern2, MediaType.APPLICATION_JSON);
+
+		HoleManipulation holeManipulation = new HoleManipulation(pattern2.getId(), null);
+		testAssignHoleOk(pattern1, holeManipulation, hole1.getName(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		
+	}
+
+	private void testAssignHoleOk(Pattern pattern, HoleManipulation holeManipulation, String holeName, String mediaTypeIn, String mediaTypeOut) {
+		Response response =clientPattern.assignPattern(pattern.getId(), holeName, holeManipulation, mediaTypeIn, mediaTypeOut);
+		assertTrue(response.getStatus() == 200);
+		// TODO check return result
+		try {
+			PatternHole patternHole = response.readEntity(new GenericType<PatternHole>(){});
+			assertNotNull(patternHole);
+			assertTrue(patternHole.getName().equals(holeName));
+			assertTrue(patternHole.getPatternAssigned().equals(holeManipulation.getAssigned_pattern_id()));
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			fail ("Cannot read for " + mediaTypeOut);
+		}
 	}
 
 }

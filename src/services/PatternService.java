@@ -15,8 +15,14 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import businessentities.HoleManipulation;
+import businessentities.InstanceBP;
+import businessentities.InstanceBasic;
+import businessentities.InstanceHole;
 import businessentities.Pattern;
 import businessentities.PatternBasic;
+import businessentities.PatternHole;
+import entityclients.InstanceClient;
 import serviceerrors.InternalErrorException;
 
 @Path("/patterns")
@@ -124,6 +130,26 @@ public class PatternService {
 			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
+	}
+	
+	@POST
+	@Path("{id}/holes/{holename}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response assignPatternToHole(@PathParam("id") String patternId, @PathParam("holename") String holeName, HoleManipulation holeManipulation) {
+		System.out.println("assignPatternToHole");
+		PatternHole patternHole = null;
+		try {
+			patternHole = patternDao.assignPatternToHole(patternId, holeName, holeManipulation.getAssigned_pattern_id());
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
+		if ( patternHole == null ) {
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern or hole not found")).build();
+		}
+		GenericEntity<PatternHole> entity = new GenericEntity<PatternHole>(patternHole) {};
+		return Response.ok().entity(entity).build();
 	}
 
 }

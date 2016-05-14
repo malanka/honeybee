@@ -13,6 +13,7 @@ import java.util.List;
 
 import businessentities.Pattern;
 import businessentities.PatternBasic;
+import businessentities.PatternHole;
 import businessentities.Template;
 import serviceerrors.InternalErrorException;
 
@@ -54,14 +55,14 @@ public class PatternDAOfile implements PatternDAO {
 	
 	private List<Pattern> readPatternList () throws InternalErrorException {
 		File file = new File(fileName);
-		if ( !file.exists() )
+		if ( !file.exists() ) {
 			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
-		
-		List<Pattern> patternList = null;
+		}
+
 		try {
 			FileInputStream fis = new FileInputStream(file);
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			patternList = (List<Pattern>) ois.readObject();
+			List<Pattern> patternList = (List<Pattern>) ois.readObject();
 			ois.close();
 			return patternList;
 		} catch (IOException e) {
@@ -78,9 +79,6 @@ public class PatternDAOfile implements PatternDAO {
 
 	@Override
 	public void deleteAllPatterns() throws InternalErrorException {		
-		File file = new File(fileName);
-		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
 		savePatternList(new ArrayList<Pattern>());	
 	}
 
@@ -98,10 +96,6 @@ public class PatternDAOfile implements PatternDAO {
 
 	@Override
 	public Pattern createPattern(PatternBasic patternBasic) throws InternalErrorException  {
-		File file = new File(fileName);
-		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
-
 		// find a template
 		TemplateDAOfile templateDao = new DAOFactory().getTemplateDAO();
 		List<Template> templates = templateDao.getAllTemplates();
@@ -147,5 +141,39 @@ public class PatternDAOfile implements PatternDAO {
 		else {
 			return 1;
 		}	
+	}
+	
+	@Override
+	public PatternHole assignPatternToHole(String patternId, String holeName, String assignedPattern) throws InternalErrorException  {
+		List<Pattern> patternList = readPatternList();
+		Pattern tmp = new Pattern();
+		tmp.setId(patternId);
+		int index = patternList.indexOf(tmp);
+		if ( index == -1 ) {
+			return null;
+		}
+		Pattern pattern = patternList.get(index);
+		
+		// let's check its holes
+		for ( PatternHole ahole : pattern.getHoles() ) {
+			if ( ahole.getName().equals(holeName) ) {
+				// we found a hole
+				
+				// lets check if assigned pattern exists
+				tmp.setId(assignedPattern);
+				index = patternList.indexOf(tmp);
+				if ( index == -1 ) {
+					throw new InternalErrorException("assigned pattern id doesn't exist");
+				}
+
+				// lets set a new pattern
+				ahole.setPatternAssigned(assignedPattern);
+				// save it
+				savePatternList(patternList);
+				return ahole;
+			}
+		}
+		// such hole doesn't exist
+		return null;
 	}
 }
