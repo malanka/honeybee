@@ -42,10 +42,10 @@ public class BonitaConnector7_2 extends EngineBpe implements Serializable{
 		return new WS(getBaseURI() + relativeProcessURI + getProcessId(), "GET", null);
 	}
 
-	private WS startProcess(String instanceId) {
+	private WS startProcess(String instanceUrl) {
 		if ( getProcessId() == null || getBaseURI() == null )
 			return null;
-		String requestDocument = "{ \"processDefinitionId\":" + getProcessId() + ",\"variables\":[{\"name\":\"callerid\", \"value\":\"" + instanceId + "\"}]}";
+		String requestDocument = "{ \"processDefinitionId\":" + getProcessId() + ",\"variables\":[{\"name\":\"callerurl\", \"value\":\"" + instanceUrl + "\"}]}";
 		return new WS(getBaseURI() + relativeInstanceURI, "POST", requestDocument);
 	}
 
@@ -54,13 +54,13 @@ public class BonitaConnector7_2 extends EngineBpe implements Serializable{
 		return "BonitaConnector7_2 [processId=" + getProcessId() + ", baseURI=" + getBaseURI() + "]";
 	}
 	@Override
-	public GeneralCase generateInstance (String instanceId) throws InternalErrorException {
+	public GeneralCase generateInstance (String instanceUrl) throws InternalErrorException {
 		try {
 			Map<String, NewCookie> cookies = authorize();
 			if ( cookies == null ) {
 				throw new InternalErrorException ("Cookies are missing");
 			}
-			BonitaCase bonitaCase = createCase(instanceId, cookies);
+			BonitaCase bonitaCase = createCase(instanceUrl, cookies);
 			if ( bonitaCase == null ) {
 				throw new InternalErrorException ("Insttance was not created");
 			}
@@ -71,9 +71,9 @@ public class BonitaConnector7_2 extends EngineBpe implements Serializable{
 		}
 	}
 
-	private BonitaCase createCase(String instanceId, Map<String, NewCookie> cookies) throws InternalErrorException {
+	private BonitaCase createCase(String instanceUrl, Map<String, NewCookie> cookies) throws InternalErrorException {
 		Client client = ClientBuilder.newClient( new ClientConfig().register( LoggingFilter.class ) );
-		WS startInstance = this.startProcess(instanceId);
+		WS startInstance = this.startProcess(instanceUrl);
 		WebTarget webTarget = client.target(startInstance.getUri());
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
 		for (Map.Entry<String, NewCookie> entry : cookies.entrySet() ) {

@@ -76,7 +76,7 @@ public class EngineBpe implements Serializable{
 		return null;
 	}
 
-	public GeneralCase generateInstance (String instanceId) throws InternalErrorException {
+	public GeneralCase generateInstance (String instanceUrl) throws InternalErrorException {
 		return null;
 	}
 	@Override

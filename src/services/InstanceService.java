@@ -24,7 +24,7 @@ import serviceerrors.InternalErrorException;
 @Path("/instances")
 public class InstanceService {
 
-	private static final String base = "http://BP_REST_API/rest";
+	private static final String base = "http://localhost:9000/BP_REST_API/rest";
 
 	private InstanceDAO instanceDao = new DAOFactory().getInstanceDAO();
 
@@ -91,7 +91,7 @@ public class InstanceService {
 				throw new InternalErrorException("Engine is not set on the template=" + template);
 			}
 
-			GeneralCase generalCase = template.getEngine().generateInstance(instance.getInstanceId());
+			GeneralCase generalCase = template.getEngine().generateInstance(getInstanceURI(instance.getInstanceId()));
 			instance.setBpeId(generalCase.getId());
 			instance.setStartDate(generalCase.getStartDate());
 			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
@@ -147,6 +147,7 @@ public class InstanceService {
 		InstanceBP instance = null;
 		try {
 			instance = instanceDao.getInstanceById(id);
+			System.out.println(instance);
 		} catch (InternalErrorException e) {
 			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
