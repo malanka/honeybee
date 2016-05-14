@@ -63,10 +63,8 @@ public class InstanceServiceTest {
 			List<InstanceBP> instances = response.readEntity(new GenericType<List<InstanceBP>>(){});
 			assertNotNull(instances);
 			assertTrue(instances.isEmpty());
-			/*
-			String instances = response.readEntity(String.class);
-			System.out.println(instances);
-			 */
+//			String instances = response.readEntity(String.class);
+//			System.out.println(instances);
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			fail ("Cannot read for " + mediaType);
@@ -86,6 +84,7 @@ public class InstanceServiceTest {
 		try {
 			InstanceBP instanceNew = response.readEntity(new GenericType<InstanceBP>(){});
 			assertNotNull(instanceNew);
+			System.out.println(instanceNew);
 			/*
 			assertTrue(instanceNew.getTemplate().equals(instanceBasic.getTemplateId()));
 			if ( template.getHoles() == null || template.getHoles().isEmpty() ) {
@@ -197,7 +196,7 @@ public class InstanceServiceTest {
 	@Test
 	public void testCRDInstanceOKwithoutHoles() {
 		// create template
-		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "6330940062738924565", "http://localhost:8080/bonita");
+		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "8991886837299789007", "http://localhost:8080/bonita");
 		Template template = new Template("1", "Fisrt", "datain1","dataout1","event1s","event1e", null, engine);
 		clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
@@ -235,6 +234,7 @@ public class InstanceServiceTest {
 		try {
 			InstanceBP instanceNew = response.readEntity(new GenericType<InstanceBP>(){});
 			assertNotNull(instanceNew);
+			System.out.println(instanceNew);
 			assertTrue(instanceNew.getState().equals(instanceManipulation.getState()));
 			/*if ( template.getHoles() == null || template.getHoles().isEmpty() ) {
 				assertTrue(instanceNew.getStatus().equals(InstanceStatus.READY));

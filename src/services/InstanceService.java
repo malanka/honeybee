@@ -57,7 +57,7 @@ public class InstanceService {
 			try {
 				state = InstanceState.valueOf(stateStr);
 			} catch (IllegalArgumentException e) {
-				System.out.println(e.getMessage());
+				e.printStackTrace();
 				return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError(e.getMessage())).build();
 			}
 		}
@@ -125,10 +125,10 @@ public class InstanceService {
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getInstance(@PathParam("id") String id, InstanceManipulation action) {
+		System.out.println("put instanceFINISHED" + action);
 		if ( action == null ) {
 			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Request document doesn't fit the expected format")).build();
 		}
-		System.out.println("put instanceFINISHED" + action);
 		InstanceBP instance = null;
 		try {
 			instance = instanceDao.putInstanceById(id, action.getState());
@@ -137,6 +137,7 @@ public class InstanceService {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 		if ( instance != null ) {
+			System.out.println("Going to return:" + instance);
 			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
 			return Response.ok(entity).build();
 		}

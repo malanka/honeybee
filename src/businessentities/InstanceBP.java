@@ -9,10 +9,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 
@@ -68,7 +66,8 @@ public class InstanceBP implements Serializable{
 		this.templateId = templateId;
 	}
 	
-	@JsonIgnore // This field is read only
+	@JsonSetter ("state")
+	@XmlElement(name = "state")
 	public void setState(InstanceState state) {
 		this.state = state;
 	}
@@ -123,7 +122,6 @@ public class InstanceBP implements Serializable{
 		return currentActivities;
 	}
 	
-	@JsonIgnore
 	@JsonSetter("current_activities")
 	@XmlElementWrapper(name="current_activities")
 	@XmlElement(name="activity")
@@ -197,10 +195,11 @@ public class InstanceBP implements Serializable{
 		return null;
 	}
 	
-	@XmlElement(name="state")
+	@JsonGetter("state")
 	public InstanceState getState(){
+		return state;
 		// TODO ADD LOGIC
-		if ( state.equals(InstanceState.ABORTED) || state.equals(InstanceState.TERMINATED)) {
+		/*if ( state.equals(InstanceState.ABORTED) || state.equals(InstanceState.TERMINATED)) {
 			return state;
 		}
 		if ( holes == null ) {
@@ -210,15 +209,15 @@ public class InstanceBP implements Serializable{
 			if (( aHole.getPatternAssigned() == null ) || ( aHole.getPatternAssigned().isEmpty() ) )
 				return InstanceState.RUNNING;
 		}
-		return InstanceState.RUNNING;
+		return InstanceState.RUNNING;*/
 	}
 	
-	@JsonCreator
+	
 	public InstanceBP(
-			@JsonProperty("id") String instanceId,
-			@JsonProperty("start_date") Date startDate,
-			@JsonProperty("last_change_date") Date lastChangeDate,
-			@JsonProperty("pattern_id") String patternId)
+			String instanceId,
+			Date startDate,
+			Date lastChangeDate,
+			String patternId)
 	{
 		super();
 		this.instanceId = instanceId;
