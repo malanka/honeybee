@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-@XmlRootElement(name = "hole")
+@XmlRootElement(name = "patternhole")
 public class PatternHole extends Hole implements Serializable {
 
 	/**

@@ -148,6 +148,7 @@ public class PatternService {
 		if ( patternHole == null ) {
 			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern or hole not found")).build();
 		}
+		
 		GenericEntity<PatternHole> entity = new GenericEntity<PatternHole>(patternHole) {};
 		return Response.ok().entity(entity).build();
 	}

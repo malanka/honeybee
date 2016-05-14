@@ -255,13 +255,13 @@ public class PatternServiceTest {
 
 		HoleManipulation holeManipulation = new HoleManipulation(pattern2.getId(), null);
 		testAssignHoleOk(pattern1, holeManipulation, hole1.getName(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		testAssignHoleOk(pattern1, holeManipulation, hole1.getName(), MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
 		
 	}
 
 	private void testAssignHoleOk(Pattern pattern, HoleManipulation holeManipulation, String holeName, String mediaTypeIn, String mediaTypeOut) {
-		Response response =clientPattern.assignPattern(pattern.getId(), holeName, holeManipulation, mediaTypeIn, mediaTypeOut);
+		Response response = clientPattern.assignPattern(pattern.getId(), holeName, holeManipulation, mediaTypeIn, mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
-		// TODO check return result
 		try {
 			PatternHole patternHole = response.readEntity(new GenericType<PatternHole>(){});
 			assertNotNull(patternHole);
