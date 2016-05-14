@@ -19,11 +19,12 @@ import javax.ws.rs.core.Response;
 
 import businessentities.InstanceBP;
 import businessentities.InstanceBasic;
+import businessentities.InstanceHole;
 import businessentities.InstanceManipulation;
 import businessentities.InstanceState;
 import businessentities.Template;
 import engines.GeneralCase;
-
+import entityclients.InstanceClient;
 import serviceerrors.InternalErrorException;
 
 @Path("/instances")
@@ -166,6 +167,46 @@ public class InstanceService {
 			return Response.status(404).entity(new WebServiseError("Instance not found")).build();
 	}
 
+	@POST
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}/holes/{holename}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response startHole(@PathParam("id") String instanceId, @PathParam("holename") String holeName) {
+		System.out.println("startHole");
+		InstanceBP instance = null;
+		try {
+			instance = instanceDao.getInstanceById(instanceId);
+			System.out.println(instance);
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
+		if ( instance != null ) {
+			for ( InstanceHole ahole : instance.getHoles() ) {
+				if ( ahole.getName().equals(holeName) ) {
+					// we found a hole
+					if ( ahole.getPatternAssigned() == null ) {
+						return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(new WebServiseError("Pattern for the hole is not assigned")).build();
+					}
+					
+					InstanceClient instanceClient = new InstanceClient(base);
+					Response response = instanceClient.addInstance(new InstanceBasic(ahole.getPatternAssigned()), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+					if ( response.getStatus() != 200 ) {
+						return response;
+					}
+					InstanceBP instanceNew = response.readEntity(InstanceBP.class);
+					ahole.setInstanceId(instanceNew.getInstanceId());
+					// pattern is assigneed, start it
+					GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
+					return Response.ok(entity).build();
+				}
+			}
+			// we didn't found such hole
+			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Instance hole not found")).build();
+		}
+		else
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Instance not found")).build();
+	}
 /*
 	
 	@DELETE
