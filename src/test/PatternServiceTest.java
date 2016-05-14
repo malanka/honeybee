@@ -6,6 +6,12 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import businessentities.Hole;
+import businessentities.Pattern;
+import businessentities.PatternBasic;
+import businessentities.PatternHole;
+import businessentities.PatternStatus;
+import businessentities.Template;
 import engines.EngineBP;
 import engines.EngineBpe;
 import entityclients.PatternClient;
@@ -18,13 +24,6 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
-import services.Hole;
-import services.Pattern;
-import services.PatternBasic;
-import services.PatternHole;
-import services.PatternStatus;
-import services.Template;
 import services.WebServiseError;
 
 public class PatternServiceTest {

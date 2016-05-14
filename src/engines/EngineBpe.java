@@ -8,8 +8,8 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import businessentities.WS;
 import serviceerrors.InternalErrorException;
-import services.WS;
 
 @XmlRootElement(name = "engine")
 public class EngineBpe implements Serializable{

@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
+import businessentities.WS;
 import serviceerrors.InternalErrorException;
-import services.WS;
 
 @XmlRootElement(name = "engine")
 public class BonitaConnector7_2 extends EngineBpe implements Serializable{

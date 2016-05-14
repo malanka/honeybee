@@ -6,6 +6,13 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import businessentities.InstanceBP;
+import businessentities.InstanceBasic;
+import businessentities.InstanceManipulation;
+import businessentities.InstanceState;
+import businessentities.Pattern;
+import businessentities.PatternBasic;
+import businessentities.Template;
 import engines.EngineBP;
 import engines.EngineBpe;
 import entityclients.InstanceClient;
@@ -18,13 +25,6 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import services.InstanceBP;
-import services.InstanceBasic;
-import services.InstanceManipulation;
-import services.InstanceState;
-import services.Pattern;
-import services.PatternBasic;
-import services.Template;
 import services.WebServiseError;
 
 public class InstanceServiceTest {

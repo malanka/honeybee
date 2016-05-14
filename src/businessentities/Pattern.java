@@ -1,4 +1,4 @@
-package services;
+package businessentities;
 
 
 import java.io.Serializable;
@@ -12,6 +12,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
+
+import services.InstanceService;
+import services.PatternService;
+import services.TemplateService;
 
 @XmlRootElement(name = "pattern")
 public class Pattern implements Serializable {

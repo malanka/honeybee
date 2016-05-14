@@ -1,4 +1,4 @@
-package services;
+package businessentities;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package services;
+package businessentities;
 
 
 import java.io.Serializable;
@@ -161,7 +161,7 @@ public class Template implements Serializable {
 				+ holes + ", links=" + links + "]";
 	}
 
-	boolean isEngineOk() {
+	public boolean isEngineOk() {
 		if ( this.engine == null )
 			return false;
 		return this.engine.isSet();

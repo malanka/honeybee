@@ -2,6 +2,8 @@ package services;
 
 import java.util.List;
 
+import businessentities.Pattern;
+import businessentities.PatternBasic;
 import serviceerrors.InternalErrorException;
 
 public interface PatternDAO {

@@ -15,6 +15,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import businessentities.Template;
 import serviceerrors.InternalErrorException;
 
 @Path("/templates")

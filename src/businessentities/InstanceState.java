@@ -1,4 +1,4 @@
-package services;
+package businessentities;
 
 public enum InstanceState {
 	 RUNNING,

@@ -1,4 +1,4 @@
-package services;
+package businessentities;
 
 import java.io.Serializable;
 
@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+
+import services.NotReadyException;
 
 @XmlRootElement(name = "instance")
 public class InstanceBasic implements Serializable{

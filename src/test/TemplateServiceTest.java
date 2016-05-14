@@ -6,6 +6,8 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import businessentities.Hole;
+import businessentities.Template;
 import engines.EngineBP;
 import engines.EngineBpe;
 import entityclients.TemplateClient;
@@ -17,8 +19,6 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import services.Hole;
-import services.Template;
 import services.WebServiseError;
 
 public class TemplateServiceTest {

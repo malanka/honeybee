@@ -18,6 +18,9 @@ import javax.xml.bind.Marshaller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import businessentities.InstanceBP;
+import businessentities.InstanceState;
+import businessentities.Pattern;
 import serviceerrors.InternalErrorException;
 
 public class InstanceDAOfile implements InstanceDAO{

@@ -13,12 +13,12 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
+import businessentities.Hole;
+import businessentities.Pattern;
+import businessentities.PatternBasic;
+import businessentities.Template;
 import engines.EngineBpe;
 import engines.EngineBP;
-import services.Hole;
-import services.PatternBasic;
-import services.Template;
-import services.Pattern;
 
 public class ResttestInstance {
 

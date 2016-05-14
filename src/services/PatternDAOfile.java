@@ -11,6 +11,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import businessentities.Pattern;
+import businessentities.PatternBasic;
+import businessentities.Template;
 import serviceerrors.InternalErrorException;
 
 public class PatternDAOfile implements PatternDAO {

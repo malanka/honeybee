@@ -2,6 +2,7 @@ package services;
 
 import java.util.List;
 
+import businessentities.Template;
 import serviceerrors.InternalErrorException;
 
 public interface templateDAO {
