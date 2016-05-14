@@ -8,9 +8,11 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
@@ -78,6 +80,7 @@ public class Template implements Serializable {
 	public void setEvent_end(String event_end) {
 		this.event_end = event_end;
 	}
+
 	@JsonGetter("holes")
 	public List<Hole> getHoles() {
 		return holes;
@@ -88,27 +91,29 @@ public class Template implements Serializable {
 		return engine;
 	}
 
-	@XmlElement
 	@JsonSetter("engine")
+	@XmlElement
 	public void setEngine(EngineBpe engine) {
 		if ( engine.getName() == EngineBP.BOONITA7_2) {
 			this.engine = new BonitaConnector7_2(engine);
 		}
 	}
-	
+
+	@JsonSetter("holes")
 	@XmlElementWrapper(name="holes")
 	@XmlElement(name="hole")
-	//    @JsonSetter("holes")
 	public void setHoles(List<Hole> holes) {
 		this.holes = holes;
 	}
+
 	@JsonGetter("links")
 	public List<ActionLink> getLinks() {
 		return links;
 	}
+
+	@JsonSetter("links")
 	@XmlElementWrapper(name="links")
 	@XmlElement(name="link")
-	//    @JsonSetter("links")
 	public void setLinks(List<ActionLink> links) {
 		this.links = links;
 	}
@@ -161,6 +166,8 @@ public class Template implements Serializable {
 				+ holes + ", links=" + links + "]";
 	}
 
+	@JsonIgnore
+	@XmlTransient
 	public boolean isEngineOk() {
 		if ( this.engine == null )
 			return false;

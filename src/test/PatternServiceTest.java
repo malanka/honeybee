@@ -213,7 +213,7 @@ public class PatternServiceTest {
 		Template template2 = new Template(t_id2, "Second", "datain1","dataout1","event1s","event1e", holes, engine);
 		clientTemplate.addTemplate(template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		clientTemplate.addTemplate(template2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-
+		
 		PatternBasic patternBasic1 = new PatternBasic("FirstPattern", template1.getId());
 		Pattern pattern1 = testPatternAddOk(patternBasic1, template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		PatternBasic patternBasic2= new PatternBasic("SecondPattern", template2.getId());

@@ -22,7 +22,7 @@
 	   </init-param>
        <init-param>
           <param-name>jersey.config.server.provider.packages</param-name>
-          <param-value>services,com.fasterxml.jackson.jaxrs.json</param-value>
+          <param-value>services,businessentities,com.fasterxml.jackson.jaxrs.json</param-value>
        </init-param>
   </servlet>
   <servlet-mapping>
