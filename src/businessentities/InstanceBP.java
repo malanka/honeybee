@@ -1,6 +1,7 @@
 package businessentities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class InstanceBP implements Serializable{
 
 	private List<ActionLink>links = null;
 	// TODO change type
-	private List<PatternHole> holes = null;
+	private List<InstanceHole> holes = null;
 	
 	@JsonIgnore
 	@XmlTransient
@@ -136,14 +137,14 @@ public class InstanceBP implements Serializable{
 		return links;
 	}
 	@JsonGetter ("holes")
-	public List<PatternHole> getHoles() {
+	public List<InstanceHole> getHoles() {
 		return holes;
 	}
 	
 	@JsonSetter ("holes")
 	@XmlElementWrapper(name="holes")
 	@XmlElement(name="hole")
-	public void setHoles(List<PatternHole> holes) {
+	public void setHoles(List<InstanceHole> holes) {
 		this.holes = holes;
 	}
 
@@ -179,7 +180,7 @@ public class InstanceBP implements Serializable{
 	}
 	
 	public InstanceBP(String instanceId, Date startDate, Date lastChangeDate, String patternId,
-			List<Integer> currentActivities, List<PatternHole> holes) {
+			List<Integer> currentActivities, List<InstanceHole> holes) {
 		super();
 		this.instanceId = instanceId;
 		this.startDate = startDate;
@@ -250,24 +251,17 @@ public class InstanceBP implements Serializable{
 	public InstanceBP() {
 		super();
 	}
-	
+
+	@JsonIgnore
+	@XmlTransient
 	private void setHolesFromPattern(List<PatternHole> holes) {
-		// TODO
-		this.holes = holes;
-/*		if ( holes == null ) {
+		if ( holes == null ) {
 			this.holes = null;
 			return;
 		}
-		if ( this.id == null) {
-			System.out.println("WOW NULL!!!");
+		this.holes = new ArrayList<InstanceHole>();
+		for ( PatternHole aHole : holes ) {
+			this.holes.add (new InstanceHole(aHole, null));
 		}
-		this.holes = new ArrayList<PatternHole>();
-		for ( Hole aHole : holes ) {
-			if ( aHole == null) {
-				System.out.println("WOW1 NULL!!!");
-			}
-			this.holes.add (new PatternHole(aHole, this.id));
-		}
-		*/
 	}
 }

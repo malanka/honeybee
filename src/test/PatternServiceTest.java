@@ -190,7 +190,7 @@ public class PatternServiceTest {
 		testPatternAddBadRequestDocument(patternBasic2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, "'template_id' has to be specified", 400);
 
 		// empty name
-		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "7908120732971969775", "http://localhost:8080/bonita");
+		EngineBpe engine = new EngineBpe(EngineBP.TESTCONNECTOR, "7908120732971969775", "http://localhost:8080/bonita");
 		String id = "1";
 		Template template = new Template(id, "Fisrt", "datain1","dataout1","event1s","event1e", null, engine);
 		clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);

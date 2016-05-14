@@ -9,10 +9,12 @@ import org.junit.Test;
 import businessentities.Hole;
 import businessentities.InstanceBP;
 import businessentities.InstanceBasic;
+import businessentities.InstanceHole;
 import businessentities.InstanceManipulation;
 import businessentities.InstanceState;
 import businessentities.Pattern;
 import businessentities.PatternBasic;
+import businessentities.PatternHole;
 import businessentities.Template;
 import engines.EngineBP;
 import engines.EngineBpe;
@@ -79,7 +81,7 @@ public class InstanceServiceTest {
 		testInstanceListEmpty(MediaType.APPLICATION_XML);
 	}
 
-	private InstanceBP testInstanceAddOk(InstanceBasic instanceBasic, String mediaTypeIn, String mediaTypeOut) {
+	private InstanceBP testInstanceAddOk(InstanceBasic instanceBasic, String mediaTypeIn, String mediaTypeOut, Pattern pattern) {
 		System.out.println("testInstanceAddOk");
 		Response response = clientInstance.addInstance(instanceBasic, mediaTypeIn, mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
@@ -87,31 +89,25 @@ public class InstanceServiceTest {
 			InstanceBP instanceNew = response.readEntity(new GenericType<InstanceBP>(){});
 			assertNotNull(instanceNew);
 			System.out.println(instanceNew);
-			/*
-			assertTrue(instanceNew.getTemplate().equals(instanceBasic.getTemplateId()));
-			if ( template.getHoles() == null || template.getHoles().isEmpty() ) {
-				assertTrue(instanceNew.getStatus().equals(InstanceStatus.READY));
-			}
-			else {
-				assertTrue(instanceNew.getStatus().equals(InstanceStatus.WIP));
-			}
+			assertTrue(instanceNew.getPatternId().equals(instanceBasic.getPatternId()));
+			assertTrue(instanceNew.getState().equals(InstanceState.RUNNING));
 			// TODO instance links
-			if ( template.getHoles() == null ) {
+			if ( pattern.getHoles() == null ) {
 				assertTrue (instanceNew.getHoles() == null || instanceNew.getHoles().isEmpty());
 			} else {
 				for (InstanceHole instanceHole : instanceNew.getHoles() ) {
 					// TODO instance hole links
-					assertNull(instanceHole.getInstanceAssigned());
-					assertTrue(instanceHole.getInstanceParent().equals(instanceNew.getId()));
 					int x = 0;
-					for ( Hole templateHole : template.getHoles() ) {
-						if  (instanceHole.compareWith(templateHole) ) {
+					for ( PatternHole patternHole : pattern.getHoles() ) {
+						if  (instanceHole.compareWith(patternHole) ) {
 							x++;
+							assertNull(instanceHole.getInstanceId());
+							assertTrue(instanceHole.compareWith(patternHole));
 						}
 					}
 					assertTrue(x == 1);
 				}
-			}*/
+			}
 			return instanceNew;
 		} catch ( Exception e ) {
 			e.printStackTrace();
@@ -208,8 +204,8 @@ public class InstanceServiceTest {
 		
 		// test instance creation
 		InstanceBasic instanceBasic = new InstanceBasic(pattern.getId());
-		InstanceBP instance1 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-		InstanceBP instance2 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
+		InstanceBP instance1 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, pattern);
+		InstanceBP instance2 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, pattern);
 
 		testInstanceGetOk(instance1, MediaType.APPLICATION_JSON);
 		testInstanceGetOk(instance2, MediaType.APPLICATION_XML);
@@ -228,9 +224,9 @@ public class InstanceServiceTest {
 	*/
 	}
 
-	private InstanceBP testInstancePutOk(InstanceBP instance1, InstanceManipulation instanceManipulation, String mediaTypeIn, String mediaTypeOut) {
+	private InstanceBP testInstancePutOk(InstanceBP instance, InstanceManipulation instanceManipulation, String mediaTypeIn, String mediaTypeOut) {
 		System.out.println("testInstancePutOk");
-		Response response = clientInstance.doAction(instance1.getInstanceId(), instanceManipulation, mediaTypeIn, mediaTypeOut);
+		Response response = clientInstance.doAction(instance.getInstanceId(), instanceManipulation, mediaTypeIn, mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
 			InstanceBP instanceNew = response.readEntity(new GenericType<InstanceBP>(){});
@@ -290,8 +286,8 @@ public class InstanceServiceTest {
 		
 		// test instance creation
 		InstanceBasic instanceBasic = new InstanceBasic(pattern.getId());
-		InstanceBP instance1 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-		InstanceBP instance2 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
+		InstanceBP instance1 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, pattern);
+		InstanceBP instance2 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, pattern);
 
 		testInstanceGetOk(instance1, MediaType.APPLICATION_JSON);
 		testInstanceGetOk(instance2, MediaType.APPLICATION_XML);

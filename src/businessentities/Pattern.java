@@ -8,6 +8,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -67,19 +68,14 @@ public class Pattern implements Serializable {
 	}
 
 	@JsonIgnore
+	@XmlTransient
 	public void setHolesFromTemplate(List<Hole> holes) {
 		if ( holes == null ) {
 			this.holes = null;
 			return;
 		}
-		if ( this.id == null) {
-			System.out.println("WOW NULL!!!");
-		}
 		this.holes = new ArrayList<PatternHole>();
 		for ( Hole aHole : holes ) {
-			if ( aHole == null) {
-				System.out.println("WOW1 NULL!!!");
-			}
 			this.holes.add (new PatternHole(aHole, this.id));
 		}
 	}
