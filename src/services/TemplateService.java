@@ -95,12 +95,11 @@ public class TemplateService {
 			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
-		if ( template != null ) {
-			GenericEntity<Template> entity = new GenericEntity<Template>(template) {};
-			return Response.ok(entity).build();
-		}
-		else
+		if ( template == null ) {
 			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Template not found")).build();
+		}
+		GenericEntity<Template> entity = new GenericEntity<Template>(template) {};
+		return Response.ok(entity).build();	
 	}
 	
 	@DELETE

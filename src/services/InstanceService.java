@@ -32,14 +32,13 @@ public class InstanceService {
 
 	private static final String base = "http://localhost:9000/BP_REST_API/rest";
 
-	private InstanceDAO instanceDao = new DAOFactory().getInstanceDAO();
+	private InstanceDAO instanceDao = null;
 
-	private PatternDAO patternDao = new DAOFactory().getPatternDAO();
-
-	private templateDAO templateDao ;
+	private templateDAO templateDao = null;
 
 	public InstanceService () throws InternalErrorException {
 		templateDao = new DAOFactory().getTemplateDAO();
+		instanceDao = new DAOFactory().getInstanceDAO();
 	}
 
 	public static String getInstanceURI(String instanceId) {
@@ -75,11 +74,11 @@ public class InstanceService {
 	@POST
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Response createInstance(InstanceBasic instanceBasic){
+	public Response createInstance(InstanceBasic instanceBasic) {
+		System.out.println("createInstance");
 		if ( instanceBasic == null ) {
 			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Request document doesn't fit the expected format")).build();
 		}
-		System.out.println("createInstance");
 		try {
 			instanceBasic.checkIt();
 		} catch (NotReadyException e) {
@@ -103,8 +102,8 @@ public class InstanceService {
 			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
 			return Response.ok(entity).build();
 		} catch (InternalErrorException e) {
-			System.out.println(e.getMessage());
-			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
 	
@@ -117,7 +116,8 @@ public class InstanceService {
 			instanceDao.deleteAllInstances();
 			return Response.noContent().build();
 		} catch (InternalErrorException e) {
-			return Response.status(500).entity(new WebServiseError(e.getMessage())).build();
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
 	
@@ -137,13 +137,11 @@ public class InstanceService {
 			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
-		if ( instance != null ) {
-			System.out.println("Going to return:" + instance);
-			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
-			return Response.ok(entity).build();
-		}
-		else
+		if ( instance == null ) {
 			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Instance not found")).build();
+		}
+		GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
+		return Response.ok(entity).build();	
 	}
 
 	@GET
@@ -159,12 +157,11 @@ public class InstanceService {
 			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
-		if ( instance != null ) {
-			GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
-			return Response.ok(entity).build();
+		if ( instance == null ) {
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Instance not found")).build();
 		}
-		else
-			return Response.status(404).entity(new WebServiseError("Instance not found")).build();
+		GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
+		return Response.ok(entity).build();
 	}
 
 	@POST
@@ -181,46 +178,30 @@ public class InstanceService {
 			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
-		if ( instance != null ) {
-			for ( InstanceHole ahole : instance.getHoles() ) {
-				if ( ahole.getName().equals(holeName) ) {
-					// we found a hole
-					if ( ahole.getPatternAssigned() == null ) {
-						return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(new WebServiseError("Pattern for the hole is not assigned")).build();
-					}
-					
-					InstanceClient instanceClient = new InstanceClient(base);
-					Response response = instanceClient.addInstance(new InstanceBasic(ahole.getPatternAssigned()), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-					if ( response.getStatus() != 200 ) {
-						return response;
-					}
-					InstanceBP instanceNew = response.readEntity(InstanceBP.class);
-					ahole.setInstanceId(instanceNew.getInstanceId());
-					// pattern is assigneed, start it
-					GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
-					return Response.ok(entity).build();
-				}
-			}
-			// we didn't found such hole
-			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Instance hole not found")).build();
-		}
-		else
+		if ( instance == null ) {
 			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Instance not found")).build();
-	}
-/*
-	
-	@DELETE
-	@Path("{id}")
-	//@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response deleteTemplate(@PathParam("id") String id){
-		System.out.println("createTemplates");
-		if ( templateDao.deleteTemplate(id) == 0 )
-			return Response.noContent().build();
-		else
-			return Response.status(404).entity("Element not found").build();
-		// TODO fix error reporting
-	}*/
+		}
+		for ( InstanceHole ahole : instance.getHoles() ) {
+			if ( ahole.getName().equals(holeName) ) {
+				// we found a hole
+				if ( ahole.getPatternAssigned() == null ) {
+					return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(new WebServiseError("Pattern for the hole is not assigned")).build();
+				}
 
+				InstanceClient instanceClient = new InstanceClient(base);
+				Response response = instanceClient.addInstance(new InstanceBasic(ahole.getPatternAssigned()), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+				if ( response.getStatus() != HttpURLConnection.HTTP_OK ) {
+					return response;
+				}
+				InstanceBP instanceNew = response.readEntity(InstanceBP.class);
+				ahole.setInstanceId(instanceNew.getInstanceId());
+				// pattern is assigned, start it
+				GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
+				return Response.ok(entity).build();
+			}
+		}
+		// we didn't found such hole
+		return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Instance hole not found")).build();		
+	}
 
 }

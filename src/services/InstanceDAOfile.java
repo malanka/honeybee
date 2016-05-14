@@ -7,16 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import businessentities.InstanceBP;
 import businessentities.InstanceState;
@@ -80,31 +72,12 @@ public class InstanceDAOfile implements InstanceDAO{
 
 	@Override
 	public void deleteAllInstances() throws InternalErrorException {		
-		File file = new File(fileName);
-		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
 		saveInstanceList(new ArrayList<InstanceBP>());	
 	}
 	
 	@Override
 	public List<InstanceBP> getAllInstances(String patternId, InstanceState state) throws InternalErrorException {
-		File file = new File(fileName);
-		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exists");
-		
-		List<InstanceBP> instanceList = null;
-		try {
-			FileInputStream fis = new FileInputStream(file);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			instanceList = (List<InstanceBP>) ois.readObject();
-			ois.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new InternalErrorException(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			throw new InternalErrorException(e.getMessage());
-		}
+		List<InstanceBP> instanceList = readInstanceList();
 		if ( ( state == null) && ( patternId == null ) ) {
 			// no filters were applied
 			return instanceList;
@@ -115,24 +88,7 @@ public class InstanceDAOfile implements InstanceDAO{
 
 	@Override
 	public InstanceBP createInstance(String patternId) throws InternalErrorException {
-		File file = new File(fileName);
-		if ( !file.exists() )
-			throw new InternalErrorException("File '" + fileName + "' doesn't exist");
-
-		List<InstanceBP> instanceList = null;
-		try{
-			// read all instances
-			FileInputStream fis = new FileInputStream(file);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			instanceList = (List<InstanceBP>) ois.readObject();
-			ois.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new InternalErrorException(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			throw new InternalErrorException(e.getMessage());
-		}
+		List<InstanceBP> instanceList = readInstanceList();
 		// find a pattern
 		PatternDAO patternDao = new DAOFactory().getPatternDAO();
 		List<Pattern> patterns = patternDao.getAllPatterns();
@@ -147,7 +103,7 @@ public class InstanceDAOfile implements InstanceDAO{
 		InstanceBP instance = new InstanceBP(getNewId(), null, null, patternId, pattern.getHoles(), pattern.getTemplate());
 		instanceList.add(instance);
 		saveInstanceList(instanceList);
-		
+		/*
 		ObjectMapper mapper = new ObjectMapper();
 		//Object to JSON in String
 		try {
@@ -170,11 +126,10 @@ public class InstanceDAOfile implements InstanceDAO{
 		    }
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
-		}
-		
+		}*/
 		return instance;
 	}
-	
+
 	@Override
 	public InstanceBP getInstanceById(String id) throws InternalErrorException{
 		List<InstanceBP> instanceList = readInstanceList();
@@ -186,33 +141,6 @@ public class InstanceDAOfile implements InstanceDAO{
 		}
 		return null;
 	}
-/*
-	public int deleteTemplate(String id) {
-		List<Template> templateList = null;
-		try {
-			File file = new File(fileName);
-			if (file.exists()) {
-				FileInputStream fis = new FileInputStream(file);
-				ObjectInputStream ois = new ObjectInputStream(fis);
-				templateList = (List<Template>) ois.readObject();
-				ois.close();
-			}
-			Template tmp = new Template();
-			tmp.setId(id);
-			if ( templateList.remove(tmp) ) {
-				saveTemplateList(templateList);
-				return 0;
-			}
-			else
-				return 1;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return -1;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return -1;
-		}	
-	}*/
 
 	@Override
 	public InstanceBP putInstanceById(String id, InstanceState state) throws InternalErrorException {
@@ -223,7 +151,6 @@ public class InstanceDAOfile implements InstanceDAO{
 		if ( index != -1 ) {
 			InstanceBP instance= instanceList.get(index);
 			instance.setState(state);
-			System.out.println(instance);
 			saveInstanceList(instanceList);
 			return instance;
 		}

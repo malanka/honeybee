@@ -16,13 +16,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import businessentities.HoleManipulation;
-import businessentities.InstanceBP;
-import businessentities.InstanceBasic;
-import businessentities.InstanceHole;
 import businessentities.Pattern;
 import businessentities.PatternBasic;
 import businessentities.PatternHole;
-import entityclients.InstanceClient;
 import serviceerrors.InternalErrorException;
 
 @Path("/patterns")
@@ -148,7 +144,6 @@ public class PatternService {
 		if ( patternHole == null ) {
 			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern or hole not found")).build();
 		}
-		
 		GenericEntity<PatternHole> entity = new GenericEntity<PatternHole>(patternHole) {};
 		return Response.ok().entity(entity).build();
 	}
