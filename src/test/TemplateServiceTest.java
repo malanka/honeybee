@@ -64,8 +64,7 @@ public class TemplateServiceTest {
 		testTemplateListEmpty(MediaType.APPLICATION_JSON);
 		testTemplateListEmpty(MediaType.APPLICATION_XML);
 	}
-	
-	
+
 	private void testTemplateAddOk(Template template, String mediaTypeIn, String mediaTypeOut) {
 		System.out.println("testTemplateAddOk");
 		Response response = clientTemplate.addTemplate(template, mediaTypeIn, mediaTypeOut);
@@ -85,7 +84,7 @@ public class TemplateServiceTest {
 		Response response = clientTemplate.deleteTemplate(template.getId(), mediaTypeOut);
 		assertTrue(response.getStatus() == 204);
 	}
-	
+
 	private void testTemplateGetOk(Template template, String mediaTypeOut) {
 		System.out.println("testTemplateGetOk");
 		Response response = clientTemplate.getTemplate(template.getId(), mediaTypeOut);
@@ -99,7 +98,7 @@ public class TemplateServiceTest {
 			fail ("Cannot read for " + mediaTypeOut);
 		}
 	}
-	
+
 	private void testTemplateGetNotFound(String templateId, String mediaTypeOut) {
 		System.out.println("testTemplateGetNotFound");
 		Response response = clientTemplate.getTemplate(templateId, mediaTypeOut);
@@ -137,7 +136,7 @@ public class TemplateServiceTest {
 		holes.add(hole2);
 		Template template1 = new Template("id1", "Fisrt", "datain1","dataout1","event1s","event1e", holes, engine);
 		Template template2 = new Template("id2", "Second", "datain1","dataout1","event1s","event1e", holes, engine);
-
+		
 		testTemplateAddOk(template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		testTemplateAddOk(template2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
 

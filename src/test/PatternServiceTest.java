@@ -201,7 +201,7 @@ public class PatternServiceTest {
 
 	@Test
 	public void testCRDPatternOK() {
-		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "7908120732971969775", "http://localhost:8080/bonita");
+		EngineBpe engine = new EngineBpe(EngineBP.TESTCONNECTOR, "7908120732971969775", "http://localhost:8080/bonita");
 		ArrayList <Hole> holes= new ArrayList<Hole>();
 		Hole hole1 = new Hole("holename1","as","asd","ad","aasd");
 		Hole hole2 = new Hole("holename2","as","asd","ad","aasd");

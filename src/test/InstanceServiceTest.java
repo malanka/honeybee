@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import businessentities.Hole;
 import businessentities.InstanceBP;
 import businessentities.InstanceBasic;
 import businessentities.InstanceManipulation;
@@ -19,6 +20,7 @@ import entityclients.InstanceClient;
 import entityclients.PatternClient;
 import entityclients.TemplateClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.GenericType;
@@ -196,9 +198,8 @@ public class InstanceServiceTest {
 	@Test
 	public void testCRDInstanceOKwithoutHoles() {
 		// create template
-		EngineBpe engine = new EngineBpe(EngineBP.BOONITA7_2, "8991886837299789007", "http://localhost:8080/bonita");
+		EngineBpe engine = new EngineBpe(EngineBP.TESTCONNECTOR, "8991886837299789007", "http://localhost:8080/bonita");
 		Template template = new Template("1", "Fisrt", "datain1","dataout1","event1s","event1e", null, engine);
-		clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		// create pattern
 		PatternBasic patternBasic = new PatternBasic("FirstPattern", template.getId());
@@ -267,5 +268,45 @@ public class InstanceServiceTest {
 		}
 		
 	}
+	
+	@Test
+	public void testCRDInstanceOKwithHoles() {
+		// create template
+		EngineBpe engine = new EngineBpe(EngineBP.TESTCONNECTOR, "8991886837299789007", "http://localhost:8080/bonita");
+		ArrayList <Hole> holes= new ArrayList<Hole>();
+		Hole hole1 = new Hole("holename1","as","asd","ad","aasd");
+		Hole hole2 = new Hole("holename2","as","asd","ad","aasd");
+		holes.add(hole1);
+		holes.add(hole2);
+		Template template = new Template("1", "Fisrt", "datain1","dataout1","event1s","event1e", holes, engine);
+		assertNotNull(template);
+		Response response = clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		System.out.println(response.readEntity(String.class));
 
+		// create pattern
+		PatternBasic patternBasic = new PatternBasic("FirstPattern", template.getId());
+		response = clientPattern.addPattern(patternBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		Pattern pattern = response.readEntity(new GenericType<Pattern>(){});
+		
+		// test instance creation
+		InstanceBasic instanceBasic = new InstanceBasic(pattern.getId());
+		InstanceBP instance1 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		InstanceBP instance2 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
+
+		testInstanceGetOk(instance1, MediaType.APPLICATION_JSON);
+		testInstanceGetOk(instance2, MediaType.APPLICATION_XML);
+		
+		InstanceManipulation instanceManipulation = new InstanceManipulation(InstanceState.TERMINATED);
+		testInstancePutOk(instance1,instanceManipulation, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+/*
+		testPatternDeleteOk(instance1, MediaType.APPLICATION_JSON);
+		testPatternDeleteOk(instance2, MediaType.APPLICATION_XML);
+
+		testPatternGetNotFound(instance1.getId(), MediaType.APPLICATION_JSON);
+		testPatternGetNotFound(instance2.getId(), MediaType.APPLICATION_XML);
+
+		testPatternDeleteNotFound(instance1.getId(), MediaType.APPLICATION_JSON);
+		testPatternDeleteNotFound(instance2.getId(), MediaType.APPLICATION_XML);
+	*/
+	}
 }

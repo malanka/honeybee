@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 
 import engines.BonitaConnector7_2;
 import engines.EngineBpe;
+import engines.TestConnector;
 import engines.EngineBP;
 
 @XmlRootElement(name = "template")
@@ -96,6 +97,9 @@ public class Template implements Serializable {
 	public void setEngine(EngineBpe engine) {
 		if ( engine.getName() == EngineBP.BOONITA7_2) {
 			this.engine = new BonitaConnector7_2(engine);
+		}
+		if ( engine.getName() == EngineBP.TESTCONNECTOR) {
+			this.engine = new TestConnector(engine);
 		}
 	}
 
