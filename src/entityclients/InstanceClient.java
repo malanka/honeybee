@@ -61,4 +61,10 @@ public class InstanceClient {
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.put(Entity.entity(instanceManipulation, mediaTypeIn));
 	}
+	
+	public Response startHole(String instanceId, String holeName, String mediaTypeIn, String mediaTypeOut) {
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(instanceId).path("holes").path(holeName);
+		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
+		return invocationBuilder.post(Entity.entity(null, mediaTypeIn));
+	}
 }

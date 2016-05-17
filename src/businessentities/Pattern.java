@@ -76,7 +76,7 @@ public class Pattern implements Serializable {
 		}
 		this.holes = new ArrayList<PatternHole>();
 		for ( Hole aHole : holes ) {
-			this.holes.add (new PatternHole(aHole, this.id));
+			this.holes.add (new PatternHole(aHole, this.id, null));
 		}
 	}
 	

@@ -43,13 +43,13 @@ public class InstanceHole extends PatternHole implements Serializable {
 	}
 
 	public InstanceHole(PatternHole patternHole, String instanceId) {
-		super(patternHole, patternHole.getPatternParent());
+		super(patternHole, patternHole.getPatternParent(), patternHole.getPatternAssigned());
 		this.instanceId = instanceId;
 		// TODO links
 	}
 
 	public InstanceHole(PatternHole patternHole) {
-		super(patternHole, patternHole.getPatternParent());
+		super(patternHole, patternHole.getPatternParent(), patternHole.getPatternAssigned());
 		this.instanceId = null;
 		// TODO links
 	}

@@ -255,11 +255,22 @@ public class PatternServiceTest {
 
 		HoleManipulation holeManipulation = new HoleManipulation(pattern2.getId(), null);
 		testAssignHoleOk(pattern1, holeManipulation, hole1.getName(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-		testAssignHoleOk(pattern1, holeManipulation, hole1.getName(), MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
+		PatternHole e = testAssignHoleOk(pattern1, holeManipulation, hole1.getName(), MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
 		
+		ArrayList<PatternHole> newHoles = new ArrayList<PatternHole>();
+		if ( pattern1.getHoles().get(0).getName().equals(hole1.getName()) ) {
+			newHoles.add(pattern1.getHoles().get(0));
+		} else {
+			newHoles.add(pattern1.getHoles().get(1));
+		}
+		newHoles.add(e);
+		pattern1.setHoles(newHoles);
+		System.out.println(newHoles);
+		testPatternGetOk(pattern1, MediaType.APPLICATION_JSON);
+		testPatternGetOk(pattern1, MediaType.APPLICATION_XML);
 	}
 
-	private void testAssignHoleOk(Pattern pattern, HoleManipulation holeManipulation, String holeName, String mediaTypeIn, String mediaTypeOut) {
+	private PatternHole testAssignHoleOk(Pattern pattern, HoleManipulation holeManipulation, String holeName, String mediaTypeIn, String mediaTypeOut) {
 		Response response = clientPattern.assignPattern(pattern.getId(), holeName, holeManipulation, mediaTypeIn, mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
@@ -267,10 +278,12 @@ public class PatternServiceTest {
 			assertNotNull(patternHole);
 			assertTrue(patternHole.getName().equals(holeName));
 			assertTrue(patternHole.getPatternAssigned().equals(holeManipulation.getAssigned_pattern_id()));
+			return patternHole;
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			fail ("Cannot read for " + mediaTypeOut);
 		}
+		return null;
 	}
 
 }

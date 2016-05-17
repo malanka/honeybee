@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import businessentities.Hole;
+import businessentities.HoleManipulation;
 import businessentities.InstanceBP;
 import businessentities.InstanceBasic;
 import businessentities.InstanceHole;
@@ -304,5 +305,62 @@ public class InstanceServiceTest {
 		testPatternDeleteNotFound(instance1.getId(), MediaType.APPLICATION_JSON);
 		testPatternDeleteNotFound(instance2.getId(), MediaType.APPLICATION_XML);
 	*/
+	}
+	
+	@Test
+	public void testHoleStart() {
+		// create template with holes
+		EngineBpe engine1 = new EngineBpe(EngineBP.TESTCONNECTOR, "8991886837299789007", "http://localhost:8080/bonita");
+		ArrayList <Hole> holes1= new ArrayList<Hole>();
+		Hole hole11 = new Hole("A","as","asd","ad","aasd");
+		holes1.add(hole11);
+		Template template1 = new Template("1", "Fisrt", "datain1","dataout1","event1s","event1e", holes1, engine1);
+		assertNotNull(template1);
+		Response response = clientTemplate.addTemplate(template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+		System.out.println(response.readEntity(String.class));
+
+		// create template without holes
+		EngineBpe engine2 = new EngineBpe(EngineBP.TESTCONNECTOR, "8991886837299789007", "http://localhost:8080/bonita");
+		Template template2 = new Template("2", "Second", "datain1","dataout1","event1s","event1e", null, engine2);
+		assertNotNull(template2);
+		response = clientTemplate.addTemplate(template2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+		System.out.println(response.readEntity(String.class));
+		
+		// create pattern for template without holes
+		PatternBasic patternBasic = new PatternBasic("FirstPattern", template2.getId());
+		assertNotNull(patternBasic);
+		response = clientPattern.addPattern(patternBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+		Pattern pattern_filler = response.readEntity(new GenericType<Pattern>(){});		
+
+		// create pattern for template with holes
+		patternBasic = new PatternBasic("SecondPattern", template1.getId());
+		assertNotNull(patternBasic);
+		response = clientPattern.addPattern(patternBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+		Pattern pattern_to_fill = response.readEntity(new GenericType<Pattern>(){});
+		
+		// Assign pattern_filler to hole A in the pattern_to_fill
+		HoleManipulation holeManipulation = new HoleManipulation(pattern_filler.getId(), null);
+		assertNotNull(holeManipulation);
+		response = clientPattern.assignPattern(pattern_to_fill.getId(), hole11.getName(), holeManipulation, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+		PatternHole e = response.readEntity(PatternHole.class);
+		ArrayList<PatternHole> newHoles = new ArrayList<PatternHole>();
+		newHoles.add(e);
+		pattern_to_fill.setHoles(newHoles);
+		
+		// start an instance for pattern with holes
+		InstanceBasic instanceBasic = new InstanceBasic(pattern_to_fill.getId());
+		InstanceBP instance1 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, pattern_to_fill);
+		InstanceBP instance2 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, pattern_to_fill);
+		
+		// signal instance to start a hole
+		response = clientInstance.startHole(instance1.getInstanceId(), hole11.getName(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+		response = clientInstance.startHole(instance2.getInstanceId(), hole11.getName(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
 	}
 }

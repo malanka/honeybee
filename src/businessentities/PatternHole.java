@@ -37,9 +37,10 @@ public class PatternHole extends Hole implements Serializable {
 		super();
 	}
 
-	public PatternHole(Hole hole, String patternParent) {
+	public PatternHole(Hole hole, String patternParent, String patternAssigned) {
 		super(hole.getName(), hole.getData_in(), hole.getData_out(), hole.getEvent_start(), hole.getEvent_end());
 		this.patternParent = patternParent;
+		this.patternAssigned = patternAssigned;
 		// TODO links
 	}
 

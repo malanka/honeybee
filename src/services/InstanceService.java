@@ -126,7 +126,7 @@ public class InstanceService {
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getInstance(@PathParam("id") String id, InstanceManipulation action) {
-		System.out.println("put instanceFINISHED" + action);
+		System.out.println("put instanceManipulation:" + action);
 		if ( action == null ) {
 			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Request document doesn't fit the expected format")).build();
 		}
@@ -185,22 +185,24 @@ public class InstanceService {
 			if ( ahole.getName().equals(holeName) ) {
 				// we found a hole
 				if ( ahole.getPatternAssigned() == null ) {
-					return Response.status(HttpURLConnection.HTTP_CONFLICT).entity(new WebServiseError("Pattern for the hole is not assigned")).build();
+					System.out.println("pattern is not assigned");
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError("Pattern for the hole is not assigned")).build();
 				}
-
-				InstanceClient instanceClient = new InstanceClient(base);
-				Response response = instanceClient.addInstance(new InstanceBasic(ahole.getPatternAssigned()), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+				InstanceBasic instanceBasic = new InstanceBasic(ahole.getPatternAssigned());
+				Response response = this.createInstance(instanceBasic);
 				if ( response.getStatus() != HttpURLConnection.HTTP_OK ) {
+					// instance cannot be created
+					System.out.println("Instance was not created");
 					return response;
 				}
-				InstanceBP instanceNew = response.readEntity(InstanceBP.class);
+				InstanceBP instanceNew = (InstanceBP) response.getEntity();
 				ahole.setInstanceId(instanceNew.getInstanceId());
-				// pattern is assigned, start it
 				GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
 				return Response.ok(entity).build();
 			}
 		}
 		// we didn't found such hole
+		System.out.println("Specified hole doesn't exist");
 		return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Instance hole not found")).build();		
 	}
 
