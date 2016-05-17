@@ -37,14 +37,16 @@ public class BonitaConnector7_2 extends EngineBpe implements Serializable{
 
 	@Override
 	public WS getProcessResource() {
-		if ( getProcessId() == null || getBaseURI() == null )
+		if ( !isSet() ) {
 			return null;
+		}
 		return new WS(getBaseURI() + relativeProcessURI + getProcessId(), "GET", null);
 	}
 
 	private WS startProcess(String instanceUrl) {
-		if ( getProcessId() == null || getBaseURI() == null )
+		if ( !isSet()  ) {
 			return null;
+		}
 		String requestDocument = "{ \"processDefinitionId\":" + getProcessId() + ",\"variables\":[{\"name\":\"callerurl\", \"value\":\"" + instanceUrl + "\"}]}";
 		return new WS(getBaseURI() + relativeInstanceURI, "POST", requestDocument);
 	}
@@ -62,7 +64,7 @@ public class BonitaConnector7_2 extends EngineBpe implements Serializable{
 			}
 			BonitaCase bonitaCase = createCase(instanceUrl, cookies);
 			if ( bonitaCase == null ) {
-				throw new InternalErrorException ("Insttance was not created");
+				throw new InternalErrorException ("Instance was not created");
 			}
 			// TODO logout service
 			return new GeneralCase(bonitaCase.startDateCorrect(), bonitaCase.getId(), bonitaCase.getState());	

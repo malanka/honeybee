@@ -62,8 +62,10 @@ public class EngineBpe implements Serializable{
 	@JsonIgnore
 	@XmlTransient
 	public Boolean isSet() {
-		if ( this.name == null || this.processId == null || baseURI == null )
+		if ( ( this.name == null || this.processId == null || baseURI == null ) ||
+			 ( this.processId.isEmpty() || baseURI.isEmpty() ) ) {
 			return false;
+		}
 		return true;
 	}
 	@Override
@@ -72,10 +74,12 @@ public class EngineBpe implements Serializable{
 	}
 
 	@JsonIgnore
+	@XmlTransient
 	public WS getProcessResource() {
 		return null;
 	}
-
+	@JsonIgnore
+	@XmlTransient
 	public GeneralCase generateInstance (String instanceUrl) throws InternalErrorException {
 		return null;
 	}
