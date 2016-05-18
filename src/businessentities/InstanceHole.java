@@ -49,26 +49,26 @@ public class InstanceHole extends PatternHole implements Serializable {
 	public InstanceHole(String name, String data_in, String data_out, String event_start, String event_end,
 			String patternParent, String patternAssigned, List<ActionLink> links) {
 		super(name, data_in, data_out, event_start, event_end, patternParent, patternAssigned, links);
-		this.instanceState = InstanceState.NOT_STARTED;
+		this.instanceState = InstanceState.NOTSTARTED;
 		// TODO links
 	}
 
 	public InstanceHole() {
 		super();
-		this.instanceState = InstanceState.NOT_STARTED;
+		this.instanceState = InstanceState.NOTSTARTED;
 	}
 
 	public InstanceHole(PatternHole patternHole, String instanceId) {
 		super(patternHole, patternHole.getPatternParent(), patternHole.getPatternAssigned());
 		this.instanceId = instanceId;
-		this.instanceState = InstanceState.NOT_STARTED;
+		this.instanceState = InstanceState.NOTSTARTED;
 		// TODO links
 	}
 
 	public InstanceHole(PatternHole patternHole) {
 		super(patternHole, patternHole.getPatternParent(), patternHole.getPatternAssigned());
 		this.instanceId = null;
-		this.instanceState = InstanceState.NOT_STARTED;
+		this.instanceState = InstanceState.NOTSTARTED;
 		// TODO links
 	}
 

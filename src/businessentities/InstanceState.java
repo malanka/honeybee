@@ -1,7 +1,7 @@
 package businessentities;
 
 public enum InstanceState {
-	NOT_STARTED,
+	NOTSTARTED,
 	RUNNING,
 	ABORTED,
 	TERMINATED,

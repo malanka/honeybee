@@ -239,7 +239,7 @@ public class InstanceService {
 		for ( InstanceHole ahole : instance.getHoles() ) {
 			if ( ahole.getName().equals(holeName) ) {
 				// we found a hole
-				if ( ahole.getInstanceState() != InstanceState.NOT_STARTED ) {
+				if ( ahole.getInstanceState() != InstanceState.NOTSTARTED ) {
 					System.out.println("Instance has been already started!!");
 					// so, we need to check the actual state of the instance assigned to the hole
 					try {
