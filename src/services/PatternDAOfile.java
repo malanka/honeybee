@@ -153,7 +153,10 @@ public class PatternDAOfile implements PatternDAO {
 			return null;
 		}
 		Pattern pattern = patternList.get(index);
-		
+		if ( pattern.getHoles() == null ) {
+			System.out.println("This pattern doesn't have holes");
+			return null;
+		}
 		// let's check its holes
 		for ( PatternHole ahole : pattern.getHoles() ) {
 			if ( ahole.getName().equals(holeName) ) {
