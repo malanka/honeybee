@@ -143,13 +143,13 @@ public class InstanceDAOfile implements InstanceDAO{
 	}
 
 	@Override
-	public InstanceBP putInstanceById(String id, InstanceState state) throws InternalErrorException {
+	public InstanceBP changeInstanceStateById(String id, InstanceState state) throws InternalErrorException {
 		List<InstanceBP> instanceList = readInstanceList();
 		InstanceBP tmp = new InstanceBP();
 		tmp.setInstanceId(id);
 		int index = instanceList.indexOf(tmp);
 		if ( index != -1 ) {
-			InstanceBP instance= instanceList.get(index);
+			InstanceBP instance = instanceList.get(index);
 			instance.setState(state);
 			saveInstanceList(instanceList);
 			return instance;
@@ -157,5 +157,17 @@ public class InstanceDAOfile implements InstanceDAO{
 		return null;
 	}
 
-
+	@Override
+	public InstanceBP updateInstance(InstanceBP instanceNew) throws InternalErrorException {
+		List<InstanceBP> instanceList = readInstanceList();
+		InstanceBP tmp = new InstanceBP();
+		tmp.setInstanceId(instanceNew.getInstanceId());
+		int index = instanceList.indexOf(tmp);
+		if ( index != -1 ) {
+			instanceList.set(index, instanceNew);
+			saveInstanceList(instanceList);
+			return instanceNew;
+		}
+		return null;
+	}
 }

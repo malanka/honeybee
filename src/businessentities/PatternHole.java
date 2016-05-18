@@ -84,6 +84,37 @@ public class PatternHole extends Hole implements Serializable {
 				+ links + ", toString()=" + super.toString() + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((patternAssigned == null) ? 0 : patternAssigned.hashCode());
+		result = prime * result + ((patternParent == null) ? 0 : patternParent.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PatternHole other = (PatternHole) obj;
+		if (patternAssigned == null) {
+			if (other.patternAssigned != null)
+				return false;
+		} else if (!patternAssigned.equals(other.patternAssigned))
+			return false;
+		if (patternParent == null) {
+			if (other.patternParent != null)
+				return false;
+		} else if (!patternParent.equals(other.patternParent))
+			return false;
+		return true;
+	}
+
 	public boolean compareWith(Hole obj) {
 		if (this == obj)
 			return true;

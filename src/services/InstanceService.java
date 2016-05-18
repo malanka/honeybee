@@ -24,7 +24,6 @@ import businessentities.InstanceManipulation;
 import businessentities.InstanceState;
 import businessentities.Template;
 import engines.GeneralCase;
-import entityclients.InstanceClient;
 import serviceerrors.InternalErrorException;
 
 @Path("/instances")
@@ -132,7 +131,7 @@ public class InstanceService {
 		}
 		InstanceBP instance = null;
 		try {
-			instance = instanceDao.putInstanceById(id, action.getState());
+			instance = instanceDao.changeInstanceStateById(id, action.getState());
 		} catch (InternalErrorException e) {
 			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
@@ -181,6 +180,10 @@ public class InstanceService {
 		if ( instance == null ) {
 			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Instance not found")).build();
 		}
+		if ( instance.getHoles() == null ) {
+			System.out.println("This instance doesn't have any holes at all");
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Instance hole not found")).build();
+		}
 		for ( InstanceHole ahole : instance.getHoles() ) {
 			if ( ahole.getName().equals(holeName) ) {
 				// we found a hole
@@ -197,13 +200,63 @@ public class InstanceService {
 				}
 				InstanceBP instanceNew = (InstanceBP) response.getEntity();
 				ahole.setInstanceId(instanceNew.getInstanceId());
-				GenericEntity<InstanceBP> entity = new GenericEntity<InstanceBP>(instance) {};
+				ahole.setInstanceState(InstanceState.RUNNING);
+				try {
+					instanceDao.updateInstance(instance);
+				} catch (InternalErrorException e) {
+					e.printStackTrace();
+					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError("Pattern for the hole is not assigned")).build();
+				}
+				GenericEntity<InstanceHole> entity = new GenericEntity<InstanceHole>(ahole) {};
 				return Response.ok(entity).build();
 			}
 		}
 		// we didn't found such hole
 		System.out.println("Specified hole doesn't exist");
-		return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Instance hole not found")).build();		
+		return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Instance hole not found")).build();		
+	}
+	
+	@GET
+	@Path("{id}/holes/{holename}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response getHole(@PathParam("id") String instanceId, @PathParam("holename") String holeName) {
+		System.out.println("getHole");
+		InstanceBP instance = null;
+		try {
+			instance = instanceDao.getInstanceById(instanceId);
+			System.out.println(instance);
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
+		if ( instance == null ) {
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Instance not found")).build();
+		}
+		if ( instance.getHoles() == null ) {
+			System.out.println("This instance doesn't have any holes at all");
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Instance hole not found")).build();
+		}
+		for ( InstanceHole ahole : instance.getHoles() ) {
+			if ( ahole.getName().equals(holeName) ) {
+				// we found a hole
+				if ( ahole.getInstanceState() != InstanceState.NOT_STARTED ) {
+					System.out.println("Instance has been already started!!");
+					// so, we need to check the actual state of the instance assigned to the hole
+					try {
+						InstanceBP instanceAssigned = instanceDao.getInstanceById(ahole.getInstanceId());
+						ahole.setInstanceState(instanceAssigned.getState());
+					} catch (InternalErrorException e) {
+						e.printStackTrace();
+						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+					}
+				}
+				GenericEntity<InstanceHole> entity = new GenericEntity<InstanceHole>(ahole) {};
+				return Response.ok(entity).build();
+			}
+		}
+		// we didn't found such hole
+		System.out.println("Specified hole doesn't exist");
+		return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Instance hole not found")).build();		
 	}
 
 }

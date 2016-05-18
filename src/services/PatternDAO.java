@@ -17,8 +17,8 @@ public interface PatternDAO {
 	
 	public void deleteAllPatterns() throws InternalErrorException ;
 
-	int deletePattern(String id) throws InternalErrorException;
+	public int deletePattern(String id) throws InternalErrorException;
 
-	PatternHole assignPatternToHole(String patternId, String holeName, String assignedPattern)
+	public PatternHole assignPatternToHole(String patternId, String holeName, String assignedPattern)
 			throws InternalErrorException;
 }

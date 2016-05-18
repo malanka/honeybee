@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -18,8 +17,23 @@ public class InstanceHole extends PatternHole implements Serializable {
 	 */
 	private static final long serialVersionUID = -3014274278261206558L;
 
+	// state of the assigned instance
+	private InstanceState instanceState = null;
+	
 	// Id of the instance assigned to this hole
 	private String instanceId = null;
+
+	
+	@JsonGetter("state")
+	public InstanceState getInstanceState() {
+		return instanceState;
+	}
+
+	@JsonSetter("state")
+	@XmlElement(name="state")
+	public void setInstanceState(InstanceState instanceState) {
+		this.instanceState = instanceState;
+	}
 
 	@JsonGetter("instance_id")
 	public String getInstanceId() {
@@ -35,23 +49,55 @@ public class InstanceHole extends PatternHole implements Serializable {
 	public InstanceHole(String name, String data_in, String data_out, String event_start, String event_end,
 			String patternParent, String patternAssigned, List<ActionLink> links) {
 		super(name, data_in, data_out, event_start, event_end, patternParent, patternAssigned, links);
+		this.instanceState = InstanceState.NOT_STARTED;
 		// TODO links
 	}
 
 	public InstanceHole() {
 		super();
+		this.instanceState = InstanceState.NOT_STARTED;
 	}
 
 	public InstanceHole(PatternHole patternHole, String instanceId) {
 		super(patternHole, patternHole.getPatternParent(), patternHole.getPatternAssigned());
 		this.instanceId = instanceId;
+		this.instanceState = InstanceState.NOT_STARTED;
 		// TODO links
 	}
 
 	public InstanceHole(PatternHole patternHole) {
 		super(patternHole, patternHole.getPatternParent(), patternHole.getPatternAssigned());
 		this.instanceId = null;
+		this.instanceState = InstanceState.NOT_STARTED;
 		// TODO links
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((instanceId == null) ? 0 : instanceId.hashCode());
+		result = prime * result + ((instanceState == null) ? 0 : instanceState.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		InstanceHole other = (InstanceHole) obj;
+		if (instanceId == null) {
+			if (other.instanceId != null)
+				return false;
+		} else if (!instanceId.equals(other.instanceId))
+			return false;
+		if (instanceState != other.instanceState)
+			return false;
+		return true;
 	}
 
 	public boolean compareWith(PatternHole obj) {

@@ -16,5 +16,7 @@ public interface InstanceDAO {
 	
 	public void deleteAllInstances() throws InternalErrorException;
 
-	public InstanceBP putInstanceById(String id, InstanceState instanceState) throws InternalErrorException;
+	public InstanceBP changeInstanceStateById(String id, InstanceState instanceState) throws InternalErrorException;
+
+	public InstanceBP updateInstance(InstanceBP instance) throws InternalErrorException;
 }
