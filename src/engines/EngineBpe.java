@@ -79,7 +79,6 @@ public class EngineBpe implements Serializable{
 		return null;
 	}
 	@JsonIgnore
-	@XmlTransient
 	public GeneralCase generateInstance (String instanceUrl) throws InternalErrorException {
 		return null;
 	}
