@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import businessentities.Pattern;
 import businessentities.Template;
 import serviceerrors.InternalErrorException;
 
@@ -90,6 +91,12 @@ public class TemplateDAOfile implements templateDAO{
 	public Template createTemplate(Template template) throws InternalErrorException {
 		List<Template> templateList = readTemplateList();
 		// TODO check, the name of the template to be unique
+/*		for ( Template aTemplate : templateList ) {
+			if ( aTemplate.getName().equals(template.getName()) ) {
+				// TODO change exception
+				throw new InternalErrorException("Such template name is already used");
+			}
+		}*/
 		templateList.add(template);
 		saveTemplateList(templateList);
 		return template;
