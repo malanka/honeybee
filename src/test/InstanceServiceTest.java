@@ -91,21 +91,33 @@ public class InstanceServiceTest {
 			assertTrue(instanceNew.getPatternId().equals(instanceBasic.getPatternId()));
 			assertTrue(instanceNew.getState().equals(InstanceState.RUNNING));
 			// TODO instance links
-			if ( pattern.getHoles() == null ) {
-				assertTrue (instanceNew.getHoles() == null || instanceNew.getHoles().isEmpty());
-			} else {
-				for (InstanceHole instanceHole : instanceNew.getHoles() ) {
-					// TODO instance hole links
-					int x = 0;
-					for ( PatternHole patternHole : pattern.getHoles() ) {
-						if  (instanceHole.compareWith(patternHole) ) {
-							x++;
-							assertNull(instanceHole.getInstanceId());
-							assertTrue(instanceHole.compareWith(patternHole));
-						}
-					}
-					assertTrue(x == 1);
+
+			Response responseList = clientPattern.getHoleList(pattern.getId(), mediaTypeOut);
+			assertTrue(responseList.getStatus() == 200);
+			try {
+				List<PatternHole> patternHoles = responseList.readEntity(new GenericType<List<PatternHole>>(){});
+				assertNotNull(patternHoles);
+				if ( patternHoles.isEmpty() ) {
+					assertTrue(instanceNew.getHoles() == null || instanceNew.getHoles().isEmpty());
 				}
+				else {
+					assertTrue(patternHoles.size() == instanceNew.getHoles().size());
+					for (InstanceHole instanceHole : instanceNew.getHoles() ) {
+						// TODO instance hole links
+						int x = 0;
+						for ( PatternHole patternHole : patternHoles ) {
+							if  (instanceHole.compareWith(patternHole) ) {
+								x++;
+								assertNull(instanceHole.getInstanceId());
+								assertTrue(instanceHole.compareWith(patternHole));
+							}
+						}
+						assertTrue(x == 1);
+					}
+				}
+			} catch ( Exception e ) {
+				e.printStackTrace();
+				fail ("Cannot read for " + mediaTypeOut);
 			}
 			return instanceNew;
 		} catch ( Exception e ) {
