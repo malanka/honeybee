@@ -18,6 +18,7 @@ import engines.EngineBpe;
 import entityclients.PatternClient;
 import entityclients.TemplateClient;
 
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,10 +93,18 @@ public class PatternServiceTest {
 				assertTrue(patternNew.getStatus().equals(PatternStatus.WIP));
 			}
 			// TODO pattern links
+			assertTrue (patternNew.getHoles() == null);
 			if ( template.getHoles() == null ) {
-				assertTrue (patternNew.getHoles() == null || patternNew.getHoles().isEmpty());
+				Response rPatternHoles = clientPattern.getHoleList(patternNew.getId(), mediaTypeOut);
+				assertTrue (rPatternHoles.getStatus() == 200 );
+				List<PatternHole> patternHoles = rPatternHoles.readEntity(new GenericType<List<PatternHole>>(){});
+				assertTrue (patternHoles.isEmpty());
 			} else {
-				for (PatternHole patternHole : patternNew.getHoles() ) {
+				// Holes are not returned for the pattern, need a special request
+				Response rPatternHoles = clientPattern.getHoleList(patternNew.getId(), mediaTypeOut);
+				assertTrue (rPatternHoles.getStatus() == 200 );
+				List<PatternHole> patternHoles = rPatternHoles.readEntity(new GenericType<List<PatternHole>>(){});
+				for (PatternHole patternHole : patternHoles ) {
 					// TODO pattern hole links
 					assertNull(patternHole.getPatternAssigned());
 					assertTrue(patternHole.getPatternParent().equals(patternNew.getId()));
@@ -217,9 +226,13 @@ public class PatternServiceTest {
 
 		PatternBasic patternBasic1 = new PatternBasic("FirstPattern", template1.getId());
 		Pattern pattern1 = testPatternAddOk(patternBasic1, template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		PatternBasic patternBasic11 = new PatternBasic("FirstPattern1", template1.getId());
+		testPatternAddOk(patternBasic11, template1, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
 		PatternBasic patternBasic2= new PatternBasic("SecondPattern", template2.getId());
 		Pattern pattern2 = testPatternAddOk(patternBasic2, template2, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
-
+		PatternBasic patternBasic22= new PatternBasic("SecondPattern2", template2.getId());
+		testPatternAddOk(patternBasic22, template2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		
 		testPatternGetOk(pattern1, MediaType.APPLICATION_JSON);
 		testPatternGetOk(pattern2, MediaType.APPLICATION_XML);
 

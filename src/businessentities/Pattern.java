@@ -31,40 +31,49 @@ public class Pattern implements Serializable {
 
 	private List<ActionLink>links;
 
+	private PatternStatus status;
+
 	public Pattern(){
 		super();
 	}
 
+	@JsonIgnore
 	@JsonGetter("holes")
 	public List<PatternHole> getHoles() {
 		return holes;
 	}
 
 	@JsonSetter("status")
-	@JsonIgnore // This field is read only
-	public void setStatus(PatternStatus status) {
-	}
-		
-	
 	@XmlElement(name="status")
+	public void setStatus(PatternStatus status) {
+		this.status = status;
+	}
+
 	@JsonGetter("status")
 	public PatternStatus getStatus(){
-		if ( holes == null ) {
-			return PatternStatus.READY;
-		}
-		for (PatternHole aHole: holes) {
-			if (( aHole.getPatternAssigned() == null ) || ( aHole.getPatternAssigned().isEmpty() ) )
-				return PatternStatus.WIP;
-		}
-		return PatternStatus.READY;
+		return this.status;
 	}
 
 	@JsonIgnore
-	@XmlElementWrapper(name="holes")
-	@XmlElement(name="hole")
-	@JsonSetter("holes")
+	private void checkStatus(){
+		if ( holes == null ) {
+			this.status = PatternStatus.READY;
+			return;
+		}
+		for (PatternHole aHole: holes) {
+			if (( aHole.getPatternAssigned() == null ) || ( aHole.getPatternAssigned().isEmpty() ) ) {
+				this.status = PatternStatus.WIP;
+				return;
+			}
+		}
+		this.status = PatternStatus.READY;
+	}
+
+	@JsonIgnore
+	@XmlTransient
 	public void setHoles(List<PatternHole> holes) {
 		this.holes = holes;
+		checkStatus();
 	}
 
 	@JsonIgnore
@@ -72,19 +81,21 @@ public class Pattern implements Serializable {
 	public void setHolesFromTemplate(List<Hole> holes) {
 		if ( holes == null ) {
 			this.holes = null;
+			checkStatus();
 			return;
 		}
 		this.holes = new ArrayList<PatternHole>();
 		for ( Hole aHole : holes ) {
 			this.holes.add (new PatternHole(aHole, this.id, null));
 		}
+		checkStatus();
 	}
-	
+
 	@JsonGetter("links")
 	public List<ActionLink> getLinks() {
 		return links;
 	}
-	
+
 	@JsonSetter("links")
 	@XmlElementWrapper(name="links")
 	@XmlElement(name="link")
@@ -99,6 +110,7 @@ public class Pattern implements Serializable {
 		this.holes = holes;
 		this.template = template;
 		generateLinks();
+		checkStatus();
 	}
 
 	public String getId() {
@@ -141,12 +153,11 @@ public class Pattern implements Serializable {
 			return false;
 		return true;
 	}
-	
+
 	@JsonGetter ("template_id")
 	public String getTemplate() {
 		return template;
 	}
-	
 
 	public boolean compareWith(Object obj) {
 		if (this == obj)

@@ -1,5 +1,6 @@
 package services;
 
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import businessentities.HoleManipulation;
 import businessentities.Pattern;
@@ -86,8 +90,36 @@ public class PatternService {
 		try {
 			Pattern pattern = patternDao.createPattern(patternBasic);
 			GenericEntity<Pattern> entity = new GenericEntity<Pattern>(pattern) {};
-			System.out.println("Seems fine"+pattern);
-			return Response.ok(entity).build();
+			System.out.println("Seems fine" + pattern);
+			
+/*
+				System.out.println("Created instanceString=" + pattern);
+				String xmlString = "";
+			    try {
+			        JAXBContext context = JAXBContext.newInstance(Pattern.class);
+			        Marshaller m = context.createMarshaller();
+
+			        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); // To format XML
+
+			        StringWriter sw = new StringWriter();
+			        m.marshal(pattern, sw);
+			        xmlString = sw.toString();
+			        System.out.println("Created instanceXML=" + xmlString);
+			    } catch (JAXBException e) {
+			        e.printStackTrace();
+			    }
+*/
+			
+			
+			
+			
+			try {
+				Response r = Response.ok(entity).build();
+				return r;
+			} catch ( Exception e) {
+				e.printStackTrace();
+				return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+			}
 		} catch (InternalErrorException e) {
 			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
