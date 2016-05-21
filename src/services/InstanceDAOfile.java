@@ -78,11 +78,14 @@ public class InstanceDAOfile implements InstanceDAO{
 	@Override
 	public List<InstanceBP> getAllInstances(String patternId, InstanceState state) throws InternalErrorException {
 		List<InstanceBP> instanceList = readInstanceList();
-		if ( ( state == null) && ( patternId == null ) ) {
-			// no filters were applied
-			return instanceList;
+		if ( ( state != null) && ( patternId == null ) ) {
+			instanceList.removeIf(s-> (!s.getState().equals(state) ));
+		} else if ( ( state != null) && ( patternId != null ) ) {
+			instanceList.removeIf(s-> (!s.getState().equals(state) &&  !s.getPatternId().equals(patternId)) );
 		}
-		instanceList.removeIf(s-> (s.getState()!=state && !s.getPatternId().equals(patternId)));
+		else if ( ( state == null) && ( patternId != null ) ) {
+			instanceList.removeIf(s-> ( !s.getPatternId().equals(patternId)) );
+		}
 		return instanceList;
 	}
 
