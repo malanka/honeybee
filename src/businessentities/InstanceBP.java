@@ -261,7 +261,7 @@ public class InstanceBP implements Serializable{
 		}
 		this.holes = new ArrayList<InstanceHole>();
 		for ( PatternHole aHole : holes ) {
-			this.holes.add (new InstanceHole(aHole, null));
+			this.holes.add (new InstanceHole(aHole, null, this.instanceId));
 		}
 	}
 }

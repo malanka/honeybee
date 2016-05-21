@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 @XmlRootElement(name = "instancehole")
-public class InstanceHole extends PatternHole implements Serializable {
+public class InstanceHole extends Hole implements Serializable {
 
 	/**
 	 * 
@@ -22,8 +22,29 @@ public class InstanceHole extends PatternHole implements Serializable {
 	
 	// Id of the instance assigned to this hole
 	private String instanceId = null;
-
 	
+	private String parentInstanceId = null;
+
+	private String patternAssigned = null;
+	@JsonGetter("parent_instance_id")
+	public String getParentInstanceId() {
+		return parentInstanceId;
+	}
+	@JsonSetter("parent_instance_id")
+	@XmlElement(name="parent_instance_id")
+	public void setParentInstanceId(String parentInstanceId) {
+		this.parentInstanceId = parentInstanceId;
+	}
+	@JsonGetter("pattern_assigned_id")
+	public String getPatternAssigned() {
+		return patternAssigned;
+	}
+	@JsonSetter("pattern_assigned_id")
+	@XmlElement(name="pattern_assigned_id")
+	public void setPatternAssigned(String patternAssigned) {
+		this.patternAssigned = patternAssigned;
+	}
+
 	@JsonGetter("state")
 	public InstanceState getInstanceState() {
 		return instanceState;
@@ -47,9 +68,11 @@ public class InstanceHole extends PatternHole implements Serializable {
 	}
 
 	public InstanceHole(String name, String data_in, String data_out, String event_start, String event_end,
-			String patternParent, String patternAssigned, List<ActionLink> links) {
-		super(name, data_in, data_out, event_start, event_end, patternParent, patternAssigned, links);
+			String patternInstanceId, String patternAssigned, List<ActionLink> links) {
+		super(name, data_in, data_out, event_start, event_end);
 		this.instanceState = InstanceState.NOTSTARTED;
+		this.patternAssigned = patternAssigned;
+		this.parentInstanceId = patternInstanceId;
 		// TODO links
 	}
 
@@ -58,17 +81,23 @@ public class InstanceHole extends PatternHole implements Serializable {
 		this.instanceState = InstanceState.NOTSTARTED;
 	}
 
-	public InstanceHole(PatternHole patternHole, String instanceId) {
-		super(patternHole, patternHole.getPatternParent(), patternHole.getPatternAssigned());
+	public InstanceHole(PatternHole patternHole, String instanceId, String parentInstanceId) {
+		super(patternHole.getName(), patternHole.getData_in(), patternHole.getData_out(), patternHole.getEvent_start(),
+				patternHole.getEvent_end());
 		this.instanceId = instanceId;
 		this.instanceState = InstanceState.NOTSTARTED;
+		this.patternAssigned = patternHole.getPatternAssigned();
+		this.parentInstanceId = parentInstanceId;
 		// TODO links
 	}
 
-	public InstanceHole(PatternHole patternHole) {
-		super(patternHole, patternHole.getPatternParent(), patternHole.getPatternAssigned());
+	public InstanceHole(PatternHole patternHole, String parentInstanceId) {
+		super(patternHole.getName(), patternHole.getData_in(), patternHole.getData_out(), patternHole.getEvent_start(),
+				patternHole.getEvent_end());
 		this.instanceId = null;
 		this.instanceState = InstanceState.NOTSTARTED;
+		this.patternAssigned = patternHole.getPatternAssigned();
+		this.parentInstanceId = parentInstanceId;
 		// TODO links
 	}
 
@@ -103,8 +132,6 @@ public class InstanceHole extends PatternHole implements Serializable {
 	public boolean compareWith(PatternHole obj) {
 		System.out.println("PatternHole=" + obj);
 		System.out.println("InstanceHole=" + this);
-		if (this == obj)
-			return true;
 		if (obj == null)
 			return false;
 		if (getData_in() == null) {
@@ -136,11 +163,6 @@ public class InstanceHole extends PatternHole implements Serializable {
 			if (obj.getPatternAssigned() != null)
 				return false;
 		} else if (!getPatternAssigned().equals(obj.getPatternAssigned()))
-			return false;
-		if (getPatternParent() == null) {
-			if (obj.getPatternParent() != null)
-				return false;
-		} else if (!getPatternParent().equals(obj.getPatternParent()))
 			return false;
 		return true;
 	}
