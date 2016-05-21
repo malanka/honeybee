@@ -134,7 +134,7 @@ public class InstanceServiceTest {
 		try {
 			InstanceBP instanceNew = response.readEntity(new GenericType<InstanceBP>(){});
 			assertNotNull(instanceNew);
-//			assertTrue(instance.compareWith(instance));
+			//			assertTrue(instance.compareWith(instance));
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			fail ("Cannot read for " + mediaTypeOut);
@@ -309,7 +309,13 @@ public class InstanceServiceTest {
 		assertNotNull(template1);
 		Response response = clientTemplate.addTemplate(template1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		assertTrue(response.getStatus() == 200);
-		System.out.println(response.readEntity(String.class));
+
+		// create pattern for template with holes
+		PatternBasic  patternBasic = new PatternBasic("SecondPattern", template1.getId());
+		assertNotNull(patternBasic);
+		response = clientPattern.addPattern(patternBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+		Pattern pattern_to_fill = response.readEntity(new GenericType<Pattern>(){});
 
 		// create template without holes
 		EngineBpe engine2 = new EngineBpe(EngineBP.TESTCONNECTOR, "8991886837299789007", "http://localhost:8080/bonita");
@@ -317,21 +323,13 @@ public class InstanceServiceTest {
 		assertNotNull(template2);
 		response = clientTemplate.addTemplate(template2, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		assertTrue(response.getStatus() == 200);
-		System.out.println(response.readEntity(String.class));
 
 		// create pattern for template without holes
-		PatternBasic patternBasic = new PatternBasic("FirstPattern", template2.getId());
+		patternBasic = new PatternBasic("FirstPattern", template2.getId());
 		assertNotNull(patternBasic);
 		response = clientPattern.addPattern(patternBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		assertTrue(response.getStatus() == 200);
 		Pattern pattern_filler = response.readEntity(new GenericType<Pattern>(){});		
-
-		// create pattern for template with holes
-		patternBasic = new PatternBasic("SecondPattern", template1.getId());
-		assertNotNull(patternBasic);
-		response = clientPattern.addPattern(patternBasic, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
-		assertTrue(response.getStatus() == 200);
-		Pattern pattern_to_fill = response.readEntity(new GenericType<Pattern>(){});
 
 		// Assign pattern_filler to hole A in the pattern_to_fill
 		HoleManipulation holeManipulation = new HoleManipulation(pattern_filler.getId(), null);
@@ -357,19 +355,36 @@ public class InstanceServiceTest {
 		assertTrue(response.getStatus() == 200);
 		InstanceHole instanceHole2 = response.readEntity(InstanceHole.class);
 
-		testHoleStarted (instance1.getInstanceId(), hole11.getName(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, instanceHole1);
-		testHoleStarted (instance2.getInstanceId(), hole11.getName(), MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, instanceHole2);
+		testHoleStarted (instance1.getInstanceId(), hole11.getName(), MediaType.APPLICATION_JSON, instanceHole1);
+		testHoleStarted (instance2.getInstanceId(), hole11.getName(), MediaType.APPLICATION_XML, instanceHole2);
+
+		testHolesList (instance1,  MediaType.APPLICATION_JSON, instanceHole1);
+		testHolesList (instance1,  MediaType.APPLICATION_XML, instanceHole1);
 	}
 
-	private void testHoleStarted(String instanceId, String holeName, String mediaTypeIn, String mediaTypeOut, InstanceHole expectedHole) {
-		Response response = clientInstance.getHole(instanceId, holeName, mediaTypeIn, mediaTypeOut);
+	private void testHolesList(InstanceBP instance, String mediaTypeOut, InstanceHole expectedHole) {
+		Response response = clientInstance.getHoles(instance.getInstanceId(), mediaTypeOut);
+		assertTrue(response.getStatus() == 200);
+		try {
+
+			List<InstanceHole> instanceHoles = response.readEntity(new GenericType<List<InstanceHole>>(){});
+			assertTrue (instanceHoles.size() == 1);
+			assertTrue (instanceHoles.get(0).equals(expectedHole));
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			fail ("Cannot read for " + mediaTypeOut);
+		}
+	}
+
+	private void testHoleStarted(String instanceId, String holeName, String mediaTypeOut, InstanceHole expectedHole) {
+		Response response = clientInstance.getHole(instanceId, holeName, mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
 			InstanceHole instanceHoleNew = response.readEntity(InstanceHole.class);
 			assertTrue (instanceHoleNew.equals(expectedHole));
 		} catch ( Exception e ) {
 			e.printStackTrace();
-			fail ("Cannot read for " + mediaTypeIn + " and " + mediaTypeOut);
+			fail ("Cannot read for " + mediaTypeOut);
 		}
 	}
 }

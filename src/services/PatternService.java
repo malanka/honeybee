@@ -1,6 +1,5 @@
 package services;
 
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import businessentities.HoleManipulation;
 import businessentities.Pattern;
@@ -91,7 +87,6 @@ public class PatternService {
 			Pattern pattern = patternDao.createPattern(patternBasic);
 			GenericEntity<Pattern> entity = new GenericEntity<Pattern>(pattern) {};
 			System.out.println("Seems fine" + pattern);
-			
 /*
 				System.out.println("Created instanceString=" + pattern);
 				String xmlString = "";
@@ -109,7 +104,6 @@ public class PatternService {
 			        e.printStackTrace();
 			    }
 */
-			
 			try {
 				Response r = Response.ok(entity).build();
 				return r;
@@ -202,8 +196,8 @@ public class PatternService {
 	@GET
 	@Path("{id}/holes/{holename}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Response getOneHole(@PathParam("id") String patternId, @PathParam("holename") String holeName) {
-		System.out.println("getOneHole");
+	public Response getHole(@PathParam("id") String patternId, @PathParam("holename") String holeName) {
+		System.out.println("getHole");
 		Pattern pattern = null;
 		try {
 			pattern = patternDao.getPatternById(patternId);

@@ -17,7 +17,7 @@ public class PatternClient {
 
 	public static final String RESOURCE_PATH = "patterns";
 
-	public static final String RESOURCE_HILES_PATH = "holes";
+	public static final String RESOURCE_HOLES_PATH = "holes";
 
 	private final String uri;
 
@@ -59,19 +59,19 @@ public class PatternClient {
 	}
 
 	public Response assignPattern(String patternId, String holeName, HoleManipulation holeManipulation, String mediaTypeIn, String mediaTypeOut) {
-		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId).path(RESOURCE_HILES_PATH).path(holeName);
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId).path(RESOURCE_HOLES_PATH).path(holeName);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.post(Entity.entity(holeManipulation, mediaTypeIn));
 	}
 
 	public Response getHoleList(String patternId, String mediaTypeOut) {
-		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId).path(RESOURCE_HILES_PATH);
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId).path(RESOURCE_HOLES_PATH);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.get();
 	}
 
 	public Response getOneHole(String patternId, String holeName, String mediaTypeOut) {
-		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId).path(RESOURCE_HILES_PATH).path(holeName);
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId).path(RESOURCE_HOLES_PATH).path(holeName);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.get();
 	}

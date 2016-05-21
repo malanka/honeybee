@@ -15,7 +15,9 @@ import businessentities.InstanceManipulation;
 
 public class InstanceClient {
 
-	public static final String RESOURCE_PATH = "/instances";
+	public static final String RESOURCE_PATH = "instances";
+
+	public static final String RESOURCE_HOLES_PATH = "holes";
 
 	private final String uri;
 
@@ -31,25 +33,25 @@ public class InstanceClient {
 		Invocation.Builder invocationBuilder =  webTarget.request(mediaTypeOut);
 		return invocationBuilder.get();
 	}
-	
+
 	public Response deleteInstances(String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.delete();
 	}
-	
+
 	public Response addInstance(InstanceBasic instanceBasic, String mediaTypeIn, String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.post(Entity.entity(instanceBasic, mediaTypeIn));
 	}
-	
+
 	public Response getInstance(String instanceId, String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(instanceId);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.get();
 	}
-	
+
 	public Response deleteInstance(String instanceId, String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(instanceId);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
@@ -61,15 +63,21 @@ public class InstanceClient {
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.put(Entity.entity(instanceManipulation, mediaTypeIn));
 	}
-	
+
 	public Response startHole(String instanceId, String holeName, String mediaTypeIn, String mediaTypeOut) {
-		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(instanceId).path("holes").path(holeName);
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(instanceId).path(RESOURCE_HOLES_PATH).path(holeName);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.post(Entity.entity(null, mediaTypeIn));
 	}
-	
-	public Response getHole(String instanceId, String holeName, String mediaTypeIn, String mediaTypeOut) {
-		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(instanceId).path("holes").path(holeName);
+
+	public Response getHole(String instanceId, String holeName, String mediaTypeOut) {
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(instanceId).path(RESOURCE_HOLES_PATH).path(holeName);
+		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
+		return invocationBuilder.get();
+	}
+
+	public Response getHoles(String instanceId, String mediaTypeOut) {
+		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(instanceId).path(RESOURCE_HOLES_PATH);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.get();
 	}
