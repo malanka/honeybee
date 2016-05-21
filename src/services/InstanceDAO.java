@@ -3,6 +3,7 @@ package services;
 import java.util.List;
 
 import businessentities.InstanceBP;
+import businessentities.InstanceHole;
 import businessentities.InstanceState;
 import serviceerrors.InternalErrorException;
 
@@ -19,4 +20,6 @@ public interface InstanceDAO {
 	public InstanceBP changeInstanceStateById(String id, InstanceState instanceState) throws InternalErrorException;
 
 	public InstanceBP updateInstance(InstanceBP instance) throws InternalErrorException;
+
+	public InstanceHole assignPatternToHole(String instanceId, String holeName, String assigned_pattern_id) throws InternalErrorException;
 }

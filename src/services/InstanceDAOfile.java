@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import businessentities.InstanceBP;
+import businessentities.InstanceHole;
 import businessentities.InstanceState;
 import businessentities.Pattern;
+import businessentities.PatternHole;
 import serviceerrors.InternalErrorException;
 
 public class InstanceDAOfile implements InstanceDAO{
@@ -173,4 +175,36 @@ public class InstanceDAOfile implements InstanceDAO{
 		}
 		return null;
 	}
+
+	@Override
+	public InstanceHole assignPatternToHole(String instanceId, String holeName, String assigned_pattern_id) throws InternalErrorException {
+		List<InstanceBP> instanceList = readInstanceList();
+		InstanceBP tmp = new InstanceBP();
+		tmp.setInstanceId(instanceId);
+		int index = instanceList.indexOf(tmp);
+		if ( index == -1 ) {
+			return null;
+		}
+		InstanceBP instance = instanceList.get(index);
+		if ( instance.getHoles() == null ) {
+			System.out.println("This instance doesn't have holes");
+			return null;
+		}
+		// let's check its holes
+		for ( InstanceHole ahole : instance.getHoles() ) {
+			if ( ahole.getName().equals(holeName) ) {
+				// we found a hole
+
+				// lets set a new pattern
+				ahole.setPatternAssigned(assigned_pattern_id);
+				// save it
+				saveInstanceList(instanceList);
+				return ahole;
+			}
+		}
+		// such hole doesn't exist
+		return null;
+	}
+	
+	
 }

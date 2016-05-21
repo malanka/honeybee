@@ -351,11 +351,12 @@ public class InstanceServiceTest {
 		InstanceBP instance2 = testInstanceAddOk(instanceBasic, MediaType.APPLICATION_XML, MediaType.APPLICATION_XML, pattern_to_fill);
 
 		// signal instance to start a hole
-		response = clientInstance.startHole(instance1.getInstanceId(), hole11.getName(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		HoleManipulation holeManipulation1 = new HoleManipulation(null, "START");
+		response = clientInstance.putHole(instance1.getInstanceId(), holeManipulation1, hole11.getName(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		assertTrue(response.getStatus() == 200);
 		InstanceHole instanceHole1 = response.readEntity(InstanceHole.class);
 
-		response = clientInstance.startHole(instance2.getInstanceId(), hole11.getName(), MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
+		response = clientInstance.putHole(instance2.getInstanceId(), holeManipulation1, hole11.getName(), MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
 		assertTrue(response.getStatus() == 200);
 		InstanceHole instanceHole2 = response.readEntity(InstanceHole.class);
 

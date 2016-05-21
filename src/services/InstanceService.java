@@ -18,6 +18,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import businessentities.HoleManipulation;
 import businessentities.InstanceBP;
 import businessentities.InstanceBasic;
 import businessentities.InstanceHole;
@@ -126,7 +127,7 @@ public class InstanceService {
 	@Path("{id}")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Response getInstance(@PathParam("id") String id, InstanceManipulation action) {
+	public Response putInstance(@PathParam("id") String id, InstanceManipulation action) {
 		System.out.println("put instanceManipulation:" + action);
 		if ( action == null ) {
 			return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(new WebServiseError("Request document doesn't fit the expected format")).build();
@@ -165,12 +166,12 @@ public class InstanceService {
 		return Response.ok(entity).build();
 	}
 
-	@POST
-	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@PUT
 	@Path("{id}/holes/{holename}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Response startHole(@PathParam("id") String instanceId, @PathParam("holename") String holeName) {
-		System.out.println("startHole");
+	public Response putHole(@PathParam("id") String instanceId, @PathParam("holename") String holeName, HoleManipulation holeManipulation) {
+		System.out.println("putHole");
 		InstanceBP instance = null;
 		try {
 			instance = instanceDao.getInstanceById(instanceId);
@@ -189,6 +190,15 @@ public class InstanceService {
 		for ( InstanceHole ahole : instance.getHoles() ) {
 			if ( ahole.getName().equals(holeName) ) {
 				// we found a hole
+				if ( holeManipulation.getAssigned_pattern_id() != null ) {
+					// first of all assign new pattern
+					try {
+						InstanceHole instanceHoleNewRepresentation = instanceDao.assignPatternToHole(instanceId, holeName, holeManipulation.getAssigned_pattern_id());
+					} catch (InternalErrorException e) {
+						e.printStackTrace();
+						return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError("ICannot assign ne pattern to the hole")).build();
+					}
+				}
 				if ( ahole.getPatternAssigned() == null ) {
 					System.out.println("pattern is not assigned");
 					return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError("Pattern for the hole is not assigned")).build();

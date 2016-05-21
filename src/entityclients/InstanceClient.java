@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 
+import businessentities.HoleManipulation;
 import businessentities.InstanceBasic;
 import businessentities.InstanceManipulation;
 
@@ -64,10 +65,10 @@ public class InstanceClient {
 		return invocationBuilder.put(Entity.entity(instanceManipulation, mediaTypeIn));
 	}
 
-	public Response startHole(String instanceId, String holeName, String mediaTypeIn, String mediaTypeOut) {
+	public Response putHole(String instanceId, HoleManipulation holeManipulation, String holeName, String mediaTypeIn, String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(instanceId).path(RESOURCE_HOLES_PATH).path(holeName);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
-		return invocationBuilder.post(Entity.entity(null, mediaTypeIn));
+		return invocationBuilder.put(Entity.entity(holeManipulation, mediaTypeIn));
 	}
 
 	public Response getHole(String instanceId, String holeName, String mediaTypeOut) {

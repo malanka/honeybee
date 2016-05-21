@@ -61,7 +61,7 @@ public class PatternClient {
 	public Response assignPattern(String patternId, String holeName, HoleManipulation holeManipulation, String mediaTypeIn, String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId).path(RESOURCE_HOLES_PATH).path(holeName);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
-		return invocationBuilder.post(Entity.entity(holeManipulation, mediaTypeIn));
+		return invocationBuilder.put(Entity.entity(holeManipulation, mediaTypeIn));
 	}
 
 	public Response getHoles(String patternId, String mediaTypeOut) {
