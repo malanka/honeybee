@@ -171,6 +171,7 @@ public class PatternDAOfile implements PatternDAO {
 
 				// lets set a new pattern
 				ahole.setPatternAssigned(assignedPattern);
+				pattern.checkStatus();
 				// save it
 				savePatternList(patternList);
 				return ahole;

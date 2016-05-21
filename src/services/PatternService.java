@@ -110,9 +110,6 @@ public class PatternService {
 			    }
 */
 			
-			
-			
-			
 			try {
 				Response r = Response.ok(entity).build();
 				return r;

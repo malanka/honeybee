@@ -55,7 +55,7 @@ public class Pattern implements Serializable {
 	}
 
 	@JsonIgnore
-	private void checkStatus(){
+	public void checkStatus(){
 		if ( holes == null ) {
 			this.status = PatternStatus.READY;
 			return;
@@ -191,6 +191,11 @@ public class Pattern implements Serializable {
 			if (other.template != null)
 				return false;
 		} else if (!template.equals(other.template))
+			return false;
+		if (status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!status.equals(other.status))
 			return false;
 		return true;
 	}

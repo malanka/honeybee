@@ -18,7 +18,6 @@ import engines.EngineBpe;
 import entityclients.PatternClient;
 import entityclients.TemplateClient;
 
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +137,7 @@ public class PatternServiceTest {
 		try {
 			Pattern patternNew = response.readEntity(new GenericType<Pattern>(){});
 			assertNotNull(patternNew);
-			assertTrue(pattern.compareWith(pattern));
+			assertTrue(pattern.compareWith(patternNew));
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			fail ("Cannot read for " + mediaTypeOut);
@@ -270,20 +269,42 @@ public class PatternServiceTest {
 		testAssignHoleOk(pattern1, holeManipulation, hole1.getName(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 		PatternHole e = testAssignHoleOk(pattern1, holeManipulation, hole1.getName(), MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
 
-		ArrayList<PatternHole> newHoles = new ArrayList<PatternHole>();
-		if ( pattern1.getHoles().get(0).getName().equals(hole1.getName()) ) {
-			newHoles.add(pattern1.getHoles().get(0));
-		} else {
-			newHoles.add(pattern1.getHoles().get(1));
-		}
-		newHoles.add(e);
-		pattern1.setHoles(newHoles);
-		System.out.println(newHoles);
+		testPatternHoleOne (e, MediaType.APPLICATION_JSON);
+		testPatternHoleOne (e, MediaType.APPLICATION_XML);
+		// status of the pattern didn't change as assign only one hole
 		testPatternGetOk(pattern1, MediaType.APPLICATION_JSON);
 		testPatternGetOk(pattern1, MediaType.APPLICATION_XML);
+		
+		
+		HoleManipulation holeManipulation2 = new HoleManipulation(pattern2.getId(), null);
+		testAssignHoleOk(pattern1, holeManipulation, hole2.getName(), MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		PatternHole e2 = testAssignHoleOk(pattern1, holeManipulation2, hole2.getName(), MediaType.APPLICATION_XML, MediaType.APPLICATION_XML);
+
+		testPatternHoleOne (e2, MediaType.APPLICATION_JSON);
+		testPatternHoleOne (e2, MediaType.APPLICATION_XML);
+		// status of the pattern changed as all holes were assigned
+		pattern1.setStatus(PatternStatus.READY);
+		testPatternGetOk(pattern1, MediaType.APPLICATION_JSON);
+		testPatternGetOk(pattern1, MediaType.APPLICATION_XML);
+
+	}
+
+	private void testPatternHoleOne(PatternHole patternHole, String mediaTypeOut) {
+		System.out.println("testPatternHoleOne");
+		Response response = clientPattern.getOneHole(patternHole.getPatternParent(), patternHole.getName(), mediaTypeOut);
+		assertTrue(response.getStatus() == 200);
+		try {
+			PatternHole patternHole_new = response.readEntity(new GenericType<PatternHole>(){});
+			assertNotNull(patternHole_new);
+			assertTrue(patternHole_new.equals(patternHole));
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			fail ("Cannot read for " + mediaTypeOut);
+		}
 	}
 
 	private PatternHole testAssignHoleOk(Pattern pattern, HoleManipulation holeManipulation, String holeName, String mediaTypeIn, String mediaTypeOut) {
+		System.out.println("testAssignHoleOk");
 		Response response = clientPattern.assignPattern(pattern.getId(), holeName, holeManipulation, mediaTypeIn, mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
@@ -342,6 +363,7 @@ public class PatternServiceTest {
 	}
 
 	private void testPatternHoleList(Pattern pattern, String mediaTypeOut, List<Hole> templateHoles) {
+		System.out.println("testPatternHoleList");
 		Response response = clientPattern.getHoleList(pattern.getId(), mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
@@ -397,6 +419,7 @@ public class PatternServiceTest {
 	}
 
 	private void testPatternHole(Pattern pattern, String holeName, String mediaTypeOut, List<Hole> templateHoles) {
+		System.out.println("testPatternHole");
 		Response response = clientPattern.getOneHole(pattern.getId(), holeName, mediaTypeOut);
 		List<Hole> templateHoles_copy = new ArrayList<Hole>();
 		if ( templateHoles != null ) {
