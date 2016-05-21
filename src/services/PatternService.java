@@ -1,6 +1,5 @@
 package services;
 
-
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class PatternService {
 	public PatternService() throws InternalErrorException {
 		patternDao = new DAOFactory().getPatternDAO();
 	}
-	
+
 	public static String getPatternHolesURI(String patternId) {
 		return base + "/patterns/" + patternId + "/holes";
 	}
@@ -63,12 +62,11 @@ public class PatternService {
 			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
-		if ( pattern != null ) {
-			GenericEntity<Pattern> entity = new GenericEntity<Pattern>(pattern) {};
-			return Response.ok(entity).build();
-		}
-		else
+		if ( pattern == null ) {
 			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern not found")).build();
+		}
+		GenericEntity<Pattern> entity = new GenericEntity<Pattern>(pattern) {};
+		return Response.ok(entity).build();
 	}
 
 	@POST
@@ -95,7 +93,7 @@ public class PatternService {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
-	
+
 	// just for testing purposes
 	@DELETE
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -128,7 +126,7 @@ public class PatternService {
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
 	}
-	
+
 	@POST
 	@Path("{id}/holes/{holename}")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -148,7 +146,7 @@ public class PatternService {
 		GenericEntity<PatternHole> entity = new GenericEntity<PatternHole>(patternHole) {};
 		return Response.ok().entity(entity).build();
 	}
-	
+
 	@GET
 	@Path("{id}/holes")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -161,18 +159,42 @@ public class PatternService {
 			e.printStackTrace();
 			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
 		}
-		if ( pattern != null ) {
-			if ( pattern.getHoles() != null ) {
-				GenericEntity<List<PatternHole>> entity = new GenericEntity<List<PatternHole>>(pattern.getHoles()) {};
-				return Response.ok(entity).build();
-			}
-			else {
-				GenericEntity<List<PatternHole>> entity = new GenericEntity<List<PatternHole>>(new ArrayList<PatternHole>()) {};
-				return Response.ok(entity).build();
-			}
-		}
-		else
+		if ( pattern == null ) {
 			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern not found")).build();
+		}
+		if ( pattern.getHoles() == null ) {
+			GenericEntity<List<PatternHole>> entity = new GenericEntity<List<PatternHole>>(new ArrayList<PatternHole>()) {};
+			return Response.ok(entity).build();
+		}
+		GenericEntity<List<PatternHole>> entity = new GenericEntity<List<PatternHole>>(pattern.getHoles()) {};
+		return Response.ok(entity).build();
 	}
 
+	@GET
+	@Path("{id}/holes/{holename}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response getOneHole(@PathParam("id") String patternId, @PathParam("holename") String holeName) {
+		System.out.println("getOneHole");
+		Pattern pattern = null;
+		try {
+			pattern = patternDao.getPatternById(patternId);
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
+		if ( pattern == null ) {
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern not found")).build();
+		}  
+		List<PatternHole> patternHoles = pattern.getHoles();
+		if ( patternHoles == null ) {
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern hole not found")).build();
+		}
+		patternHoles.removeIf(s-> (!(s.getName().equals(holeName))));
+		if ( patternHoles.isEmpty() ) {
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern hole not found")).build();
+		}
+		// as name should be unique, in the list only one hole can survive
+		GenericEntity<PatternHole> entity = new GenericEntity<PatternHole>(patternHoles.get(0)) {};
+		return Response.ok(entity).build();
+	}
 }
