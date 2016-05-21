@@ -286,4 +286,76 @@ public class PatternServiceTest {
 		return null;
 	}
 
+	
+	@Test
+	public void testGetPatternHolesWithHoles() {
+		// set up expected input data template with holes
+		EngineBpe engine = new EngineBpe(EngineBP.TESTCONNECTOR, "7908120732971969775", "http://localhost:8080/bonita");
+		ArrayList <Hole> holes= new ArrayList<Hole>();
+		Hole hole1 = new Hole("holename1","as","asd","ad","aasd");
+		Hole hole2 = new Hole("holename2","as","asd","ad","aasd");
+		holes.add(hole1);
+		holes.add(hole2);
+		Template template = new Template("1", "Second", "datain1","dataout1","event1s","event1e", holes, engine);
+		Response response = clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+
+		PatternBasic patternBasic1 = new PatternBasic("FirstPattern", template.getId());
+		response = clientPattern.addPattern(patternBasic1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+		Pattern pattern = response.readEntity(Pattern.class);
+		
+		// test the result
+		testPatternHoleList (pattern, MediaType.APPLICATION_JSON, template.getHoles());
+		testPatternHoleList (pattern, MediaType.APPLICATION_XML, template.getHoles());
+	}
+
+	@Test
+	public void testGetPatternHolesWithOutHoles() {
+		// set up expected input data template without holes
+		EngineBpe engine = new EngineBpe(EngineBP.TESTCONNECTOR, "7908120732971969775", "http://localhost:8080/bonita");
+		Template template = new Template("1", "Second", "datain1","dataout1","event1s","event1e", null, engine);
+		Response response = clientTemplate.addTemplate(template, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+
+		PatternBasic patternBasic1 = new PatternBasic("FirstPattern", template.getId());
+		response = clientPattern.addPattern(patternBasic1, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
+		assertTrue(response.getStatus() == 200);
+		Pattern pattern = response.readEntity(Pattern.class);
+		
+		// test the result
+		testPatternHoleList (pattern, MediaType.APPLICATION_JSON, template.getHoles());
+		testPatternHoleList (pattern, MediaType.APPLICATION_XML, template.getHoles());
+	}
+	
+	private void testPatternHoleList(Pattern pattern, String mediaTypeOut, List<Hole> holes) {
+		Response response = clientPattern.getHoleList(pattern.getId(), mediaTypeOut);
+		assertTrue(response.getStatus() == 200);
+		try {
+			List<PatternHole> patternHoles = response.readEntity(new GenericType<List<PatternHole>>(){});
+			assertNotNull(patternHoles);
+			if ( holes == null || holes.isEmpty() ) {
+				assertTrue(patternHoles.isEmpty());
+			}
+			else {
+				assertTrue(patternHoles.size() == holes.size());
+				for (PatternHole patternHole : patternHoles ) {
+					// TODO pattern hole links
+					assertNull(patternHole.getPatternAssigned());
+					assertTrue(patternHole.getPatternParent().equals(pattern.getId()));
+					int x = 0;
+					for ( Hole templateHole : holes ) {
+						if  (patternHole.compareWith(templateHole) ) {
+							x++;
+						}
+					}
+					assertTrue(x == 1);
+				}
+			}
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			fail ("Cannot read for " + mediaTypeOut);
+		}
+	}
+	
 }

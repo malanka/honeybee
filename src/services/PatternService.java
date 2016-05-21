@@ -2,6 +2,7 @@ package services;
 
 
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.PathParam;
@@ -146,6 +147,32 @@ public class PatternService {
 		}
 		GenericEntity<PatternHole> entity = new GenericEntity<PatternHole>(patternHole) {};
 		return Response.ok().entity(entity).build();
+	}
+	
+	@GET
+	@Path("{id}/holes")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Response getHoleList(@PathParam("id") String patternId) {
+		System.out.println("getHoleList");
+		Pattern pattern = null;
+		try {
+			pattern = patternDao.getPatternById(patternId);
+		} catch (InternalErrorException e) {
+			e.printStackTrace();
+			return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).entity(new WebServiseError(e.getMessage())).build();
+		}
+		if ( pattern != null ) {
+			if ( pattern.getHoles() != null ) {
+				GenericEntity<List<PatternHole>> entity = new GenericEntity<List<PatternHole>>(pattern.getHoles()) {};
+				return Response.ok(entity).build();
+			}
+			else {
+				GenericEntity<List<PatternHole>> entity = new GenericEntity<List<PatternHole>>(new ArrayList<PatternHole>()) {};
+				return Response.ok(entity).build();
+			}
+		}
+		else
+			return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(new WebServiseError("Pattern not found")).build();
 	}
 
 }
