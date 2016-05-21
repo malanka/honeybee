@@ -106,12 +106,12 @@ public class InstanceBP implements Serializable{
 		this.lastChangeDate = lastChangeDate;
 	}
 	
-	@JsonGetter ("parrent_id")
+	@JsonGetter ("pattern_id")
 	public String getPatternId() {
 		return patternId;
 	}
 	
-	@JsonSetter ("parrent_id")
+	@JsonSetter ("pattern_id")
 	@XmlElement(name = "pattern_id")
 	public void setPatternId(String patternId) {
 		this.patternId = patternId;
