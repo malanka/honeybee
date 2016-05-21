@@ -87,33 +87,37 @@ public class InstanceServiceTest {
 		try {
 			InstanceBP instanceNew = response.readEntity(new GenericType<InstanceBP>(){});
 			assertNotNull(instanceNew);
-			System.out.println(instanceNew);
 			assertTrue(instanceNew.getPatternId().equals(instanceBasic.getPatternId()));
 			assertTrue(instanceNew.getState().equals(InstanceState.RUNNING));
+			assertTrue(instanceNew.getHoles() == null || instanceNew.getHoles().isEmpty());
 			// TODO instance links
 
-			Response responseList = clientPattern.getHoleList(pattern.getId(), mediaTypeOut);
-			assertTrue(responseList.getStatus() == 200);
+			Response patternHoleList = clientPattern.getHoles(pattern.getId(), mediaTypeOut);
+			assertTrue(patternHoleList.getStatus() == 200);
+			Response instanceHoleList = clientInstance.getHoles(instanceNew.getInstanceId(), mediaTypeOut);
+			assertTrue(instanceHoleList.getStatus() == 200);
 			try {
-				List<PatternHole> patternHoles = responseList.readEntity(new GenericType<List<PatternHole>>(){});
+				List<PatternHole> patternHoles = patternHoleList.readEntity(new GenericType<List<PatternHole>>(){});
 				assertNotNull(patternHoles);
+				List<InstanceHole> instanceHoles = instanceHoleList.readEntity(new GenericType<List<InstanceHole>>(){});
+				assertNotNull(instanceHoles);
 				if ( patternHoles.isEmpty() ) {
-					assertTrue(instanceNew.getHoles() == null || instanceNew.getHoles().isEmpty());
+					assertTrue(instanceHoles.isEmpty());
+					return instanceNew;
 				}
-				else {
-					assertTrue(patternHoles.size() == instanceNew.getHoles().size());
-					for (InstanceHole instanceHole : instanceNew.getHoles() ) {
-						// TODO instance hole links
-						int x = 0;
-						for ( PatternHole patternHole : patternHoles ) {
-							if  (instanceHole.compareWith(patternHole) ) {
-								x++;
-								assertNull(instanceHole.getInstanceId());
-								assertTrue(instanceHole.compareWith(patternHole));
-							}
+				assertTrue(patternHoles.size() == instanceHoles.size());
+				for (InstanceHole instanceHole : instanceHoles ) {
+					// TODO instance hole links
+					int x = 0;
+					for ( PatternHole patternHole : patternHoles ) {
+						if  (instanceHole.compareWith(patternHole) ) {
+							x++;
+							assertNull(instanceHole.getInstanceId());
+							assertTrue(instanceHole.compareWith(patternHole));
+							assertTrue(instanceHole.getParentInstanceId().equals(instanceNew.getInstanceId()));
 						}
-						assertTrue(x == 1);
 					}
+					assertTrue(x == 1);
 				}
 			} catch ( Exception e ) {
 				e.printStackTrace();

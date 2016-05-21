@@ -64,7 +64,7 @@ public class PatternClient {
 		return invocationBuilder.post(Entity.entity(holeManipulation, mediaTypeIn));
 	}
 
-	public Response getHoleList(String patternId, String mediaTypeOut) {
+	public Response getHoles(String patternId, String mediaTypeOut) {
 		WebTarget webTarget = client.target(uri).path(RESOURCE_PATH).path(patternId).path(RESOURCE_HOLES_PATH);
 		Invocation.Builder invocationBuilder = webTarget.request(mediaTypeOut);
 		return invocationBuilder.get();

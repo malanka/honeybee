@@ -94,13 +94,13 @@ public class PatternServiceTest {
 			// TODO pattern links
 			assertTrue (patternNew.getHoles() == null);
 			if ( template.getHoles() == null ) {
-				Response rPatternHoles = clientPattern.getHoleList(patternNew.getId(), mediaTypeOut);
+				Response rPatternHoles = clientPattern.getHoles(patternNew.getId(), mediaTypeOut);
 				assertTrue (rPatternHoles.getStatus() == 200 );
 				List<PatternHole> patternHoles = rPatternHoles.readEntity(new GenericType<List<PatternHole>>(){});
 				assertTrue (patternHoles.isEmpty());
 			} else {
 				// Holes are not returned for the pattern, need a special request
-				Response rPatternHoles = clientPattern.getHoleList(patternNew.getId(), mediaTypeOut);
+				Response rPatternHoles = clientPattern.getHoles(patternNew.getId(), mediaTypeOut);
 				assertTrue (rPatternHoles.getStatus() == 200 );
 				List<PatternHole> patternHoles = rPatternHoles.readEntity(new GenericType<List<PatternHole>>(){});
 				for (PatternHole patternHole : patternHoles ) {
@@ -364,7 +364,7 @@ public class PatternServiceTest {
 
 	private void testPatternHoleList(Pattern pattern, String mediaTypeOut, List<Hole> templateHoles) {
 		System.out.println("testPatternHoleList");
-		Response response = clientPattern.getHoleList(pattern.getId(), mediaTypeOut);
+		Response response = clientPattern.getHoles(pattern.getId(), mediaTypeOut);
 		assertTrue(response.getStatus() == 200);
 		try {
 			List<PatternHole> patternHoles = response.readEntity(new GenericType<List<PatternHole>>(){});

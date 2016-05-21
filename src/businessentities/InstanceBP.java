@@ -31,7 +31,7 @@ public class InstanceBP implements Serializable{
 	private String bpeId = null;
 
 	private Date startDate = null;
-	
+
 	private Date lastChangeDate = null;
 
 	private String patternId = null;
@@ -41,7 +41,7 @@ public class InstanceBP implements Serializable{
 	private List<ActionLink>links = null;
 	// TODO change type
 	private List<InstanceHole> holes = null;
-	
+
 	@JsonIgnore
 	@XmlTransient
 	private String templateId = null;
@@ -66,63 +66,63 @@ public class InstanceBP implements Serializable{
 	public void setTemplateId(String templateId) {
 		this.templateId = templateId;
 	}
-	
+
 	@JsonSetter ("state")
 	@XmlElement(name = "state")
 	public void setState(InstanceState state) {
 		this.state = state;
 	}
-	
+
 	@JsonGetter ("id")
 	public String getInstanceId() {
 		return instanceId;
 	}
-	
+
 	@JsonSetter ("id")
 	@XmlElement(name = "id")
 	public void setInstanceId(String instanceId) {
 		this.instanceId = instanceId;
 	}
-	
+
 	@JsonGetter ("start_date")
 	public Date getStartDate() {
 		return startDate;
 	}
-	
+
 	@JsonSetter ("start_date")
 	@XmlElement(name = "start_date")
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
-	
+
 	@JsonGetter ("last_change_date")
 	public Date getLastChangeDate() {
 		return lastChangeDate;
 	}
-	
+
 	@JsonSetter ("last_change_date")
 	@XmlElement(name = "last_change_date")
 	public void setLastChangeDate(Date lastChangeDate) {
 		this.lastChangeDate = lastChangeDate;
 	}
-	
+
 	@JsonGetter ("pattern_id")
 	public String getPatternId() {
 		return patternId;
 	}
-	
+
 	@JsonSetter ("pattern_id")
 	@XmlElement(name = "pattern_id")
 	public void setPatternId(String patternId) {
 		this.patternId = patternId;
 	}
-	
+
 	@JsonGetter("current_activities")
 	public List<Integer> getCurrentActivities() {
 		// TODO call WS!
 		return currentActivities;
 	}
-	
+
 	@JsonSetter("current_activities")
 	@XmlElementWrapper(name="current_activities")
 	@XmlElement(name="activity")
@@ -136,14 +136,15 @@ public class InstanceBP implements Serializable{
 	public List<ActionLink> getLinks() {
 		return links;
 	}
+	@JsonIgnore
 	@JsonGetter ("holes")
 	public List<InstanceHole> getHoles() {
 		return holes;
 	}
-	
+
+	@JsonIgnore
 	@JsonSetter ("holes")
-	@XmlElementWrapper(name="holes")
-	@XmlElement(name="hole")
+	@XmlTransient
 	public void setHoles(List<InstanceHole> holes) {
 		this.holes = holes;
 	}
@@ -178,7 +179,7 @@ public class InstanceBP implements Serializable{
 			return false;
 		return true;
 	}
-	
+
 	public InstanceBP(String instanceId, Date startDate, Date lastChangeDate, String patternId,
 			List<Integer> currentActivities, List<InstanceHole> holes) {
 		super();
@@ -195,7 +196,7 @@ public class InstanceBP implements Serializable{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@JsonGetter("state")
 	public InstanceState getState(){
 		return state;
@@ -212,8 +213,8 @@ public class InstanceBP implements Serializable{
 		}
 		return InstanceState.RUNNING;*/
 	}
-	
-	
+
+
 	public InstanceBP(
 			String instanceId,
 			Date startDate,
@@ -228,7 +229,7 @@ public class InstanceBP implements Serializable{
 		this.links = generateLinks();
 		this.state = InstanceState.RUNNING;
 	}
-	
+
 	public InstanceBP(
 			String instanceId,
 			Date startDate,
@@ -247,7 +248,7 @@ public class InstanceBP implements Serializable{
 		this.templateId = templateId;
 		this.state = InstanceState.RUNNING;
 	}
-	
+
 	public InstanceBP() {
 		super();
 	}
